@@ -79,7 +79,7 @@ export class UsersService {
     await this.usersRepository.updatePassword(email, hashedPassword);
   }
 
-  async updateDeletedAt(id: number) {
-    return await this.usersRepository.updateDeletedAt(id);
+  async deleteUser(id: number) {
+    return await this.usersRepository.deleteUser(id);
   }
 }

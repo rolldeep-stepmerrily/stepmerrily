@@ -107,7 +107,7 @@ export class UsersController {
   @ApiBearerAuth('accessToken')
   @UseGuards(AuthGuard('access'))
   @Delete()
-  async updateDeletedAt(@User('id') id: number) {
-    return await this.usersService.updateDeletedAt(id);
+  async deleteUser(@User('id') id: number) {
+    return await this.usersService.deleteUser(id);
   }
 }

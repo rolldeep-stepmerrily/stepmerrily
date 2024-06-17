@@ -2,6 +2,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './users.dto';
+import dayjs from 'dayjs';
 
 @Injectable()
 export class UsersRepository {
@@ -98,11 +99,11 @@ export class UsersRepository {
     }
   }
 
-  async updateUpdatedAt(id: number) {
+  async updateUser(id: number) {
     try {
       return await this.prismaService.user.update({
         where: { id },
-        data: { updatedAt: new Date() },
+        data: { updatedAt: dayjs().toISOString() },
       });
     } catch (e) {
       console.error(e);
@@ -111,11 +112,11 @@ export class UsersRepository {
     }
   }
 
-  async updateDeletedAt(id: number) {
+  async deleteUser(id: number) {
     try {
       await this.prismaService.user.update({
         where: { id },
-        data: { deletedAt: new Date() },
+        data: { deletedAt: dayjs().toISOString() },
       });
     } catch (e) {
       console.log(e);

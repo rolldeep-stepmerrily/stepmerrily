@@ -15,6 +15,7 @@ import bcrypt from 'bcrypt';
 import { UsersRepository } from 'src/users/users.repository';
 import { VerifyEmailDto } from 'src/users/users.dto';
 
+const { NODE_ENV, JWT_SECRET_KEY } = process.env;
 interface ICacheDataEmail {
   authCode: string;
   count: number;
@@ -90,14 +91,13 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
-    const { id } = await this.usersRepository.updateUpdatedAt(user.id);
+    const { id } = await this.usersRepository.updateUser(user.id);
 
-    const secret = process.env.JWT_SECRET_KEY;
+    const expiresIn = NODE_ENV === 'production' ? '15m' : '150m';
 
-    //TODO : 편의를 위해 100분으로 해놓음, 추후 수정 필요
     return {
-      accessToken: this.jwtService.sign({ sub: 'access', id }, { secret, expiresIn: '100m' }),
-      refreshToken: this.jwtService.sign({ sub: 'refresh', id }, { secret }),
+      accessToken: this.jwtService.sign({ sub: 'access', id }, { secret: JWT_SECRET_KEY, expiresIn }),
+      refreshToken: this.jwtService.sign({ sub: 'refresh', id }, { secret: JWT_SECRET_KEY }),
     };
   }
 
@@ -108,13 +108,10 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
-    await this.usersRepository.updateUpdatedAt(user.id);
+    await this.usersRepository.updateUser(user.id);
 
-    const secret = process.env.JWT_SECRET;
-
-    //TODO : 편의를 위해 100분으로 해놓음, 추후 수정 필요
     return {
-      accessToken: this.jwtService.sign({ sub: 'access', id }, { secret, expiresIn: '100m' }),
+      accessToken: this.jwtService.sign({ sub: 'access', id }, { secret: JWT_SECRET_KEY, expiresIn: '5m' }),
     };
   }
 }
