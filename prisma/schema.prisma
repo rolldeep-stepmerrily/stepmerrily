@@ -20,8 +20,60 @@ model User {
   name        String
   nickname    String    @unique
   phoneNumber String    @unique
+  avatar      String?
   role        Role      @default(USER)
   createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  updatedAt   DateTime? @updatedAt
   deletedAt   DateTime?
+
+  term     Term?
+  comments Comment[]
+  posts    Post[]
+}
+
+model Term {
+  id              Int       @id
+  isService       Boolean   @default(false)
+  isPrivacy       Boolean   @default(false)
+  isPrivacyOption Boolean   @default(false)
+  isAge           Boolean   @default(false)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime? @updatedAt
+  deletedAt       DateTime?
+
+  user User @relation(fields: [id], references: [id])
+}
+
+model Post {
+  id        Int       @id
+  userId    Int
+  title     String
+  content   String
+  images    String?
+  view      Int       @default(0)
+  like      Int       @default(0)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  deletedAt DateTime?
+
+  user     User      @relation(fields: [userId], references: [id])
+  comments Comment[]
+}
+
+model Comment {
+  id        Int       @id
+  userId    Int
+  postId    Int
+  commentId Int?
+  content   String
+  like      Int       @default(0)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  deletedAt DateTime?
+
+  user User @relation(fields: [userId], references: [id])
+  post Post @relation(fields: [postId], references: [id])
+
+  reply     Comment?  @relation("comment", fields: [commentId], references: [id])
+  reComment Comment[] @relation("comment")
 }

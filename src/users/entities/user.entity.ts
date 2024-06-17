@@ -3,11 +3,11 @@ import { Role, User as UserModel } from '@prisma/client';
 import { IsDate, IsEmail, IsEnum, IsMobilePhone, IsPositive, IsString, Length, Matches } from 'class-validator';
 
 export class User implements UserModel {
-  @ApiProperty({ required: true, minimum: 1, description: 'id' })
+  @ApiProperty({ minimum: 1, description: 'ID' })
   @IsPositive()
   id: number;
 
-  @ApiProperty({ required: true, description: '아이디' })
+  @ApiProperty({ required: true, description: '유저 로그인 아이디' })
   @Matches(/^[a-zA-Z0-9]{4,16}$/, { message: 'username must be a username' })
   username: string;
 
@@ -17,6 +17,10 @@ export class User implements UserModel {
   })
   password: string;
 
+  @ApiProperty({ required: true, description: '이메일' })
+  @IsEmail()
+  email: string;
+
   @ApiProperty({ required: true, description: '이름' })
   @Length(2, 6)
   @IsString()
@@ -25,10 +29,6 @@ export class User implements UserModel {
   @ApiProperty({ required: true, description: '닉네임' })
   @Matches(/^[가-힣a-zA-Z0-9]{2,10}$/, { message: 'nickname must be a nickname' })
   nickname: string;
-
-  @ApiProperty({ required: true, description: '이메일' })
-  @IsEmail()
-  email: string;
 
   @ApiProperty({ required: true, description: '휴대폰 번호' })
   @IsMobilePhone('ko-KR')
@@ -42,15 +42,15 @@ export class User implements UserModel {
   @IsEnum(Role)
   role: Role;
 
-  @ApiProperty({ description: '회원가입 날짜' })
+  @ApiProperty({ description: 'created at' })
   @IsDate()
   createdAt: Date;
 
-  @ApiProperty({ description: '업데이트 날짜' })
+  @ApiProperty({ description: 'updated at' })
   @IsDate()
   updatedAt: Date;
 
-  @ApiProperty({ description: '회원 탈퇴 날짜' })
+  @ApiProperty({ description: 'deleted at' })
   @IsDate()
   deletedAt: Date | null;
 }

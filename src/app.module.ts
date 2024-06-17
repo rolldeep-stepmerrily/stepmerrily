@@ -7,6 +7,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { UsersModule } from './users/users.module';
 import { HttpLoggerMiddleware } from './common/middlewares';
 import { AppController } from './app.controller';
+import { PostsModule } from './posts/posts.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { AppController } from './app.controller';
     PrismaModule,
     UsersModule,
     CacheModule.register({ isGlobal: true, ttl: 5 * 60 * 1000 }),
+    PostsModule,
   ],
   controllers: [AppController],
 })
