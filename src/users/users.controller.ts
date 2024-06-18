@@ -62,8 +62,8 @@ export class UsersController {
 
   @ApiOperation({ summary: '비밀번호 변경' })
   @Put('account/password')
-  async updatePassword(@Body() { username, password }: UpdatePasswordDto) {
-    return await this.usersService.updatePassword(username, password);
+  async updatePassword(@Body() updatePasswordDto: UpdatePasswordDto) {
+    return await this.usersService.updatePassword(updatePasswordDto);
   }
 
   @ApiOperation({ summary: '로그인' })
