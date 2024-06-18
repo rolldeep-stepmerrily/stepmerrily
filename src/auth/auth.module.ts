@@ -7,6 +7,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { UsersModule } from 'src/users/users.module';
 import { AuthService } from './auth.service';
 import { AccessTokenStrategy, RefreshTokenStrategy } from './strategies';
+import { AuthController } from './auth.controller';
 
 @Module({
   imports: [
@@ -32,5 +33,6 @@ import { AccessTokenStrategy, RefreshTokenStrategy } from './strategies';
   ],
   providers: [AuthService, AccessTokenStrategy, RefreshTokenStrategy],
   exports: [AuthService],
+  controllers: [AuthController],
 })
 export class AuthModule {}

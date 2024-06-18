@@ -1,7 +1,7 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateUserDto } from './users.dto';
+import { CreateUserDto, UpdatePasswordDto } from './users.dto';
 import dayjs from 'dayjs';
 
 @Injectable()
@@ -12,7 +12,7 @@ export class UsersRepository {
     try {
       return await this.prismaService.user.findUnique({
         where: { username },
-        select: { id: true, password: true, deletedAt: true },
+        select: { id: true, email: true, password: true, deletedAt: true },
       });
     } catch (e) {
       console.error(e);
@@ -86,10 +86,10 @@ export class UsersRepository {
     }
   }
 
-  async updatePassword(email: string, password: string) {
+  async updatePassword({ username, password }: UpdatePasswordDto) {
     try {
       await this.prismaService.user.update({
-        where: { email },
+        where: { username, deletedAt: null },
         data: { password },
       });
     } catch (e) {
@@ -102,7 +102,7 @@ export class UsersRepository {
   async updateUser(id: number) {
     try {
       return await this.prismaService.user.update({
-        where: { id },
+        where: { id, deletedAt: null },
         data: { updatedAt: dayjs().toISOString() },
       });
     } catch (e) {
@@ -115,7 +115,7 @@ export class UsersRepository {
   async deleteUser(id: number) {
     try {
       await this.prismaService.user.update({
-        where: { id },
+        where: { id, deletedAt: null },
         data: { deletedAt: dayjs().toISOString() },
       });
     } catch (e) {

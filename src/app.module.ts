@@ -8,6 +8,7 @@ import { UsersModule } from './users/users.module';
 import { HttpLoggerMiddleware } from './common/middlewares';
 import { AppController } from './app.controller';
 import { PostsModule } from './posts/posts.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { PostsModule } from './posts/posts.module';
       },
     }),
     PrismaModule,
+    AuthModule,
     UsersModule,
     CacheModule.register({ isGlobal: true, ttl: 5 * 60 * 1000 }),
     PostsModule,

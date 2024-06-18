@@ -31,6 +31,6 @@ export class CreateUserDto extends PickType(User, [
 
 export class FindUsernameByEmailDto extends PickType(User, ['email'] as const) {}
 
-export class UpdatePasswordDto extends PickType(User, ['email', 'password'] as const) {}
+export class UpdatePasswordDto extends PickType(User, ['username', 'password'] as const) {}
 
 export class SignInDto extends PickType(User, ['username', 'password'] as const) {}

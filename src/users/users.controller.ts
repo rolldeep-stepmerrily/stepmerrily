@@ -4,7 +4,6 @@ import { AuthGuard } from '@nestjs/passport';
 
 import { UsersService } from './users.service';
 import {
-  CertifyEmailDto,
   CheckEmailForSignUpDto,
   CheckNicknameForSignUpDto,
   CheckPhoneNumberForSignUpDto,
@@ -13,7 +12,6 @@ import {
   FindUsernameByEmailDto,
   SignInDto,
   UpdatePasswordDto,
-  VerifyEmailDto,
 } from './users.dto';
 import { AuthService } from 'src/auth/auth.service';
 import { User } from 'src/auth/decorators';
@@ -26,40 +24,28 @@ export class UsersController {
     private readonly authService: AuthService,
   ) {}
 
-  @ApiOperation({ summary: '아이디 중복 확인' })
+  @ApiOperation({ summary: '회원가입 아이디 중복 확인' })
   @Post('signup/duplication/username')
-  async checkUsernameForSignUp(@Body() { username }: CheckUsernameForSignUpDto) {
-    return this.usersService.checkUsernameForSignUp(username);
+  async checkUsernameForSignUp(@Body() checkUsernameForSignUpDto: CheckUsernameForSignUpDto) {
+    return this.usersService.checkUsernameForSignUp(checkUsernameForSignUpDto);
   }
 
-  @ApiOperation({ summary: '이메일 중복 확인' })
+  @ApiOperation({ summary: '회원가입 이메일 중복 확인' })
   @Post('signup/duplication/email')
-  async checkEmailForSignUp(@Body() { email }: CheckEmailForSignUpDto) {
-    return this.usersService.checkEmailForSignUp(email);
+  async checkEmailForSignUp(@Body() checkEmailForSignUpDto: CheckEmailForSignUpDto) {
+    return this.usersService.checkEmailForSignUp(checkEmailForSignUpDto);
   }
 
-  @ApiOperation({ summary: '닉네임 중복 확인' })
+  @ApiOperation({ summary: '회원가입 닉네임 중복 확인' })
   @Post('signup/duplication/nickname')
-  async checkNicknameForSignUp(@Body() { nickname }: CheckNicknameForSignUpDto) {
-    return this.usersService.checkNicknameForSignUp(nickname);
+  async checkNicknameForSignUp(@Body() checkNicknameForSignUpDto: CheckNicknameForSignUpDto) {
+    return this.usersService.checkNicknameForSignUp(checkNicknameForSignUpDto);
   }
 
-  @ApiOperation({ summary: '전화번호 중복 확인' })
+  @ApiOperation({ summary: '회원가입 전화번호 중복 확인' })
   @Post('signup/duplication/phone')
-  async checkPhoneNumberForSignUp(@Body() { phoneNumber }: CheckPhoneNumberForSignUpDto) {
-    return this.usersService.checkPhoneNumberForSignUp(phoneNumber);
-  }
-
-  @ApiOperation({ summary: '회원 가입 인증코드 전송' })
-  @Post('signup/certification/email')
-  async certifyEmail(@Body() { email }: CertifyEmailDto) {
-    return await this.authService.certifyEmail(email);
-  }
-
-  @ApiOperation({ summary: '회원 가입 인증코드 확인' })
-  @Post('signup/verification/email')
-  async verifyEmail(@Body() verifyEmailDto: VerifyEmailDto) {
-    return await this.authService.verifyEmail(verifyEmailDto);
+  async checkPhoneNumberForSignUp(@Body() checkPhoneNumberForSignUpDto: CheckPhoneNumberForSignUpDto) {
+    return this.usersService.checkPhoneNumberForSignUp(checkPhoneNumberForSignUpDto);
   }
 
   @ApiOperation({ summary: '회원 가입' })
@@ -68,21 +54,20 @@ export class UsersController {
     return this.usersService.createUser(createUserDto);
   }
 
-  //TODO : 여기부터 다시 refactoring 진행하기. 2024.06.16 23:38
   @ApiOperation({ summary: '아이디 찾기' })
-  @Post('find/username')
+  @Post('account/username')
   async findUsernameByEmail(@Body() findUsernameByEmailDto: FindUsernameByEmailDto) {
     return await this.usersService.findUsernameByEmail(findUsernameByEmailDto);
   }
 
   @ApiOperation({ summary: '비밀번호 변경' })
-  @Put('password')
-  async updatePassword(@Body() { email, password }: UpdatePasswordDto) {
-    return await this.usersService.updatePassword(email, password);
+  @Put('account/password')
+  async updatePassword(@Body() { username, password }: UpdatePasswordDto) {
+    return await this.usersService.updatePassword(username, password);
   }
 
   @ApiOperation({ summary: '로그인' })
-  @Post('sign')
+  @Post('signin')
   async signIn(@Body() { username, password }: SignInDto) {
     return await this.authService.signIn(username, password);
   }
@@ -98,7 +83,7 @@ export class UsersController {
   @ApiOperation({ summary: '로그아웃' })
   @ApiBearerAuth('accessToken')
   @UseGuards(AuthGuard('access'))
-  @Delete('sign')
+  @Delete('signout')
   async signOut() {
     return;
   }
@@ -106,7 +91,7 @@ export class UsersController {
   @ApiOperation({ summary: '회원 탈퇴' })
   @ApiBearerAuth('accessToken')
   @UseGuards(AuthGuard('access'))
-  @Delete()
+  @Delete('withdrawal')
   async deleteUser(@User('id') id: number) {
     return await this.usersService.deleteUser(id);
   }

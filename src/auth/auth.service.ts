@@ -1,11 +1,11 @@
 import { MailerService } from '@nestjs-modules/mailer';
-import { HttpService } from '@nestjs/axios';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import {
   BadRequestException,
   Inject,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -13,27 +13,23 @@ import { Cache } from 'cache-manager';
 import bcrypt from 'bcrypt';
 
 import { UsersRepository } from 'src/users/users.repository';
-import { VerifyEmailDto } from 'src/users/users.dto';
+import { CertifyEmailDto, VerifyEmailDto } from 'src/users/users.dto';
+import { ICacheDataEmail } from 'src/users/users.interface';
 
-const { NODE_ENV, JWT_SECRET_KEY } = process.env;
-interface ICacheDataEmail {
-  authCode: string;
-  count: number;
-}
+const { SERVER_URL, NODE_ENV, JWT_SECRET_KEY } = process.env;
 
 @Injectable()
 export class AuthService {
   constructor(
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
-    private readonly httpService: HttpService,
     private readonly usersRepository: UsersRepository,
     private readonly jwtService: JwtService,
     private readonly mailerService: MailerService,
   ) {}
 
-  async certifyEmail(email: string) {
+  async certifyEmail({ email }: CertifyEmailDto) {
     try {
-      const cachedData = await this.cacheManager.get<ICacheDataEmail>(email);
+      const cachedData = await this.cacheManager.get<ICacheDataEmail>(`${SERVER_URL}/auth/certification/${email}`);
 
       if (cachedData && cachedData.count >= 5) {
         throw new UnauthorizedException('인증 횟수 초과');
@@ -50,15 +46,16 @@ export class AuthService {
       const accpetedSends = send?.accepted;
 
       if (accpetedSends.length !== [email].length) {
-        throw new InternalServerErrorException();
+        throw new InternalServerErrorException('메일 전송 실패');
       }
 
       const authData: ICacheDataEmail = {
         authCode,
         count: (cachedData?.count ?? 0) + 1,
+        isCertified: false,
       };
 
-      await this.cacheManager.set(email, authData);
+      await this.cacheManager.set(`${SERVER_URL}/auth/certification/${email}`, authData);
     } catch (e) {
       console.error(e);
 
@@ -67,15 +64,17 @@ export class AuthService {
   }
 
   async verifyEmail({ email, authCode }: VerifyEmailDto) {
-    const cachedData = await this.cacheManager.get<ICacheDataEmail>(email);
+    const cachedData = await this.cacheManager.get<ICacheDataEmail>(`${SERVER_URL}/auth/certification/${email}`);
 
     if (!cachedData) {
-      throw new BadRequestException();
+      throw new NotFoundException('해당 인증 정보를 찾을 수 없습니다.');
     }
 
-    if (authCode !== cachedData?.authCode) {
-      throw new BadRequestException();
+    if (cachedData?.authCode !== authCode) {
+      throw new BadRequestException('잘못된 인증 번호 입니다.');
     }
+
+    await this.cacheManager.set(`${SERVER_URL}/auth/certification/${email}`, { ...cachedData, isCertified: true });
   }
 
   async signIn(username: string, password: string) {
