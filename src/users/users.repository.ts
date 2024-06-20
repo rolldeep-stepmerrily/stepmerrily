@@ -1,8 +1,9 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { faker } from '@faker-js/faker/locale/ko';
+import dayjs from 'dayjs';
 
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto, UpdatePasswordDto } from './users.dto';
-import dayjs from 'dayjs';
 
 @Injectable()
 export class UsersRepository {
@@ -64,7 +65,7 @@ export class UsersRepository {
     try {
       return await this.prismaService.user.findUnique({
         where: { id },
-        select: { id: true, deletedAt: true },
+        select: { id: true, deletedAt: true, role: true },
       });
     } catch (e) {
       console.error(e);
@@ -119,7 +120,41 @@ export class UsersRepository {
         data: { deletedAt: dayjs().toISOString() },
       });
     } catch (e) {
-      console.log(e);
+      console.error(e);
+
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async createFakerUsers(count: number) {
+    try {
+      console.log(count);
+      const queries = new Array(count).fill(null).map(() => {
+        return this.prismaService.user.create({
+          data: {
+            username: faker.internet.userName({
+              firstName: faker.person.firstName(),
+            }),
+            email: faker.internet.email({ firstName: faker.person.firstName(), lastName: faker.person.lastName() }),
+            name: faker.person.lastName(),
+            nickname: faker.person.firstName(),
+            phoneNumber: faker.phone.number().replace('-', ''),
+            password: faker.internet.password({ length: 16 }),
+            term: {
+              create: { isAge: true, isPrivacy: true, isService: true, isPrivacyOption: faker.datatype.boolean() },
+            },
+          },
+          include: { term: true },
+        });
+      });
+
+      console.log(queries);
+
+      const users = await this.prismaService.$transaction(queries);
+
+      return { users };
+    } catch (e) {
+      console.error(e);
 
       throw new InternalServerErrorException();
     }

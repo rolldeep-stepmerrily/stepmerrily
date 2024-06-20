@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -94,5 +94,14 @@ export class UsersController {
   @Delete('withdrawal')
   async deleteUser(@User('id') id: number) {
     return await this.usersService.deleteUser(id);
+  }
+
+  //TODO : 시간이 없어서 일단 만들어 두기만! 추후에 가드 검증 해보자 2024.06.20 18:40
+  @ApiOperation({ summary: '가상 유저 생성' })
+  @ApiBearerAuth('accessToken')
+  @UseGuards(AuthGuard('admin'))
+  @Post('faker')
+  async createFakerUsers(@Query('count') count: number = 10) {
+    return await this.usersService.createFakerUsers(count);
   }
 }
