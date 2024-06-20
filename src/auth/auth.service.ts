@@ -43,6 +43,8 @@ export class AuthService {
         text: `인증코드 : ${authCode}`,
       });
 
+      console.log(send);
+
       const accpetedSends = send?.accepted;
 
       if (accpetedSends.length !== [email].length) {
