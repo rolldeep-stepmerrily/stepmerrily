@@ -107,10 +107,10 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
-    await this.usersRepository.updateUser(user.id);
+    const expiresIn = NODE_ENV === 'production' ? '15m' : '150m';
 
     return {
-      accessToken: this.jwtService.sign({ sub: 'access', id }, { secret: JWT_SECRET_KEY, expiresIn: '5m' }),
+      accessToken: this.jwtService.sign({ sub: 'access', id }, { secret: JWT_SECRET_KEY, expiresIn }),
     };
   }
 }
