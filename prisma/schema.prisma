@@ -45,7 +45,7 @@ model Term {
 }
 
 model Post {
-  id        Int       @id
+  id        Int       @id @default(autoincrement())
   userId    Int
   title     String
   content   String

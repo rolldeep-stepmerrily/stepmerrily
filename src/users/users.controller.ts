@@ -96,7 +96,6 @@ export class UsersController {
     return await this.usersService.deleteUser(id);
   }
 
-  //TODO : 시간이 없어서 일단 만들어 두기만! 추후에 가드 검증 해보자 2024.06.20 18:40
   @ApiOperation({ summary: '가상 유저 생성' })
   @ApiBearerAuth('accessToken')
   @UseGuards(AuthGuard('admin'))
