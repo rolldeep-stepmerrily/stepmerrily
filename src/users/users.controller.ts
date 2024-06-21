@@ -100,8 +100,8 @@ export class UsersController {
   @ApiOperation({ summary: '가상 유저 생성' })
   @ApiBearerAuth('accessToken')
   @UseGuards(AuthGuard('admin'))
-  @Post('faker')
-  async createFakerUsers(@Query('count') count: number = 10) {
-    return await this.usersService.createFakerUsers(count);
+  @Post('fake')
+  async createFakeUsers(@Query('count') count: number = 10) {
+    return await this.usersService.createFakeUsers(count);
   }
 }

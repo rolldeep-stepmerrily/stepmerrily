@@ -126,20 +126,17 @@ export class UsersRepository {
     }
   }
 
-  async createFakerUsers(count: number) {
+  async createFakeUsers(count: number) {
     try {
-      console.log(count);
       const queries = new Array(count).fill(null).map(() => {
         return this.prismaService.user.create({
           data: {
-            username: faker.internet.userName({
-              firstName: faker.person.firstName(),
-            }),
-            email: faker.internet.email({ firstName: faker.person.firstName(), lastName: faker.person.lastName() }),
-            name: faker.person.lastName(),
-            nickname: faker.person.firstName(),
-            phoneNumber: faker.phone.number().replace('-', ''),
-            password: faker.internet.password({ length: 16 }),
+            username: faker.internet.userName().substring(0, 16),
+            email: faker.internet.email(),
+            name: faker.person.lastName() + faker.person.firstName(),
+            nickname: faker.music.songName().replaceAll(' ', '').substring(0, 6),
+            phoneNumber: faker.phone.number().replaceAll('-', ''),
+            password: faker.internet.password({ length: 32 }),
             term: {
               create: { isAge: true, isPrivacy: true, isService: true, isPrivacyOption: faker.datatype.boolean() },
             },
@@ -148,11 +145,7 @@ export class UsersRepository {
         });
       });
 
-      console.log(queries);
-
-      const users = await this.prismaService.$transaction(queries);
-
-      return { users };
+      return await this.prismaService.$transaction(queries);
     } catch (e) {
       console.error(e);
 

@@ -139,7 +139,7 @@ export class UsersService {
     return await this.usersRepository.deleteUser(id);
   }
 
-  async createFakerUsers(count: number) {
-    return await this.usersRepository.createFakerUsers(count);
+  async createFakeUsers(count: number) {
+    return await this.usersRepository.createFakeUsers(count);
   }
 }

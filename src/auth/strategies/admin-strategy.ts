@@ -26,7 +26,6 @@ export class AdminStrategy extends PassportStrategy(Strategy, 'admin') {
 
     const user = await this.usersRepository.findUserById(id);
 
-    console.log(user);
     if (user?.role !== 'ADMIN') {
       throw new UnauthorizedException();
     }
