@@ -1,8 +1,8 @@
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Controller, Post, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 
 import { PostsService } from './posts.service';
-import { AuthGuard } from '@nestjs/passport';
 import { User } from 'src/auth/decorators';
 import { CreatePostDto } from './posts.dto';
 

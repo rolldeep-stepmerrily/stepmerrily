@@ -41,8 +41,6 @@ const { REDIS_HOST, REDIS_PORT, REDIS_PASSWORD } = process.env;
       },
     }),
     PrismaModule,
-    AuthModule,
-    UsersModule,
     CacheModule.register<RedisClientOptions>({
       store: redisStore,
       socket: { host: REDIS_HOST, port: REDIS_PORT },
@@ -50,6 +48,8 @@ const { REDIS_HOST, REDIS_PORT, REDIS_PASSWORD } = process.env;
       ttl: 5 * 60 * 1000,
       isGlobal: true,
     }),
+    AuthModule,
+    UsersModule,
     PostsModule,
   ],
   controllers: [AppController],
