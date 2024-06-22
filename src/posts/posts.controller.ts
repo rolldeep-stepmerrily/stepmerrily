@@ -1,11 +1,12 @@
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Body, Controller, Post, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FilesInterceptor } from '@nestjs/platform-express';
 
 import { PostsService } from './posts.service';
 import { User } from 'src/auth/decorators';
 import { CreatePostDto, CreatePostImagesDto, CreatePostWithImagesDto } from './posts.dto';
+import { ParsePositiveIntPipe } from 'src/common/pipes';
 
 @ApiTags('Posts')
 @ApiBearerAuth('accessToken')
@@ -24,6 +25,12 @@ export class PostsController {
     @Body() createPostDto: CreatePostDto,
     @UploadedFiles() createPostImagesDto: CreatePostImagesDto,
   ) {
-    return await this.postsService.createPost(userId, createPostDto, createPostImagesDto);
+    await this.postsService.createPost(userId, createPostDto, createPostImagesDto);
+  }
+
+  @ApiOperation({ summary: '게시물 조회' })
+  @Get(':id')
+  async findPost(@Param('id', ParsePositiveIntPipe) postId: number) {
+    return await this.postsService.findPost(postId);
   }
 }

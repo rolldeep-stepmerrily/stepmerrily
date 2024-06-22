@@ -14,6 +14,7 @@ export class PostsRepository {
           userId,
           ...createPostDto,
         },
+        select: { id: true },
       });
     } catch (e) {
       console.error(e);
@@ -27,6 +28,18 @@ export class PostsRepository {
       return await this.prismaService.post.findFirst({
         orderBy: { id: 'desc' },
         select: { id: true },
+      });
+    } catch (e) {
+      console.error(e);
+
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async findPost(id: number) {
+    try {
+      return await this.prismaService.post.findUnique({
+        where: { id },
       });
     } catch (e) {
       console.error(e);
