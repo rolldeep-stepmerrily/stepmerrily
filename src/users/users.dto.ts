@@ -1,7 +1,8 @@
-import { ApiProperty, PickType } from '@nestjs/swagger';
-import { IsString, Length } from 'class-validator';
+import { ApiProperty, OmitType, PickType } from '@nestjs/swagger';
+import { IsObject, IsString, Length } from 'class-validator';
 
 import { User } from './entities/user.entity';
+import { Term } from './entities/term.entity';
 
 export class CheckUsernameForSignUpDto extends PickType(User, ['username'] as const) {}
 
@@ -20,6 +21,8 @@ export class VerifyEmailDto extends PickType(User, ['email'] as const) {
   authCode: string;
 }
 
+export class CreateTermsDto extends OmitType(Term, ['id', 'createdAt', 'updatedAt', 'deletedAt'] as const) {}
+
 export class CreateUserDto extends PickType(User, [
   'username',
   'password',
@@ -27,7 +30,11 @@ export class CreateUserDto extends PickType(User, [
   'nickname',
   'email',
   'phoneNumber',
-] as const) {}
+] as const) {
+  @ApiProperty({ required: true, description: '약관 동의' })
+  @IsObject()
+  terms: CreateTermsDto;
+}
 
 export class FindUsernameByEmailDto extends PickType(User, ['email'] as const) {}
 

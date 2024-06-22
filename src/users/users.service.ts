@@ -55,7 +55,11 @@ export class UsersService {
     }
   }
 
-  async createUser({ username, email, password, name, nickname, phoneNumber }: CreateUserDto) {
+  async createUser({ username, email, password, name, nickname, phoneNumber, terms }: CreateUserDto) {
+    if (!terms.isService || !terms.isPrivacy || !terms.isAge) {
+      throw new BadRequestException('약관에 동의해주세요.');
+    }
+
     const cachedData = await this.cacheManager.get<ICacheDataEmail>(`${SERVER_URL}/auth/certification/${email}`);
 
     if (!cachedData || !cachedData.isCertified) {
@@ -80,6 +84,7 @@ export class UsersService {
       nickname,
       email,
       phoneNumber,
+      terms,
     });
   }
 

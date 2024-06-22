@@ -19,7 +19,7 @@ export class Post implements PostModel {
   @IsString()
   content: string;
 
-  @ApiProperty({ description: '이미지', required: false, example: '이미지' })
+  @ApiProperty({ description: '이미지', required: false, default: null, example: null })
   @IsOptional()
   @IsString()
   images: string | null;

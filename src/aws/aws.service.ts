@@ -25,12 +25,12 @@ export class AwsService {
     return objects.Contents && objects.Contents.length > 0 ? objects.Contents : null;
   }
 
-  async uploadImages(images: Express.Multer.File[], firstDist: string, id: number, secondDist: string = '') {
+  async uploadImages(images: Express.Multer.File[], path: string) {
     try {
       const promises = images.map(async (image, index) => {
         const params = {
           Bucket: AWS_S3_BUCKET,
-          Key: `${firstDist}/${id}/${secondDist}${secondDist ? '/' : ''}${dayjs().unix()}_${index}`,
+          Key: `${path}/${dayjs().unix()}_${index}`,
           Body: image.buffer,
           ContentType: image.mimetype,
         };
@@ -39,8 +39,6 @@ export class AwsService {
       });
 
       await Promise.all(promises);
-
-      return `${firstDist}/${id}/${secondDist}${secondDist ? '/' : ''}`;
     } catch (e) {
       console.error(e);
 

@@ -1,13 +1,29 @@
 import { Injectable } from '@nestjs/common';
 
 import { PostsRepository } from './posts.repository';
-import { CreatePostDto } from './posts.dto';
+import { AwsService } from 'src/aws/aws.service';
+import { CreatePostDto, CreatePostImagesDto } from './posts.dto';
 
 @Injectable()
 export class PostsService {
-  constructor(private readonly postsRepository: PostsRepository) {}
+  constructor(
+    private readonly postsRepository: PostsRepository,
+    private readonly awsService: AwsService,
+  ) {}
 
-  async createPost(userId: number, createPostDto: CreatePostDto) {
+  async createPost(userId: number, createPostDto: CreatePostDto, createPostImagesDto: CreatePostImagesDto) {
+    if (createPostImagesDto.length > 0) {
+      const lastPost = await this.postsRepository.findLastPost();
+
+      const lastPostId = lastPost?.id ?? 0;
+
+      const uploadPath = `users/${userId}/posts/${lastPostId + 1}`;
+
+      await this.awsService.uploadImages(createPostImagesDto, uploadPath);
+
+      return this.postsRepository.createPost(userId, { ...createPostDto, images: uploadPath });
+    }
+
     return this.postsRepository.createPost(userId, createPostDto);
   }
 }

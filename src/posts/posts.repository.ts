@@ -21,4 +21,17 @@ export class PostsRepository {
       throw new InternalServerErrorException();
     }
   }
+
+  async findLastPost() {
+    try {
+      return await this.prismaService.post.findFirst({
+        orderBy: { id: 'desc' },
+        select: { id: true },
+      });
+    } catch (e) {
+      console.error(e);
+
+      throw new InternalServerErrorException();
+    }
+  }
 }
