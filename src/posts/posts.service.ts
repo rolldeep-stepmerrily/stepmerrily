@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { PostsRepository } from './posts.repository';
 import { AwsService } from 'src/aws/aws.service';
-import { CreatePostDto, CreatePostImagesDto } from './posts.dto';
+import { CreatePostDto, CreatePostImagesDto, FindPostsDto } from './posts.dto';
 
 const { AWS_CLOUDFRONT_DOMAIN } = process.env;
 
@@ -27,6 +27,12 @@ export class PostsService {
     }
 
     return this.postsRepository.createPost(userId, createPostDto);
+  }
+
+  async findPosts({ postId }: FindPostsDto) {
+    const posts = await this.postsRepository.findPosts(postId);
+
+    return { posts };
   }
 
   async findPost(id: number) {

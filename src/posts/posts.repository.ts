@@ -36,10 +36,37 @@ export class PostsRepository {
     }
   }
 
-  async findPost(id: number) {
+  async findPosts(postId?: number) {
     try {
-      return await this.prismaService.post.findUnique({
-        where: { id },
+      return await this.prismaService.post.findMany({
+        where: { deletedAt: null },
+        take: 21,
+        skip: postId ? 1 : 0,
+        ...(postId && { cursor: { id: postId } }),
+        select: { id: true, title: true, views: true, likes: true, createdAt: true },
+        orderBy: { id: 'desc' },
+      });
+    } catch (e) {
+      console.error(e);
+
+      throw new InternalServerErrorException();
+    }
+  }
+  async findPost(postId: number) {
+    try {
+      return await this.prismaService.post.update({
+        where: { id: postId },
+        data: { views: { increment: 1 } },
+        select: {
+          id: true,
+          user: { select: { avatar: true, nickname: true } },
+          title: true,
+          content: true,
+          images: true,
+          views: true,
+          likes: true,
+          createdAt: true,
+        },
       });
     } catch (e) {
       console.error(e);

@@ -26,11 +26,11 @@ export class Post implements PostModel {
 
   @ApiProperty({ description: '조회수', minimum: 0, default: 0 })
   @IsPositive()
-  view: number;
+  views: number;
 
   @ApiProperty({ description: '좋아요', minimum: 0, default: 0 })
   @IsPositive()
-  like: number;
+  likes: number;
 
   @ApiProperty({ description: 'created at' })
   @IsDate()
