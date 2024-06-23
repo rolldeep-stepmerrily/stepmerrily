@@ -1,4 +1,5 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import dayjs from 'dayjs';
 
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreatePostDto } from './posts.dto';
@@ -52,6 +53,20 @@ export class PostsRepository {
       throw new InternalServerErrorException();
     }
   }
+
+  async findPostId(postId: number) {
+    try {
+      return await this.prismaService.post.findUnique({
+        where: { id: postId },
+        select: { id: true, likes: { select: { id: true, userId: true }, where: { deletedAt: null } } },
+      });
+    } catch (e) {
+      console.error(e);
+
+      throw new InternalServerErrorException();
+    }
+  }
+
   async findPost(postId: number) {
     try {
       return await this.prismaService.post.update({
@@ -64,9 +79,36 @@ export class PostsRepository {
           content: true,
           images: true,
           views: true,
-          likes: true,
+          likes: { select: { id: true, userId: true }, where: { deletedAt: null } },
           createdAt: true,
         },
+      });
+    } catch (e) {
+      console.error(e);
+
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async unlikePost(likeId: number) {
+    try {
+      return await this.prismaService.like.update({
+        where: { id: likeId },
+        data: { deletedAt: dayjs().toISOString() },
+        select: { id: true },
+      });
+    } catch (e) {
+      console.error(e);
+
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async likePost(userId: number, postId: number) {
+    try {
+      return await this.prismaService.like.create({
+        data: { userId, postId },
+        select: { id: true },
       });
     } catch (e) {
       console.error(e);

@@ -1,5 +1,16 @@
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Body, Controller, Get, Param, Post, Query, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UploadedFiles,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FilesInterceptor } from '@nestjs/platform-express';
 
@@ -40,5 +51,11 @@ export class PostsController {
     return await this.postsService.findPost(postId);
   }
 
-  //2024-06-22 22:39 게시물 좋아요 만들기. 알림함도 만들어야하나?
+  @ApiOperation({ summary: '게시물 추천' })
+  @Patch(':id/like')
+  async likePost(@User('id') userId: number, @Param('id', ParsePositiveIntPipe) postId: number) {
+    return await this.postsService.likePost(userId, postId);
+  }
+
+  //게시물 삭제, 수정 API 추가
 }

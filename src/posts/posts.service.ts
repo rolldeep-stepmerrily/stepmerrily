@@ -35,8 +35,8 @@ export class PostsService {
     return { posts };
   }
 
-  async findPost(id: number) {
-    const post = await this.postsRepository.findPost(id);
+  async findPost(postId: number) {
+    const post = await this.postsRepository.findPost(postId);
 
     if (!post) {
       throw new NotFoundException('게시물을 찾을 수 없습니다.');
@@ -47,5 +47,24 @@ export class PostsService {
     const images = findImages?.map((image) => `${AWS_CLOUDFRONT_DOMAIN}/${image.Key}`) ?? null;
 
     return { ...post, images };
+  }
+
+  async likePost(userId: number, postId: number) {
+    const post = await this.postsRepository.findPostId(postId);
+
+    console.log(post);
+    if (!post) {
+      throw new NotFoundException('게시물을 찾을 수 없습니다.');
+    }
+
+    const like = post.likes.find((like) => like.userId === userId);
+
+    console.log(like);
+
+    if (like) {
+      return this.postsRepository.unlikePost(like.id);
+    } else {
+      return this.postsRepository.likePost(userId, postId);
+    }
   }
 }

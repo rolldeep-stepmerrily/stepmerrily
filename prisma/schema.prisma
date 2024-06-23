@@ -29,6 +29,7 @@ model User {
   term     Term?
   comments Comment[]
   posts    Post[]
+  likes    Like[]
 }
 
 model Term {
@@ -50,14 +51,26 @@ model Post {
   title     String
   content   String
   images    String?
-  views      Int       @default(0)
-  likes     Int       @default(0)
+  views     Int       @default(0)
+  likes     Like[]
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
   deletedAt DateTime?
 
   user     User      @relation(fields: [userId], references: [id])
   comments Comment[]
+}
+
+model Like {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  postId    Int
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  deletedAt DateTime?
+
+  user User @relation(fields: [userId], references: [id])
+  post Post @relation(fields: [postId], references: [id])
 }
 
 model Comment {
