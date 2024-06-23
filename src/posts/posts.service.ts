@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { PostsRepository } from './posts.repository';
 import { AwsService } from 'src/aws/aws.service';
-import { CreatePostDto, CreatePostImagesDto, FindPostsDto } from './posts.dto';
+import { CreatePostDto, CreatePostImagesDto, FindPostsDto, UpdatePostDto, UpdatePostImagesDto } from './posts.dto';
 
 const { AWS_CLOUDFRONT_DOMAIN } = process.env;
 
@@ -52,19 +52,57 @@ export class PostsService {
   async likePost(userId: number, postId: number) {
     const post = await this.postsRepository.findPostId(postId);
 
-    console.log(post);
     if (!post) {
       throw new NotFoundException('게시물을 찾을 수 없습니다.');
     }
 
     const like = post.likes.find((like) => like.userId === userId);
 
-    console.log(like);
-
     if (like) {
       return this.postsRepository.unlikePost(like.id);
     } else {
       return this.postsRepository.likePost(userId, postId);
     }
+  }
+
+  async updatePost(
+    userId: number,
+    postId: number,
+    updatePostDto: UpdatePostDto,
+    updatePostImagesDto: UpdatePostImagesDto,
+  ) {
+    const post = await this.postsRepository.findPostByUserPostId(userId, postId);
+
+    if (!post) {
+      throw new NotFoundException('게시물을 찾을 수 없습니다.');
+    }
+
+    if (updatePostImagesDto.length > 0) {
+      const uploadPath = `users/${userId}/posts/${postId}`;
+
+      await this.awsService.deleteImages(uploadPath);
+
+      await this.awsService.uploadImages(updatePostImagesDto, uploadPath);
+
+      return this.postsRepository.updatePost(post.id, { ...updatePostDto, images: uploadPath });
+    }
+
+    const images = post.images;
+
+    return this.postsRepository.updatePost(post.id, { ...updatePostDto, images });
+  }
+
+  async deletePost(userId: number, postId: number) {
+    const post = await this.postsRepository.findPostByUserPostId(userId, postId);
+
+    if (!post) {
+      throw new NotFoundException('게시물을 찾을 수 없습니다.');
+    }
+
+    if (post.images) {
+      await this.awsService.deleteImages(post.images);
+    }
+
+    return this.postsRepository.deletePost(post.id);
   }
 }

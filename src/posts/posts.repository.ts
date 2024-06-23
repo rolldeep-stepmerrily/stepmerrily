@@ -116,4 +116,43 @@ export class PostsRepository {
       throw new InternalServerErrorException();
     }
   }
+
+  async findPostByUserPostId(userId: number, postId: number) {
+    try {
+      return await this.prismaService.post.findUnique({
+        where: { id: postId, userId, deletedAt: null },
+        select: { id: true, images: true },
+      });
+    } catch (e) {
+      console.error(e);
+
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async updatePost(postId: number, updatePostDto: CreatePostDto) {
+    try {
+      return await this.prismaService.post.update({
+        where: { id: postId, deletedAt: null },
+        data: updatePostDto,
+      });
+    } catch (e) {
+      console.error(e);
+
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async deletePost(postId: number) {
+    try {
+      return await this.prismaService.post.update({
+        where: { id: postId, deletedAt: null },
+        data: { deletedAt: dayjs().toISOString() },
+      });
+    } catch (e) {
+      console.error(e);
+
+      throw new InternalServerErrorException();
+    }
+  }
 }

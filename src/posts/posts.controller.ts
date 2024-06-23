@@ -2,10 +2,12 @@ import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nes
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
   Post,
+  Put,
   Query,
   UploadedFiles,
   UseGuards,
@@ -16,7 +18,15 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 
 import { PostsService } from './posts.service';
 import { User } from 'src/auth/decorators';
-import { CreatePostDto, CreatePostImagesDto, CreatePostWithImagesDto, FindPostsDto } from './posts.dto';
+import {
+  CreatePostDto,
+  CreatePostImagesDto,
+  CreatePostWithImagesDto,
+  FindPostsDto,
+  UpdatePostDto,
+  UpdatePostImagesDto,
+  UpdatePostWithImagesDto,
+} from './posts.dto';
 import { ParsePositiveIntPipe } from 'src/common/pipes';
 
 @ApiTags('Posts')
@@ -57,5 +67,23 @@ export class PostsController {
     return await this.postsService.likePost(userId, postId);
   }
 
-  //게시물 삭제, 수정 API 추가
+  @ApiOperation({ summary: '게시물 수정' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ type: UpdatePostWithImagesDto })
+  @UseInterceptors(FilesInterceptor('images', 10))
+  @Put(':id')
+  async updatePost(
+    @User('id') userId: number,
+    @Param('id', ParsePositiveIntPipe) postId: number,
+    @Body() updatePostDto: UpdatePostDto,
+    @UploadedFiles() updatePostImagesDto: UpdatePostImagesDto,
+  ) {
+    await this.postsService.updatePost(userId, postId, updatePostDto, updatePostImagesDto);
+  }
+
+  @ApiOperation({ summary: '게시물 삭제' })
+  @Delete(':id')
+  async deletePost(@User('id') userId: number, @Param('id', ParsePositiveIntPipe) postId: number) {
+    await this.postsService.deletePost(userId, postId);
+  }
 }
