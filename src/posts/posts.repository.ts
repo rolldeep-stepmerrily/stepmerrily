@@ -44,7 +44,13 @@ export class PostsRepository {
         take: 21,
         skip: postId ? 1 : 0,
         ...(postId && { cursor: { id: postId } }),
-        select: { id: true, title: true, views: true, likes: true, createdAt: true },
+        select: {
+          id: true,
+          title: true,
+          views: true,
+          createdAt: true,
+          _count: { select: { comments: true, likes: true } },
+        },
         orderBy: { id: 'desc' },
       });
     } catch (e) {
@@ -57,7 +63,7 @@ export class PostsRepository {
   async findPostId(postId: number) {
     try {
       return await this.prismaService.post.findUnique({
-        where: { id: postId },
+        where: { id: postId, deletedAt: null },
         select: { id: true, likes: { select: { id: true, userId: true }, where: { deletedAt: null } } },
       });
     } catch (e) {
@@ -70,7 +76,7 @@ export class PostsRepository {
   async findPost(postId: number) {
     try {
       return await this.prismaService.post.update({
-        where: { id: postId },
+        where: { id: postId, deletedAt: null },
         data: { views: { increment: 1 } },
         select: {
           id: true,
@@ -80,6 +86,24 @@ export class PostsRepository {
           images: true,
           views: true,
           likes: { select: { id: true, userId: true }, where: { deletedAt: null } },
+          comments: {
+            select: {
+              id: true,
+              user: { select: { avatar: true, nickname: true } },
+              content: true,
+              createdAt: true,
+              reComments: {
+                select: {
+                  id: true,
+                  user: { select: { avatar: true, nickname: true } },
+                  content: true,
+                  createdAt: true,
+                },
+              },
+            },
+            where: { deletedAt: null, commentId: null },
+            orderBy: { id: 'desc' },
+          },
           createdAt: true,
         },
       });

@@ -11,6 +11,7 @@ import { HttpLoggerMiddleware } from './common/middlewares';
 import { AppController } from './app.controller';
 import { PostsModule } from './posts/posts.module';
 import { AuthModule } from './auth/auth.module';
+import { CommentsModule } from './comments/comments.module';
 
 const { REDIS_HOST, REDIS_PORT, REDIS_PASSWORD } = process.env;
 
@@ -51,6 +52,7 @@ const { REDIS_HOST, REDIS_PORT, REDIS_PASSWORD } = process.env;
     AuthModule,
     UsersModule,
     PostsModule,
+    CommentsModule,
   ],
   controllers: [AppController],
 })

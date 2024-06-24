@@ -10,5 +10,6 @@ import { AwsModule } from 'src/aws/aws.module';
   imports: [PrismaModule, AwsModule],
   controllers: [PostsController],
   providers: [PostsService, PostsRepository],
+  exports: [PostsRepository],
 })
 export class PostsModule {}

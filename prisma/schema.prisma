@@ -64,22 +64,24 @@ model Post {
 model Like {
   id        Int       @id @default(autoincrement())
   userId    Int
-  postId    Int
+  postId    Int?
+  commentId Int?
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
   deletedAt DateTime?
 
-  user User @relation(fields: [userId], references: [id])
-  post Post @relation(fields: [postId], references: [id])
+  user    User     @relation(fields: [userId], references: [id])
+  post    Post?    @relation(fields: [postId], references: [id])
+  comment Comment? @relation(fields: [commentId], references: [id])
 }
 
 model Comment {
-  id        Int       @id
+  id        Int       @id @default(autoincrement())
   userId    Int
   postId    Int
   commentId Int?
   content   String
-  like      Int       @default(0)
+  likes     Like[]
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
   deletedAt DateTime?
@@ -87,6 +89,6 @@ model Comment {
   user User @relation(fields: [userId], references: [id])
   post Post @relation(fields: [postId], references: [id])
 
-  reply     Comment?  @relation("comment", fields: [commentId], references: [id])
-  reComment Comment[] @relation("comment")
+  reply      Comment?  @relation("comment", fields: [commentId], references: [id])
+  reComments Comment[] @relation("comment")
 }
