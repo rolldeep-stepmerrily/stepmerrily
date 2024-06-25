@@ -14,6 +14,9 @@ import { AuthModule } from './auth/auth.module';
 import { MusicsModule } from './musics/musics.module';
 import { ArtistsModule } from './artists/artists.module';
 import { AlbumsModule } from './albums/albums.module';
+import { PlaylistsModule } from './playlists/playlists.module';
+import { ClassificationsModule } from './classifications/classifications.module';
+import { InstrumentsModule } from './instruments/instruments.module';
 
 const { REDIS_HOST, REDIS_PORT, REDIS_PASSWORD } = process.env;
 
@@ -58,6 +61,9 @@ const { REDIS_HOST, REDIS_PORT, REDIS_PASSWORD } = process.env;
     MusicsModule,
     ArtistsModule,
     AlbumsModule,
+    PlaylistsModule,
+    ClassificationsModule,
+    InstrumentsModule,
   ],
   controllers: [AppController],
 })
