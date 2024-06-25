@@ -87,11 +87,11 @@ model Instrument {
 }
 
 model Classification {
-  id       Int       @id @default(autoincrement())
-  name     String
-  createAt DateTime  @default(now())
-  updateAt DateTime? @updatedAt
-  deleteAt DateTime?
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  deletedAt DateTime?
 
   instruments Instrument[]
 }

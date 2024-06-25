@@ -96,7 +96,7 @@ export class UsersController {
     return await this.usersService.deleteUser(id);
   }
 
-  @ApiOperation({ summary: '가상 유저 생성' })
+  @ApiOperation({ summary: '가상 유저 생성 ⚠️' })
   @ApiBearerAuth('accessToken')
   @UseGuards(AuthGuard('admin'))
   @Post('fake')
