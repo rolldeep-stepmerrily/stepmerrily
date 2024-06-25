@@ -18,18 +18,17 @@ model User {
   password    String
   email       String    @unique
   name        String
-  nickname    String    @unique
   phoneNumber String    @unique
-  avatar      String?
   role        Role      @default(USER)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime? @updatedAt
   deletedAt   DateTime?
 
   term     Term?
-  comments Comment[]
   posts    Post[]
+  comments Comment[]
   likes    Like[]
+  profile  Profile?
 }
 
 model Term {
@@ -43,6 +42,98 @@ model Term {
   deletedAt       DateTime?
 
   user User @relation(fields: [id], references: [id])
+}
+
+model Profile {
+  id        Int       @id
+  nickname  String    @unique
+  avatar    String?
+  status    String?
+  musicId   Int?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  deletedAt DateTime?
+
+  user        User         @relation(fields: [id], references: [id])
+  instruments Instrument[]
+  bestMusic   Music?       @relation(fields: [musicId], references: [id])
+  playlists   Playlist[]
+}
+
+model Playlist {
+  id        Int       @id @default(autoincrement())
+  name      String
+  profileId Int
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  deletedAt DateTime?
+
+  profile Profile @relation(fields: [profileId], references: [id])
+  musics  Music[]
+}
+
+model Instrument {
+  id               Int       @id @default(autoincrement())
+  name             String
+  classificationId Int
+  manufacturer     String
+  serialNumber     String
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime? @updatedAt
+  deletedAt        DateTime?
+
+  classification Classification @relation(fields: [classificationId], references: [id])
+  profiles       Profile[]
+}
+
+model Classification {
+  id       Int       @id @default(autoincrement())
+  name     String
+  createAt DateTime  @default(now())
+  updateAt DateTime? @updatedAt
+  deleteAt DateTime?
+
+  instruments Instrument[]
+}
+
+model Music {
+  id        Int       @id @default(autoincrement())
+  title     String
+  artistId  Int
+  albumId   Int
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  deletedAt DateTime?
+
+  artist    Artist     @relation(fields: [artistId], references: [id])
+  album     Album      @relation(fields: [albumId], references: [id])
+  playlists Playlist[]
+  profiles  Profile[]
+}
+
+model Album {
+  id          Int       @id @default(autoincrement())
+  title       String
+  description String?
+  artistId    Int
+  releasedAt  DateTime
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime? @updatedAt
+  deletedAt   DateTime?
+
+  artist Artist  @relation(fields: [artistId], references: [id])
+  musics Music[]
+}
+
+model Artist {
+  id        Int       @id @default(autoincrement())
+  name      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  deletedAt DateTime?
+
+  musics Music[]
+  albums Album[]
 }
 
 model Post {
@@ -86,9 +177,8 @@ model Comment {
   updatedAt DateTime? @updatedAt
   deletedAt DateTime?
 
-  user User @relation(fields: [userId], references: [id])
-  post Post @relation(fields: [postId], references: [id])
-
+  user       User      @relation(fields: [userId], references: [id])
+  post       Post      @relation(fields: [postId], references: [id])
   reply      Comment?  @relation("comment", fields: [commentId], references: [id])
   reComments Comment[] @relation("comment")
 }
