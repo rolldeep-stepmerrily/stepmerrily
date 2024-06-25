@@ -33,6 +33,22 @@ export class CommentsService {
     return this.commentsRepository.createComment(userId, createCommentDto);
   }
 
+  async likeComment(userId: number, commentId: number) {
+    const comment = await this.commentsRepository.findComment(commentId);
+
+    if (!comment) {
+      throw new NotFoundException('댓글을 찾을 수 없습니다.');
+    }
+
+    const like = comment.likes.find((like) => like.userId === userId);
+
+    if (like) {
+      return this.commentsRepository.unlikeComment(like.id);
+    }
+
+    return this.commentsRepository.likeComment(userId, commentId);
+  }
+
   async updateComment(userId: number, commentId: number, updateCommentDto: UpdateCommentDto) {
     const comment = await this.commentsRepository.findComment(commentId);
 

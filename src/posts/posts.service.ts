@@ -68,9 +68,9 @@ export class PostsService {
 
     if (like) {
       return this.postsRepository.unlikePost(like.id);
-    } else {
-      return this.postsRepository.likePost(userId, postId);
     }
+
+    return this.postsRepository.likePost(userId, postId);
   }
 
   async updatePost(

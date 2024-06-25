@@ -85,7 +85,6 @@ export class PostsRepository {
           content: true,
           images: true,
           views: true,
-          likes: { select: { id: true, userId: true }, where: { deletedAt: null } },
           comments: {
             select: {
               id: true,
@@ -100,13 +99,22 @@ export class PostsRepository {
                   content: true,
                   createdAt: true,
                   deletedAt: true,
+                  _count: {
+                    select: { likes: { where: { deletedAt: null } } },
+                  },
                 },
+              },
+              _count: {
+                select: { likes: { where: { deletedAt: null } } },
               },
             },
             where: { commentId: null },
             orderBy: { id: 'desc' },
           },
           createdAt: true,
+          _count: {
+            select: { likes: { where: { deletedAt: null } } },
+          },
         },
       });
     } catch (e) {

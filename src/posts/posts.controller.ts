@@ -62,7 +62,7 @@ export class PostsController {
   }
 
   @ApiOperation({ summary: '게시물 추천' })
-  @Patch(':id/like')
+  @Patch(':id')
   async likePost(@User('id') userId: number, @Param('id', ParsePositiveIntPipe) postId: number) {
     return await this.postsService.likePost(userId, postId);
   }

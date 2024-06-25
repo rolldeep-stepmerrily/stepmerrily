@@ -27,7 +27,34 @@ export class CommentsRepository {
     try {
       return await this.prismaService.comment.findUnique({
         where: { id: commentId, deletedAt: null },
-        select: { id: true, user: { select: { id: true } }, commentId: true },
+        select: { id: true, user: { select: { id: true } }, commentId: true, likes: true },
+      });
+    } catch (e) {
+      console.error(e);
+
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async unlikeComment(likeId: number) {
+    try {
+      return await this.prismaService.like.update({
+        where: { id: likeId },
+        data: { deletedAt: dayjs().toISOString() },
+        select: { id: true },
+      });
+    } catch (e) {
+      console.error(e);
+
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async likeComment(userId: number, commentId: number) {
+    try {
+      return await this.prismaService.like.create({
+        data: { userId, commentId },
+        select: { id: true },
       });
     } catch (e) {
       console.error(e);
