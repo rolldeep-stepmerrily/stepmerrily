@@ -52,7 +52,6 @@ const { REDIS_HOST, REDIS_PORT, REDIS_PASSWORD } = process.env;
     AuthModule,
     UsersModule,
     PostsModule,
-    CommentsModule,
   ],
   controllers: [AppController],
 })
