@@ -1,7 +1,7 @@
 import { ApiProperty, IntersectionType, PickType } from '@nestjs/swagger';
-
-import { Post } from './entities/post.entity';
 import { IsInt, Min } from 'class-validator';
+
+import { Post } from './entities';
 
 export class CreatePostDto extends PickType(Post, ['title', 'content', 'images'] as const) {}
 

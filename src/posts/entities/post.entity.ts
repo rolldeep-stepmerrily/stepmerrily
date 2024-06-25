@@ -1,15 +1,17 @@
 import { Post as PostModel } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDate, IsOptional, IsPositive, IsString } from 'class-validator';
+import { IsOptional, IsPositive, IsString } from 'class-validator';
 
-export class Post implements PostModel {
+import { Common } from 'src/common/entities';
+
+export class Post extends Common implements PostModel {
   @ApiProperty({ description: 'ID', minimum: 1 })
   @IsPositive()
   id: number;
 
   @ApiProperty({ description: '유저 ID', minimum: 1, required: true })
   @IsPositive()
-  userId: number;
+  profileId: number;
 
   @ApiProperty({ description: '제목', required: true, example: '제목' })
   @IsString()
@@ -27,20 +29,4 @@ export class Post implements PostModel {
   @ApiProperty({ description: '조회수', minimum: 0, default: 0 })
   @IsPositive()
   views: number;
-
-  @ApiProperty({ description: '좋아요', minimum: 0, default: 0 })
-  @IsPositive()
-  likes: number;
-
-  @ApiProperty({ description: 'created at' })
-  @IsDate()
-  createdAt: Date;
-
-  @ApiProperty({ description: 'updated at' })
-  @IsDate()
-  updatedAt: Date;
-
-  @ApiProperty({ description: 'deleted at' })
-  @IsDate()
-  deletedAt: Date | null;
 }

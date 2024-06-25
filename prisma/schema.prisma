@@ -24,11 +24,8 @@ model User {
   updatedAt   DateTime? @updatedAt
   deletedAt   DateTime?
 
-  term     Term?
-  posts    Post[]
-  comments Comment[]
-  likes    Like[]
-  profile  Profile?
+  term    Term?
+  profile Profile?
 }
 
 model Term {
@@ -58,6 +55,9 @@ model Profile {
   instruments Instrument[]
   bestMusic   Music?       @relation(fields: [musicId], references: [id])
   playlists   Playlist[]
+  posts       Post[]
+  likes       Like[]
+  comments    Comment[]
 }
 
 model Playlist {
@@ -135,7 +135,7 @@ model Artist {
 
 model Post {
   id        Int       @id @default(autoincrement())
-  userId    Int
+  profileId Int
   title     String
   content   String
   images    String?
@@ -144,28 +144,14 @@ model Post {
   updatedAt DateTime? @updatedAt
   deletedAt DateTime?
 
-  user     User      @relation(fields: [userId], references: [id])
+  profile  Profile   @relation(fields: [profileId], references: [id])
   comments Comment[]
   likes    Like[]
 }
 
-model Like {
-  id        Int       @id @default(autoincrement())
-  userId    Int
-  postId    Int?
-  commentId Int?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
-  deletedAt DateTime?
-
-  user    User     @relation(fields: [userId], references: [id])
-  post    Post?    @relation(fields: [postId], references: [id])
-  comment Comment? @relation(fields: [commentId], references: [id])
-}
-
 model Comment {
   id        Int       @id @default(autoincrement())
-  userId    Int
+  profileId Int
   postId    Int
   commentId Int?
   content   String
@@ -173,9 +159,23 @@ model Comment {
   updatedAt DateTime? @updatedAt
   deletedAt DateTime?
 
-  user       User      @relation(fields: [userId], references: [id])
+  profile    Profile   @relation(fields: [profileId], references: [id])
   post       Post      @relation(fields: [postId], references: [id])
   reply      Comment?  @relation("comment", fields: [commentId], references: [id])
   reComments Comment[] @relation("comment")
   likes      Like[]
+}
+
+model Like {
+  id        Int       @id @default(autoincrement())
+  profileId Int
+  postId    Int?
+  commentId Int?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  deletedAt DateTime?
+
+  profile Profile  @relation(fields: [profileId], references: [id])
+  post    Post?    @relation(fields: [postId], references: [id])
+  comment Comment? @relation(fields: [commentId], references: [id])
 }

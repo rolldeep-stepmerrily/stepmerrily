@@ -1,8 +1,10 @@
 import { Term as TermModel } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsDate, IsPositive } from 'class-validator';
+import { IsBoolean, IsPositive } from 'class-validator';
 
-export class Term implements TermModel {
+import { Common } from 'src/common/entities';
+
+export class Term extends Common implements TermModel {
   @ApiProperty({ description: 'ID', minimum: 1 })
   @IsPositive()
   id: number;
@@ -22,16 +24,4 @@ export class Term implements TermModel {
   @ApiProperty({ description: '(필수)만 14세 이상 여부', default: false })
   @IsBoolean()
   isAge: boolean;
-
-  @ApiProperty({ description: 'created at' })
-  @IsDate()
-  createdAt: Date;
-
-  @ApiProperty({ description: 'created at' })
-  @IsDate()
-  updatedAt: Date | null;
-
-  @ApiProperty({ description: 'created at' })
-  @IsDate()
-  deletedAt: Date | null;
 }

@@ -11,10 +11,7 @@ export class PostsRepository {
   async createPost(userId: number, createPostDto: CreatePostDto) {
     try {
       return await this.prismaService.post.create({
-        data: {
-          userId,
-          ...createPostDto,
-        },
+        data: { profileId: userId, ...createPostDto },
         select: { id: true },
       });
     } catch (e) {
@@ -64,7 +61,7 @@ export class PostsRepository {
     try {
       return await this.prismaService.post.findUnique({
         where: { id: postId, deletedAt: null },
-        select: { id: true, likes: { select: { id: true, userId: true }, where: { deletedAt: null } } },
+        select: { id: true, likes: { select: { id: true, profileId: true }, where: { deletedAt: null } } },
       });
     } catch (e) {
       console.error(e);
@@ -80,7 +77,7 @@ export class PostsRepository {
         data: { views: { increment: 1 } },
         select: {
           id: true,
-          user: { select: { id: true, avatar: true, nickname: true } },
+          profile: { select: { id: true, avatar: true, nickname: true } },
           title: true,
           content: true,
           images: true,
@@ -88,14 +85,14 @@ export class PostsRepository {
           comments: {
             select: {
               id: true,
-              user: { select: { avatar: true, nickname: true } },
+              profile: { select: { id: true, avatar: true, nickname: true } },
               content: true,
               createdAt: true,
               deletedAt: true,
               reComments: {
                 select: {
                   id: true,
-                  user: { select: { avatar: true, nickname: true } },
+                  profile: { select: { id: true, avatar: true, nickname: true } },
                   content: true,
                   createdAt: true,
                   deletedAt: true,
@@ -141,7 +138,7 @@ export class PostsRepository {
   async likePost(userId: number, postId: number) {
     try {
       return await this.prismaService.like.create({
-        data: { userId, postId },
+        data: { profileId: userId, postId },
         select: { id: true },
       });
     } catch (e) {

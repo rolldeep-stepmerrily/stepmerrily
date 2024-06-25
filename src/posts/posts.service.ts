@@ -64,7 +64,7 @@ export class PostsService {
       throw new NotFoundException('게시물을 찾을 수 없습니다.');
     }
 
-    const like = post.likes.find((like) => like.userId === userId);
+    const like = post.likes.find((like) => like.profileId === userId);
 
     if (like) {
       return this.postsRepository.unlikePost(like.id);
@@ -85,7 +85,7 @@ export class PostsService {
       throw new NotFoundException('게시물을 찾을 수 없습니다.');
     }
 
-    if (post.user.id !== userId) {
+    if (post.profile.id !== userId) {
       throw new BadRequestException('게시물 작성자만 수정할 수 있습니다.');
     }
 
@@ -111,7 +111,7 @@ export class PostsService {
       throw new NotFoundException('게시물을 찾을 수 없습니다.');
     }
 
-    if (post.user.id !== userId) {
+    if (post.profile.id !== userId) {
       throw new BadRequestException('게시물 작성자만 삭제할 수 있습니다.');
     }
 

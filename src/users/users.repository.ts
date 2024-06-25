@@ -37,7 +37,7 @@ export class UsersRepository {
 
   async findUserByNickname(nickname: string) {
     try {
-      return await this.prismaService.user.findUnique({
+      return await this.prismaService.profile.findUnique({
         where: { nickname },
         select: { id: true },
       });
@@ -74,7 +74,7 @@ export class UsersRepository {
     }
   }
 
-  async createUser({ username, email, name, nickname, phoneNumber, password, terms }: CreateUserDto) {
+  async createUser({ username, email, name, phoneNumber, password, terms, nickname }: CreateUserDto) {
     try {
       const { isService, isPrivacy, isPrivacyOption, isAge } = terms;
 
@@ -83,11 +83,13 @@ export class UsersRepository {
           username,
           email,
           name,
-          nickname,
           phoneNumber,
           password,
           term: {
             create: { isService, isPrivacy, isPrivacyOption, isAge },
+          },
+          profile: {
+            create: { nickname },
           },
         },
         select: { id: true },
@@ -146,12 +148,12 @@ export class UsersRepository {
             username: faker.internet.userName().substring(0, 16),
             email: faker.internet.email(),
             name: faker.person.lastName() + faker.person.firstName(),
-            nickname: faker.music.songName().replaceAll(' ', '').substring(0, 6),
             phoneNumber: faker.phone.number().replaceAll('-', ''),
             password: faker.internet.password({ length: 32 }),
             term: {
               create: { isAge: true, isPrivacy: true, isService: true, isPrivacyOption: faker.datatype.boolean() },
             },
+            profile: { create: { nickname: faker.music.songName().replaceAll(' ', '').substring(0, 6) } },
           },
           include: { term: true },
         });

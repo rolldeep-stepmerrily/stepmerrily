@@ -40,7 +40,7 @@ export class CommentsService {
       throw new NotFoundException('댓글을 찾을 수 없습니다.');
     }
 
-    const like = comment.likes.find((like) => like.userId === userId);
+    const like = comment.likes.find((like) => like.profileId === userId);
 
     if (like) {
       return this.commentsRepository.unlikeComment(like.id);
@@ -56,7 +56,7 @@ export class CommentsService {
       throw new NotFoundException('댓글을 찾을 수 없습니다.');
     }
 
-    if (comment.user.id !== userId) {
+    if (comment.profileId !== userId) {
       throw new BadRequestException('댓글 작성자만 수정할 수 있습니다.');
     }
 
@@ -70,7 +70,7 @@ export class CommentsService {
       throw new NotFoundException('댓글을 찾을 수 없습니다.');
     }
 
-    if (comment.user.id !== userId) {
+    if (comment.profileId !== userId) {
       throw new BadRequestException('댓글 작성자만 삭제할 수 있습니다.');
     }
 

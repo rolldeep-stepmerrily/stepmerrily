@@ -1,15 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Comment as CommentModel } from '@prisma/client';
-import { IsDate, IsOptional, IsPositive, IsString } from 'class-validator';
+import { IsOptional, IsPositive, IsString } from 'class-validator';
 
-export class Comment implements CommentModel {
+import { Common } from 'src/common/entities';
+
+export class Comment extends Common implements CommentModel {
   @ApiProperty({ description: 'ID', minimum: 1 })
   @IsPositive()
   id: number;
 
   @ApiProperty({ description: '유저 ID', minimum: 1, required: true })
   @IsPositive()
-  userId: number;
+  profileId: number;
 
   @ApiProperty({ description: '게시물 ID', minimum: 1, required: true, example: 1 })
   @IsPositive()
@@ -23,16 +25,4 @@ export class Comment implements CommentModel {
   @ApiProperty({ description: '내용', required: true, example: '내용' })
   @IsString()
   content: string;
-
-  @ApiProperty({ description: 'created at' })
-  @IsDate()
-  createdAt: Date;
-
-  @ApiProperty({ description: 'updated at' })
-  @IsDate()
-  updatedAt: Date;
-
-  @ApiProperty({ description: 'deleted at' })
-  @IsDate()
-  deletedAt: Date | null;
 }

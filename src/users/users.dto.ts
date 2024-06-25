@@ -1,14 +1,13 @@
-import { ApiProperty, OmitType, PickType } from '@nestjs/swagger';
+import { ApiProperty, IntersectionType, OmitType, PickType } from '@nestjs/swagger';
 import { IsObject, IsString, Length } from 'class-validator';
 
-import { User } from './entities/user.entity';
-import { Term } from './entities/term.entity';
+import { Profile, Term, User } from './entities';
 
 export class CheckUsernameForSignUpDto extends PickType(User, ['username'] as const) {}
 
 export class CheckEmailForSignUpDto extends PickType(User, ['email'] as const) {}
 
-export class CheckNicknameForSignUpDto extends PickType(User, ['nickname'] as const) {}
+export class CheckNicknameForSignUpDto extends PickType(Profile, ['nickname'] as const) {}
 
 export class CheckPhoneNumberForSignUpDto extends PickType(User, ['phoneNumber'] as const) {}
 
@@ -23,14 +22,10 @@ export class VerifyEmailDto extends PickType(User, ['email'] as const) {
 
 export class CreateTermsDto extends OmitType(Term, ['id', 'createdAt', 'updatedAt', 'deletedAt'] as const) {}
 
-export class CreateUserDto extends PickType(User, [
-  'username',
-  'password',
-  'name',
-  'nickname',
-  'email',
-  'phoneNumber',
-] as const) {
+export class CreateUserDto extends IntersectionType(
+  PickType(User, ['username', 'password', 'name', 'email', 'phoneNumber'] as const),
+  PickType(Profile, ['nickname'] as const),
+) {
   @ApiProperty({ required: true, description: '약관 동의' })
   @IsObject()
   terms: CreateTermsDto;

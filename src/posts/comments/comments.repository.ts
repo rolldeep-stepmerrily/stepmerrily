@@ -12,7 +12,7 @@ export class CommentsRepository {
     try {
       return await this.prismaService.comment.create({
         data: {
-          userId,
+          profileId: userId,
           ...createCommentDto,
         },
       });
@@ -27,7 +27,7 @@ export class CommentsRepository {
     try {
       return await this.prismaService.comment.findUnique({
         where: { id: commentId, deletedAt: null },
-        select: { id: true, user: { select: { id: true } }, commentId: true, likes: true },
+        select: { id: true, profileId: true, commentId: true, likes: true },
       });
     } catch (e) {
       console.error(e);
@@ -53,7 +53,7 @@ export class CommentsRepository {
   async likeComment(userId: number, commentId: number) {
     try {
       return await this.prismaService.like.create({
-        data: { userId, commentId },
+        data: { profileId: userId, commentId },
         select: { id: true },
       });
     } catch (e) {
