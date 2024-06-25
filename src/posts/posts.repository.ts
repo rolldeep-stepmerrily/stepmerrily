@@ -80,7 +80,7 @@ export class PostsRepository {
         data: { views: { increment: 1 } },
         select: {
           id: true,
-          user: { select: { avatar: true, nickname: true } },
+          user: { select: { id: true, avatar: true, nickname: true } },
           title: true,
           content: true,
           images: true,
@@ -92,16 +92,18 @@ export class PostsRepository {
               user: { select: { avatar: true, nickname: true } },
               content: true,
               createdAt: true,
+              deletedAt: true,
               reComments: {
                 select: {
                   id: true,
                   user: { select: { avatar: true, nickname: true } },
                   content: true,
                   createdAt: true,
+                  deletedAt: true,
                 },
               },
             },
-            where: { deletedAt: null, commentId: null },
+            where: { commentId: null },
             orderBy: { id: 'desc' },
           },
           createdAt: true,
@@ -133,19 +135,6 @@ export class PostsRepository {
       return await this.prismaService.like.create({
         data: { userId, postId },
         select: { id: true },
-      });
-    } catch (e) {
-      console.error(e);
-
-      throw new InternalServerErrorException();
-    }
-  }
-
-  async findPostByUserPostId(userId: number, postId: number) {
-    try {
-      return await this.prismaService.post.findUnique({
-        where: { id: postId, userId, deletedAt: null },
-        select: { id: true, images: true },
       });
     } catch (e) {
       console.error(e);

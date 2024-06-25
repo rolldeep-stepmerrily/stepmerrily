@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 
 import { PostsRepository } from './posts.repository';
 import { AwsService } from 'src/aws/aws.service';
@@ -42,11 +42,19 @@ export class PostsService {
       throw new NotFoundException('게시물을 찾을 수 없습니다.');
     }
 
+    const comments = post.comments.map((comment) => {
+      if (comment.deletedAt) {
+        comment.content = '삭제된 댓글입니다.';
+      }
+
+      return comment;
+    });
+
     const findImages = post.images ? await this.awsService.findImages(post.images) : null;
 
     const images = findImages?.map((image) => `${AWS_CLOUDFRONT_DOMAIN}/${image.Key}`) ?? null;
 
-    return { ...post, images };
+    return { post: { ...post, comments }, images };
   }
 
   async likePost(userId: number, postId: number) {
@@ -71,10 +79,14 @@ export class PostsService {
     updatePostDto: UpdatePostDto,
     updatePostImagesDto: UpdatePostImagesDto,
   ) {
-    const post = await this.postsRepository.findPostByUserPostId(userId, postId);
+    const post = await this.postsRepository.findPost(postId);
 
     if (!post) {
       throw new NotFoundException('게시물을 찾을 수 없습니다.');
+    }
+
+    if (post.user.id !== userId) {
+      throw new BadRequestException('게시물 작성자만 수정할 수 있습니다.');
     }
 
     if (updatePostImagesDto.length > 0) {
@@ -93,10 +105,14 @@ export class PostsService {
   }
 
   async deletePost(userId: number, postId: number) {
-    const post = await this.postsRepository.findPostByUserPostId(userId, postId);
+    const post = await this.postsRepository.findPost(postId);
 
     if (!post) {
       throw new NotFoundException('게시물을 찾을 수 없습니다.');
+    }
+
+    if (post.user.id !== userId) {
+      throw new BadRequestException('게시물 작성자만 삭제할 수 있습니다.');
     }
 
     if (post.images) {

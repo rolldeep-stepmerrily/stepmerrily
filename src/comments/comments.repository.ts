@@ -1,7 +1,8 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateCommentDto } from './comments.dto';
+import { CreateCommentDto, UpdateCommentDto } from './comments.dto';
+import dayjs from 'dayjs';
 
 @Injectable()
 export class CommentsRepository {
@@ -26,7 +27,33 @@ export class CommentsRepository {
     try {
       return await this.prismaService.comment.findUnique({
         where: { id: commentId, deletedAt: null },
-        select: { id: true, commentId: true },
+        select: { id: true, user: { select: { id: true } }, commentId: true },
+      });
+    } catch (e) {
+      console.error(e);
+
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async updateComment(commentId: number, { content }: UpdateCommentDto) {
+    try {
+      return await this.prismaService.comment.update({
+        where: { id: commentId },
+        data: { content },
+      });
+    } catch (e) {
+      console.error(e);
+
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async deleteComment(commentId: number) {
+    try {
+      return await this.prismaService.comment.update({
+        where: { id: commentId },
+        data: { deletedAt: dayjs().toISOString() },
       });
     } catch (e) {
       console.error(e);

@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 
 import { CommentsRepository } from './comments.repository';
 import { PostsRepository } from 'src/posts/posts.repository';
-import { CreateCommentDto } from './comments.dto';
+import { CreateCommentDto, UpdateCommentDto } from './comments.dto';
 
 @Injectable()
 export class CommentsService {
@@ -31,5 +31,33 @@ export class CommentsService {
     }
 
     return this.commentsRepository.createComment(userId, createCommentDto);
+  }
+
+  async updateComment(userId: number, commentId: number, updateCommentDto: UpdateCommentDto) {
+    const comment = await this.commentsRepository.findComment(commentId);
+
+    if (!comment) {
+      throw new NotFoundException('댓글을 찾을 수 없습니다.');
+    }
+
+    if (comment.user.id !== userId) {
+      throw new BadRequestException('댓글 작성자만 수정할 수 있습니다.');
+    }
+
+    return this.commentsRepository.updateComment(commentId, updateCommentDto);
+  }
+
+  async deleteComment(userId: number, commentId: number) {
+    const comment = await this.commentsRepository.findComment(commentId);
+
+    if (!comment) {
+      throw new NotFoundException('댓글을 찾을 수 없습니다.');
+    }
+
+    if (comment.user.id !== userId) {
+      throw new BadRequestException('댓글 작성자만 삭제할 수 있습니다.');
+    }
+
+    return this.commentsRepository.deleteComment(commentId);
   }
 }
