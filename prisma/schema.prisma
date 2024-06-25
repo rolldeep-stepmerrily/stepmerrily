@@ -99,13 +99,11 @@ model Classification {
 model Music {
   id        Int       @id @default(autoincrement())
   title     String
-  artistId  Int
   albumId   Int
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
   deletedAt DateTime?
 
-  artist    Artist     @relation(fields: [artistId], references: [id])
   album     Album      @relation(fields: [albumId], references: [id])
   playlists Playlist[]
   profiles  Profile[]
@@ -132,7 +130,6 @@ model Artist {
   updatedAt DateTime? @updatedAt
   deletedAt DateTime?
 
-  musics Music[]
   albums Album[]
 }
 
@@ -143,13 +140,13 @@ model Post {
   content   String
   images    String?
   views     Int       @default(0)
-  likes     Like[]
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
   deletedAt DateTime?
 
   user     User      @relation(fields: [userId], references: [id])
   comments Comment[]
+  likes    Like[]
 }
 
 model Like {
@@ -172,7 +169,6 @@ model Comment {
   postId    Int
   commentId Int?
   content   String
-  likes     Like[]
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
   deletedAt DateTime?
@@ -181,4 +177,5 @@ model Comment {
   post       Post      @relation(fields: [postId], references: [id])
   reply      Comment?  @relation("comment", fields: [commentId], references: [id])
   reComments Comment[] @relation("comment")
+  likes      Like[]
 }
