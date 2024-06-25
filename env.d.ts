@@ -15,5 +15,6 @@ declare namespace NodeJS {
     REDIS_HOST: string;
     REDIS_PASSWORD: string;
     REDIS_PORT: number;
+    GIT_ACCEESS_TOKEN: string;
   }
 }
