@@ -1,7 +1,8 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateInstrumentDto } from './instruments.dto';
+import { CreateInstrumentDto, UpdateInstrumentDto } from './instruments.dto';
+import dayjs from 'dayjs';
 
 @Injectable()
 export class InstrumentsRepository {
@@ -49,6 +50,33 @@ export class InstrumentsRepository {
           manufacturer: { deletedAt: null },
         },
         select: { id: true },
+      });
+    } catch (e) {
+      console.error(e);
+
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async updateInstrument(instrumentId: number, updateInstrumentDto: UpdateInstrumentDto) {
+    try {
+      return await this.prismaService.instrument.update({
+        where: { id: instrumentId },
+        data: updateInstrumentDto,
+        select: { id: true },
+      });
+    } catch (e) {
+      console.error(e);
+
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async deleteInstrument(instrumentId: number) {
+    try {
+      return await this.prismaService.instrument.update({
+        where: { id: instrumentId },
+        data: { deletedAt: dayjs().toISOString() },
       });
     } catch (e) {
       console.error(e);

@@ -30,7 +30,7 @@ export class CommentsController {
   @Put(':id')
   async updateComment(
     @User('id') userId: number,
-    @Param('id') commentId: number,
+    @Param('id', ParsePositiveIntPipe) commentId: number,
     @Body() updateCommentDto: UpdateCommentDto,
   ) {
     await this.commentsService.updateComment(userId, commentId, updateCommentDto);

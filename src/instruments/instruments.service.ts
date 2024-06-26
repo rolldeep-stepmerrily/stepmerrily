@@ -43,4 +43,44 @@ export class InstrumentsService {
   async findInstrument(instrumentId: number) {
     return await this.instrumentsRepository.findInstrument(instrumentId);
   }
+
+  async updateInstrument(
+    instrumentId: number,
+    { name, serialNumber, minorClassificationId, manufacturerId }: CreateInstrumentDto,
+  ) {
+    const instrument = await this.findInstrument(instrumentId);
+
+    if (!instrument) {
+      throw new BadRequestException('악기가 존재하지 않습니다.');
+    }
+
+    const minorClassification = await this.classificationService.findMinorClassification(minorClassificationId);
+
+    if (!minorClassification) {
+      throw new BadRequestException('소분류가 존재하지 않습니다.');
+    }
+
+    const manufacturer = await this.manufacturerService.findManufacturer(manufacturerId);
+
+    if (!manufacturer) {
+      throw new BadRequestException('제조사가 존재하지 않습니다.');
+    }
+
+    return await this.instrumentsRepository.updateInstrument(instrumentId, {
+      name,
+      serialNumber,
+      minorClassificationId,
+      manufacturerId,
+    });
+  }
+
+  async deleteInstrument(instrumentId: number) {
+    const instrument = await this.findInstrument(instrumentId);
+
+    if (!instrument) {
+      throw new BadRequestException('악기가 존재하지 않습니다.');
+    }
+
+    return await this.instrumentsRepository.deleteInstrument(instrumentId);
+  }
 }

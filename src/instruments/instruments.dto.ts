@@ -8,3 +8,10 @@ export class CreateInstrumentDto extends PickType(Instrument, [
   'minorClassificationId',
   'manufacturerId',
 ] as const) {}
+
+export class UpdateInstrumentDto extends PickType(Instrument, [
+  'name',
+  'serialNumber',
+  'minorClassificationId',
+  'manufacturerId',
+] as const) {}

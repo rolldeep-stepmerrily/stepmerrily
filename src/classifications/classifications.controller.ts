@@ -9,6 +9,7 @@ import {
   UpdateMajorClassificationDto,
   UpdateMinorClassificationDto,
 } from './classifications.dto';
+import { ParsePositiveIntPipe } from 'src/common/pipes';
 
 @ApiTags('Classifications ⚠️')
 @ApiBearerAuth('accessToken')
@@ -32,7 +33,7 @@ export class ClassificationsController {
   @ApiOperation({ summary: '악기 대분류 수정' })
   @Put('majors/:id')
   async updateMajorClassification(
-    @Param('id') majorClassificationId: number,
+    @Param('id', ParsePositiveIntPipe) majorClassificationId: number,
     @Body() updateMajorClassificationDto: UpdateMajorClassificationDto,
   ) {
     await this.classificationsService.updateMajorClassification(majorClassificationId, updateMajorClassificationDto);
@@ -40,7 +41,7 @@ export class ClassificationsController {
 
   @ApiOperation({ summary: '악기 대분류 삭제' })
   @Delete('majors/:id')
-  async deleteMajorClassification(@Param('id') classificationId: number) {
+  async deleteMajorClassification(@Param('id', ParsePositiveIntPipe) classificationId: number) {
     await this.classificationsService.deleteMajorClassification(classificationId);
   }
 
@@ -59,7 +60,7 @@ export class ClassificationsController {
   @ApiOperation({ summary: '악기 소분류 수정' })
   @Put('minors/:id')
   async updateMinorClassification(
-    @Param('id') minorClassificationId: number,
+    @Param('id', ParsePositiveIntPipe) minorClassificationId: number,
     @Body() updateMinorClassificationDto: UpdateMinorClassificationDto,
   ) {
     await this.classificationsService.updateMinorClassification(minorClassificationId, updateMinorClassificationDto);
@@ -67,7 +68,7 @@ export class ClassificationsController {
 
   @ApiOperation({ summary: '악기 소분류 삭제' })
   @Delete('minors/:id')
-  async deleteMinorClassification(@Param('id') classificationId: number) {
+  async deleteMinorClassification(@Param('id', ParsePositiveIntPipe) classificationId: number) {
     await this.classificationsService.deleteMinorClassification(classificationId);
   }
 }
