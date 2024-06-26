@@ -1,10 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Classification as ClassificationModel } from '@prisma/client';
+import { MajorClassification as MajorClassificationModel } from '@prisma/client';
 import { IsPositive, IsString } from 'class-validator';
 
 import { Common } from 'src/common/entities';
 
-export class Classification extends Common implements ClassificationModel {
+export class MajorClassification extends Common implements MajorClassificationModel {
   @ApiProperty({ description: '분류 ID', minimum: 1 })
   @IsPositive()
   id: number;

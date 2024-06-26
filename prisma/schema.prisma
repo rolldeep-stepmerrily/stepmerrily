@@ -73,27 +73,39 @@ model Playlist {
 }
 
 model Instrument {
-  id               Int       @id @default(autoincrement())
-  name             String
-  classificationId Int
-  manufacturer     String
-  serialNumber     String
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime? @updatedAt
-  deletedAt        DateTime?
+  id                    Int       @id @default(autoincrement())
+  name                  String
+  minorClassificationId Int
+  manufacturer          String
+  serialNumber          String
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime? @updatedAt
+  deletedAt             DateTime?
 
-  classification Classification @relation(fields: [classificationId], references: [id])
-  profiles       Profile[]
+  profiles            Profile[]
+  minorClassification MinorClassification @relation(fields: [minorClassificationId], references: [id])
 }
 
-model Classification {
+model MajorClassification {
   id        Int       @id @default(autoincrement())
   name      String    @unique
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
   deletedAt DateTime?
 
-  instruments Instrument[]
+  minorClassification MinorClassification[]
+}
+
+model MinorClassification {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  majorId   Int
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  deletedAt DateTime?
+
+  majorClassification MajorClassification @relation(fields: [majorId], references: [id])
+  instruments         Instrument[]
 }
 
 model Music {

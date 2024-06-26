@@ -2,15 +2,15 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import dayjs from 'dayjs';
 
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateClassificationDto, UpdateClassificationDto } from './classifications.dto';
+import { CreateMajorClassificationDto, UpdateMajorClassificationDto } from './classifications.dto';
 
 @Injectable()
 export class ClassificationsRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async createClassification({ name }: CreateClassificationDto) {
+  async createMajorClassification({ name }: CreateMajorClassificationDto) {
     try {
-      return await this.prismaService.classification.create({ data: { name } });
+      return await this.prismaService.majorClassification.create({ data: { name } });
     } catch (e) {
       console.error(e);
 
@@ -18,9 +18,13 @@ export class ClassificationsRepository {
     }
   }
 
-  async findClassifications() {
+  async findMajorClassifications() {
     try {
-      return await this.prismaService.classification.findMany({ where: { deletedAt: null } });
+      return await this.prismaService.majorClassification.findMany({
+        where: { deletedAt: null },
+        orderBy: { id: 'asc' },
+        select: { id: true, name: true },
+      });
     } catch (e) {
       console.error(e);
 
@@ -28,9 +32,11 @@ export class ClassificationsRepository {
     }
   }
 
-  async findClassification(classificationId: number) {
+  async findMajorClassification(majorClassificationId: number) {
     try {
-      return await this.prismaService.classification.findUnique({ where: { id: classificationId, deletedAt: null } });
+      return await this.prismaService.majorClassification.findUnique({
+        where: { id: majorClassificationId, deletedAt: null },
+      });
     } catch (e) {
       console.error(e);
 
@@ -38,9 +44,12 @@ export class ClassificationsRepository {
     }
   }
 
-  async updateClassification(classificationId: number, { name }: UpdateClassificationDto) {
+  async updateMajorClassification(majorClassificationId: number, { name }: UpdateMajorClassificationDto) {
     try {
-      return await this.prismaService.classification.update({ where: { id: classificationId }, data: { name } });
+      return await this.prismaService.majorClassification.update({
+        where: { id: majorClassificationId },
+        data: { name },
+      });
     } catch (e) {
       console.error(e);
 
@@ -48,10 +57,10 @@ export class ClassificationsRepository {
     }
   }
 
-  async deleteClassification(classificationId: number) {
+  async deleteMajorClassification(majorClassificationId: number) {
     try {
-      return await this.prismaService.classification.update({
-        where: { id: classificationId },
+      return await this.prismaService.majorClassification.update({
+        where: { id: majorClassificationId },
         data: { deletedAt: dayjs().toISOString() },
       });
     } catch (e) {

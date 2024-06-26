@@ -1,1 +1,1 @@
-export { Classification } from './classification.entity';
+export { MajorClassification } from './major-classification.entity';
