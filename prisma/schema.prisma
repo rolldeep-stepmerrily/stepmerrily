@@ -53,7 +53,7 @@ model Profile {
 
   user        User         @relation(fields: [id], references: [id])
   instruments Instrument[]
-  bestMusic   Music?       @relation(fields: [musicId], references: [id])
+  music       Music?       @relation(fields: [musicId], references: [id])
   playlists   Playlist[]
   posts       Post[]
   likes       Like[]

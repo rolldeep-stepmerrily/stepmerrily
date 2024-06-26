@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
 
 import { PrismaModule } from 'src/prisma/prisma.module';
+import { AwsModule } from 'src/aws/aws.module';
 import { ProfilesController } from './profiles.controller';
 import { ProfilesService } from './profiles.service';
 import { ProfilesRepository } from './profiles.repository';
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModule, AwsModule],
   controllers: [ProfilesController],
   providers: [ProfilesService, ProfilesRepository],
 })
