@@ -23,8 +23,7 @@ export class Profile extends Common implements ProfileModel {
   @IsString()
   status: string | null;
 
-  @ApiProperty({ description: '가장 좋아하는 음악 ID', required: false })
-  @IsOptional()
+  @ApiProperty({ description: '가장 좋아하는 음악 ID', required: true })
   @IsPositive()
-  musicId: number | null;
+  musicId: number;
 }

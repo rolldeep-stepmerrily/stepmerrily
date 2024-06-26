@@ -15,3 +15,5 @@ export class UpdateAvatarDto extends Array<Express.Multer.File> {
   })
   avatar: Express.Multer.File;
 }
+
+export class UpdateMusicDto extends PickType(Profile, ['musicId'] as const) {}

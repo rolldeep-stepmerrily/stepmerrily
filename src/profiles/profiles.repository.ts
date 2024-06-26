@@ -34,12 +34,12 @@ export class ProfilesRepository {
             select: {
               id: true,
               title: true,
+              duration: true,
               album: {
                 select: {
                   id: true,
-                  releasedAt: true,
                   title: true,
-                  description: true,
+                  cover: true,
                   artist: { select: { id: true, name: true } },
                 },
               },
@@ -105,6 +105,19 @@ export class ProfilesRepository {
     } catch (e) {
       console.error(e);
 
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async updateMusic(profileId: number, musicId: number) {
+    try {
+      return await this.prismaService.profile.update({
+        where: { id: profileId },
+        data: { musicId },
+        select: { id: true },
+      });
+    } catch (e) {
+      console.error(e);
       throw new InternalServerErrorException();
     }
   }

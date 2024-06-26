@@ -1,11 +1,12 @@
-import { Body, Controller, Get, Param, Patch, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Query, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { FilesInterceptor } from '@nestjs/platform-express';
 
 import { ProfilesService } from './profiles.service';
+import { MusicsService } from 'src/musics/musics.service';
 import { User } from 'src/auth/decorators';
-import { UpdateAvatarDto, UpdateNicknameDto, UpdateStatusDto } from './profiles.dto';
+import { UpdateAvatarDto, UpdateMusicDto, UpdateNicknameDto, UpdateStatusDto } from './profiles.dto';
 import { ParsePositiveIntPipe } from 'src/common/pipes';
 
 @ApiTags('Profiles')
@@ -13,7 +14,16 @@ import { ParsePositiveIntPipe } from 'src/common/pipes';
 @UseGuards(AuthGuard('access'))
 @Controller('profiles')
 export class ProfilesController {
-  constructor(private readonly profilesService: ProfilesService) {}
+  constructor(
+    private readonly profilesService: ProfilesService,
+    private readonly musicService: MusicsService,
+  ) {}
+
+  @ApiOperation({ summary: '프로필 뮤직 검색' })
+  @Get('musics')
+  async searchMusics(@Query('q') query: string) {
+    return await this.musicService.searchMusics(query);
+  }
 
   @ApiOperation({ summary: '프로필 조회' })
   @Get(':id')
@@ -40,5 +50,11 @@ export class ProfilesController {
   @Patch('status')
   async updateStatus(@User('id') profileId: number, @Body() updateStatusDto: UpdateStatusDto) {
     await this.profilesService.updateStatus(profileId, updateStatusDto);
+  }
+
+  @ApiOperation({ summary: '프로필 뮤직 변경' })
+  @Patch('music')
+  async updateMusic(@User('id') profileId: number, @Body() updateMusicDto: UpdateMusicDto) {
+    await this.profilesService.updateMusic(profileId, updateMusicDto);
   }
 }

@@ -1,8 +1,12 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration';
+dayjs.extend(duration);
 
 import { ProfilesRepository } from './profiles.repository';
-import { UpdateAvatarDto, UpdateNicknameDto, UpdateStatusDto } from './profiles.dto';
+import { UpdateAvatarDto, UpdateMusicDto, UpdateNicknameDto, UpdateStatusDto } from './profiles.dto';
 import { AwsService } from 'src/aws/aws.service';
+import { MusicsService } from 'src/musics/musics.service';
 
 const { AWS_CLOUDFRONT_DOMAIN } = process.env;
 
@@ -11,6 +15,7 @@ export class ProfilesService {
   constructor(
     private readonly profilesRepository: ProfilesRepository,
     private readonly awsService: AwsService,
+    private readonly musicService: MusicsService,
   ) {}
 
   async findProfile(profileId: number) {
@@ -28,7 +33,14 @@ export class ProfilesService {
 
     const avatar = avatars ? `${AWS_CLOUDFRONT_DOMAIN}/${avatars[avatars.length - 1].Key}` : null;
 
-    return { ...profile, avatar };
+    const formattedMusic = profile.music
+      ? {
+          ...profile.music,
+          duration: dayjs.duration(profile.music.duration, 'seconds').format('HH:mm:ss'),
+        }
+      : null;
+
+    return { ...profile, avatar, music: formattedMusic };
   }
 
   async updateNickname(profileId: number, { nickname }: UpdateNicknameDto) {
@@ -73,5 +85,21 @@ export class ProfilesService {
     await this.awsService.uploadImages(updateAvatarDto, uploadPath);
 
     return await this.profilesRepository.updateAvatar(profileId, uploadPath);
+  }
+
+  async updateMusic(profileId: number, { musicId }: UpdateMusicDto) {
+    const profile = await this.findProfile(profileId);
+
+    if (!profile) {
+      throw new BadRequestException('유저를 찾을 수 없습니다.');
+    }
+
+    const music = await this.musicService.findMusic(musicId);
+
+    if (!music) {
+      throw new BadRequestException('음악을 찾을 수 없습니다.');
+    }
+
+    return await this.profilesRepository.updateMusic(profileId, musicId);
   }
 }

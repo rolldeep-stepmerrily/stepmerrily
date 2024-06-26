@@ -9,5 +9,6 @@ import { MusicsRepository } from './musics.repository';
   imports: [PrismaModule],
   controllers: [MusicsController],
   providers: [MusicsService, MusicsRepository],
+  exports: [MusicsService],
 })
 export class MusicsModule {}

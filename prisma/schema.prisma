@@ -121,9 +121,10 @@ model MinorClassification {
 
 model Music {
   id           Int       @id @default(autoincrement())
-  title        String
-  isLeadSingle Boolean   @default(false)
   albumId      Int
+  title        String
+  duration     Int       @default(0)
+  isLeadSingle Boolean   @default(false)
   createdAt    DateTime  @default(now())
   updatedAt    DateTime? @updatedAt
   deletedAt    DateTime?
@@ -138,7 +139,8 @@ model Album {
   artistId    Int
   title       String
   description String?
-  runtime     Int
+  cover       String?
+  duration    Int       @default(0)
   releasedAt  DateTime
   createdAt   DateTime  @default(now())
   updatedAt   DateTime? @updatedAt
