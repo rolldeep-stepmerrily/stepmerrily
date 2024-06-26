@@ -1,7 +1,8 @@
 import { ApiProperty, IntersectionType, OmitType, PickType } from '@nestjs/swagger';
 import { IsObject, IsString, Length } from 'class-validator';
 
-import { Profile, Term, User } from './entities';
+import { Term, User } from './entities';
+import { Profile } from '../profiles/entities';
 
 export class CheckUsernameForSignUpDto extends PickType(User, ['username'] as const) {}
 
