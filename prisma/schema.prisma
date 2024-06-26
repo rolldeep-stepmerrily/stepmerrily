@@ -120,12 +120,13 @@ model MinorClassification {
 }
 
 model Music {
-  id        Int       @id @default(autoincrement())
-  title     String
-  albumId   Int
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
-  deletedAt DateTime?
+  id           Int       @id @default(autoincrement())
+  title        String
+  isLeadSingle Boolean   @default(false)
+  albumId      Int
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime? @updatedAt
+  deletedAt    DateTime?
 
   album     Album      @relation(fields: [albumId], references: [id])
   playlists Playlist[]
@@ -134,9 +135,10 @@ model Music {
 
 model Album {
   id          Int       @id @default(autoincrement())
+  artistId    Int
   title       String
   description String?
-  artistId    Int
+  runtime     Int
   releasedAt  DateTime
   createdAt   DateTime  @default(now())
   updatedAt   DateTime? @updatedAt
