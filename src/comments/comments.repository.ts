@@ -15,6 +15,7 @@ export class CommentsRepository {
           profileId: userId,
           ...createCommentDto,
         },
+        select: { id: true },
       });
     } catch (e) {
       console.error(e);
@@ -68,6 +69,7 @@ export class CommentsRepository {
       return await this.prismaService.comment.update({
         where: { id: commentId },
         data: { content },
+        select: { id: true },
       });
     } catch (e) {
       console.error(e);
@@ -81,6 +83,7 @@ export class CommentsRepository {
       return await this.prismaService.comment.update({
         where: { id: commentId },
         data: { deletedAt: dayjs().toISOString() },
+        select: { id: true },
       });
     } catch (e) {
       console.error(e);

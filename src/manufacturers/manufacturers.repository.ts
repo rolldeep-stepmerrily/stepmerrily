@@ -66,6 +66,7 @@ export class ManufacturersRepository {
       return await this.prismaService.manufacturer.update({
         where: { id: manufacturerId },
         data: { name },
+        select: { id: true },
       });
     } catch (e) {
       console.error(e);
@@ -79,6 +80,7 @@ export class ManufacturersRepository {
       return await this.prismaService.manufacturer.update({
         where: { id: manufacturerId },
         data: { deletedAt: dayjs().toISOString() },
+        select: { id: true },
       });
     } catch (e) {
       console.error(e);

@@ -43,7 +43,7 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('stepmerrily API Docs')
-    .setDescription('stepmerrily API Description')
+    .setDescription('⚠️: ADMIN 계정으로 로그인해주세요.')
     .setVersion('1.0')
     .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }, 'accessToken')
     .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }, 'refreshToken')

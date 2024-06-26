@@ -12,6 +12,7 @@ export class InstrumentsRepository {
     try {
       return await this.prismaService.instrument.create({
         data: createInstrumentDto,
+        select: { id: true },
       });
     } catch (e) {
       console.error(e);
@@ -95,6 +96,7 @@ export class InstrumentsRepository {
       return await this.prismaService.instrument.update({
         where: { id: instrumentId },
         data: { deletedAt: dayjs().toISOString() },
+        select: { id: true },
       });
     } catch (e) {
       console.error(e);

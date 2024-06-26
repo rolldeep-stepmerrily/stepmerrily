@@ -153,6 +153,7 @@ export class PostsRepository {
       return await this.prismaService.post.update({
         where: { id: postId, deletedAt: null },
         data: updatePostDto,
+        select: { id: true },
       });
     } catch (e) {
       console.error(e);
@@ -166,6 +167,7 @@ export class PostsRepository {
       return await this.prismaService.post.update({
         where: { id: postId, deletedAt: null },
         data: { deletedAt: dayjs().toISOString() },
+        select: { id: true },
       });
     } catch (e) {
       console.error(e);

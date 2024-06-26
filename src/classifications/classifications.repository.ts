@@ -15,7 +15,7 @@ export class ClassificationsRepository {
 
   async createMajorClassification({ name }: CreateMajorClassificationDto) {
     try {
-      return await this.prismaService.majorClassification.create({ data: { name } });
+      return await this.prismaService.majorClassification.create({ data: { name }, select: { id: true } });
     } catch (e) {
       console.error(e);
 
@@ -54,6 +54,7 @@ export class ClassificationsRepository {
       return await this.prismaService.majorClassification.update({
         where: { id: majorClassificationId },
         data: { name },
+        select: { id: true },
       });
     } catch (e) {
       console.error(e);
@@ -67,6 +68,7 @@ export class ClassificationsRepository {
       return await this.prismaService.majorClassification.update({
         where: { id: majorClassificationId },
         data: { deletedAt: dayjs().toISOString() },
+        select: { id: true },
       });
     } catch (e) {
       console.error(e);
@@ -77,7 +79,7 @@ export class ClassificationsRepository {
 
   async createMinorClassification({ name, majorId }: CreateMinorClassificationDto) {
     try {
-      return await this.prismaService.minorClassification.create({ data: { name, majorId } });
+      return await this.prismaService.minorClassification.create({ data: { name, majorId }, select: { id: true } });
     } catch (e) {
       console.error(e);
 
@@ -117,6 +119,7 @@ export class ClassificationsRepository {
       return await this.prismaService.minorClassification.update({
         where: { id: minorClassificationId },
         data: { name, majorId },
+        select: { id: true },
       });
     } catch (e) {
       console.error(e);
@@ -130,6 +133,7 @@ export class ClassificationsRepository {
       return await this.prismaService.minorClassification.update({
         where: { id: minorClassificationId },
         data: { deletedAt: dayjs().toISOString() },
+        select: { id: true },
       });
     } catch (e) {
       console.error(e);
