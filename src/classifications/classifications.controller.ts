@@ -3,7 +3,12 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 
 import { ClassificationsService } from './classifications.service';
-import { CreateMajorClassificationDto, UpdateMajorClassificationDto } from './classifications.dto';
+import {
+  CreateMajorClassificationDto,
+  CreateMinorClassificationDto,
+  UpdateMajorClassificationDto,
+  UpdateMinorClassificationDto,
+} from './classifications.dto';
 
 @ApiTags('Classifications ⚠️')
 @ApiBearerAuth('accessToken')
@@ -13,19 +18,19 @@ export class ClassificationsController {
   constructor(private readonly classificationsService: ClassificationsService) {}
 
   @ApiOperation({ summary: '악기 대분류 생성 ' })
-  @Post('major')
+  @Post('majors')
   async createMajorClassification(@Body() createMajorClassificationDto: CreateMajorClassificationDto) {
     await this.classificationsService.createMajorClassification(createMajorClassificationDto);
   }
 
   @ApiOperation({ summary: '악기 대분류 리스트 조회 ' })
-  @Get('major')
+  @Get('majors')
   async findMajorClassifications() {
     return await this.classificationsService.findMajorClassifications();
   }
 
   @ApiOperation({ summary: '악기 대분류 수정' })
-  @Put('major/:id')
+  @Put('majors/:id')
   async updateMajorClassification(
     @Param('id') majorClassificationId: number,
     @Body() updateMajorClassificationDto: UpdateMajorClassificationDto,
@@ -34,8 +39,35 @@ export class ClassificationsController {
   }
 
   @ApiOperation({ summary: '악기 대분류 삭제' })
-  @Delete('major/:id')
+  @Delete('majors/:id')
   async deleteMajorClassification(@Param('id') classificationId: number) {
     await this.classificationsService.deleteMajorClassification(classificationId);
+  }
+
+  @ApiOperation({ summary: '악기 소분류 생성' })
+  @Post('minors')
+  async createMinorClassification(@Body() createMinorClassificationDto: CreateMinorClassificationDto) {
+    await this.classificationsService.createMinorClassification(createMinorClassificationDto);
+  }
+
+  @ApiOperation({ summary: '악기 소분류 리스트 조회' })
+  @Get('minors')
+  async findMinorClassifications() {
+    return await this.classificationsService.findMinorClassifications();
+  }
+
+  @ApiOperation({ summary: '악기 소분류 수정' })
+  @Put('minors/:id')
+  async updateMinorClassification(
+    @Param('id') minorClassificationId: number,
+    @Body() updateMinorClassificationDto: UpdateMinorClassificationDto,
+  ) {
+    await this.classificationsService.updateMinorClassification(minorClassificationId, updateMinorClassificationDto);
+  }
+
+  @ApiOperation({ summary: '악기 소분류 삭제' })
+  @Delete('minors/:id')
+  async deleteMinorClassification(@Param('id') classificationId: number) {
+    await this.classificationsService.deleteMinorClassification(classificationId);
   }
 }
