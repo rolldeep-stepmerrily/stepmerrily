@@ -21,7 +21,7 @@ export class Instrument extends Common implements InstrumentModel {
   @IsPositive()
   manufacturerId: number;
 
-  @ApiProperty({ description: '시리얼 번호', nullable: true })
+  @ApiProperty({ description: '시리얼 번호', nullable: true, example: 'ABCD0001' })
   @IsOptional()
   @IsString()
   serialNumber: string | null;

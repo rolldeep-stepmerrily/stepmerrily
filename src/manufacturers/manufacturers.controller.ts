@@ -15,8 +15,8 @@ export class ManufacturersController {
 
   @ApiOperation({ summary: '제조사 등록' })
   @Post()
-  async createManufacturer(createManufacturerDto: CreateManufacturerDto) {
-    return await this.manufacturersService.createManufacturer(createManufacturerDto);
+  async createManufacturer(@Body() createManufacturerDto: CreateManufacturerDto) {
+    await this.manufacturersService.createManufacturer(createManufacturerDto);
   }
 
   @ApiOperation({ summary: '제조사 리스트 조회' })
@@ -31,12 +31,12 @@ export class ManufacturersController {
     @Param('id', ParsePositiveIntPipe) manufacturerId: number,
     @Body() updateManufacturerDto: UpdateManufacturerDto,
   ) {
-    return await this.manufacturersService.updateManufacturer(manufacturerId, updateManufacturerDto);
+    await this.manufacturersService.updateManufacturer(manufacturerId, updateManufacturerDto);
   }
 
   @ApiOperation({ summary: '제조사 삭제' })
   @Delete(':id')
   async deleteManufacturer(@Param('id', ParsePositiveIntPipe) manufacturerId: number) {
-    return await this.manufacturersService.deleteManufacturer(manufacturerId);
+    await this.manufacturersService.deleteManufacturer(manufacturerId);
   }
 }

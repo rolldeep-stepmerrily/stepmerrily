@@ -15,8 +15,8 @@ export class InstrumentsController {
 
   @ApiOperation({ summary: '악기 등록' })
   @Post()
-  async createInstrument(createInstrumentDto: CreateInstrumentDto) {
-    return await this.instrumentsService.createInstrument(createInstrumentDto);
+  async createInstrument(@Body() createInstrumentDto: CreateInstrumentDto) {
+    await this.instrumentsService.createInstrument(createInstrumentDto);
   }
 
   @ApiOperation({ summary: '악기 리스트 조회' })

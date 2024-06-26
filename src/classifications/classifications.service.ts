@@ -13,7 +13,7 @@ export class ClassificationsService {
   constructor(private readonly classificationsRepository: ClassificationsRepository) {}
 
   async createMajorClassification(createMajorClassificationDto: CreateMajorClassificationDto) {
-    await this.classificationsRepository.createMajorClassification(createMajorClassificationDto);
+    return await this.classificationsRepository.createMajorClassification(createMajorClassificationDto);
   }
 
   async findMajorClassifications() {
@@ -36,7 +36,10 @@ export class ClassificationsService {
       throw new NotFoundException('악기 분류를 찾을 수 없습니다.');
     }
 
-    await this.classificationsRepository.updateMajorClassification(majorClassificationId, updateMajorClassificationDto);
+    return await this.classificationsRepository.updateMajorClassification(
+      majorClassificationId,
+      updateMajorClassificationDto,
+    );
   }
 
   async deleteMajorClassification(majorClassificationId: number) {
@@ -46,11 +49,11 @@ export class ClassificationsService {
       throw new NotFoundException('악기 분류를 찾을 수 없습니다.');
     }
 
-    await this.classificationsRepository.deleteMajorClassification(majorClassificationId);
+    return await this.classificationsRepository.deleteMajorClassification(majorClassificationId);
   }
 
   async createMinorClassification(createMinorClassificationDto: CreateMinorClassificationDto) {
-    await this.classificationsRepository.createMinorClassification(createMinorClassificationDto);
+    return await this.classificationsRepository.createMinorClassification(createMinorClassificationDto);
   }
 
   async findMinorClassifications() {
@@ -73,7 +76,7 @@ export class ClassificationsService {
       throw new NotFoundException('악기 분류를 찾을 수 없습니다.');
     }
 
-    await this.classificationsRepository.updateMinorClassification(
+    return await this.classificationsRepository.updateMinorClassification(
       minorClassification.id,
       updateMinorClassificationDto,
     );
@@ -86,6 +89,6 @@ export class ClassificationsService {
       throw new NotFoundException('악기 분류를 찾을 수 없습니다.');
     }
 
-    await this.classificationsRepository.deleteMinorClassification(minorClassification.id);
+    return await this.classificationsRepository.deleteMinorClassification(minorClassification.id);
   }
 }

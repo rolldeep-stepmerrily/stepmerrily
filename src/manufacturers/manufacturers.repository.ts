@@ -12,6 +12,7 @@ export class ManufacturersRepository {
     try {
       return await this.prismaService.manufacturer.create({
         data: createManufacturerDto,
+        select: { id: true },
       });
     } catch (e) {
       console.error(e);
@@ -38,6 +39,19 @@ export class ManufacturersRepository {
     try {
       return await this.prismaService.manufacturer.findUnique({
         where: { id: manufacturerId, deletedAt: null },
+        select: { id: true },
+      });
+    } catch (e) {
+      console.error(e);
+
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async findManufacturerByName(name: string) {
+    try {
+      return await this.prismaService.manufacturer.findUnique({
+        where: { name, deletedAt: null },
         select: { id: true },
       });
     } catch (e) {

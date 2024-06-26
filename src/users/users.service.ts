@@ -127,7 +127,7 @@ export class UsersService {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await this.usersRepository.updatePassword({ username, password: hashedPassword });
+    return await this.usersRepository.updatePassword({ username, password: hashedPassword });
   }
 
   async deleteUser(id: number) {

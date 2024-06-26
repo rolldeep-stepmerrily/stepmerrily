@@ -58,6 +58,24 @@ export class InstrumentsRepository {
     }
   }
 
+  async findInstrumentBySerialNumber(serialNumber: string) {
+    try {
+      return await this.prismaService.instrument.findUnique({
+        where: {
+          serialNumber,
+          deletedAt: null,
+          minorClassification: { deletedAt: null },
+          manufacturer: { deletedAt: null },
+        },
+        select: { id: true },
+      });
+    } catch (e) {
+      console.error(e);
+
+      throw new InternalServerErrorException();
+    }
+  }
+
   async updateInstrument(instrumentId: number, updateInstrumentDto: UpdateInstrumentDto) {
     try {
       return await this.prismaService.instrument.update({

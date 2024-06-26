@@ -85,6 +85,7 @@ export class UsersController {
   @UseGuards(AuthGuard('access'))
   @Delete('signout')
   async signOut() {
+    //앱토큰 삭제 등 로그아웃 처리.
     return;
   }
 
@@ -93,7 +94,7 @@ export class UsersController {
   @UseGuards(AuthGuard('access'))
   @Delete('withdrawal')
   async deleteUser(@User('id') id: number) {
-    return await this.usersService.deleteUser(id);
+    await this.usersService.deleteUser(id);
   }
 
   @ApiOperation({ summary: '가상 유저 생성 ⚠️' })
@@ -101,6 +102,6 @@ export class UsersController {
   @UseGuards(AuthGuard('admin'))
   @Post('fake')
   async createFakeUsers(@Query('count') count: number = 10) {
-    return await this.usersService.createFakeUsers(count);
+    await this.usersService.createFakeUsers(count);
   }
 }

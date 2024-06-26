@@ -14,6 +14,14 @@ export class InstrumentsService {
   ) {}
 
   async createInstrument({ name, serialNumber, minorClassificationId, manufacturerId }: CreateInstrumentDto) {
+    if (serialNumber) {
+      const instrument = await this.instrumentsRepository.findInstrumentBySerialNumber(serialNumber);
+
+      if (instrument) {
+        throw new BadRequestException('이미 등록된 시리얼 번호입니다.');
+      }
+    }
+
     const minorClassification = await this.classificationService.findMinorClassification(minorClassificationId);
 
     if (!minorClassification) {

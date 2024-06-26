@@ -8,6 +8,12 @@ export class ManufacturersService {
   constructor(private readonly manufacturersRepository: ManufacturersRepository) {}
 
   async createManufacturer(createManufacturerDto: CreateManufacturerDto) {
+    const manufacturer = await this.manufacturersRepository.findManufacturerByName(createManufacturerDto.name);
+
+    if (manufacturer) {
+      throw new BadRequestException('이미 존재하는 제조사입니다.');
+    }
+
     return await this.manufacturersRepository.createManufacturer(createManufacturerDto);
   }
 

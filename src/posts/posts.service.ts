@@ -23,10 +23,10 @@ export class PostsService {
 
       await this.awsService.uploadImages(createPostImagesDto, uploadPath);
 
-      return this.postsRepository.createPost(userId, { ...createPostDto, images: uploadPath });
+      return await this.postsRepository.createPost(userId, { ...createPostDto, images: uploadPath });
     }
 
-    return this.postsRepository.createPost(userId, createPostDto);
+    return await this.postsRepository.createPost(userId, createPostDto);
   }
 
   async findPosts({ postId }: FindPostsDto) {
@@ -67,10 +67,10 @@ export class PostsService {
     const like = post.likes.find((like) => like.profileId === userId);
 
     if (like) {
-      return this.postsRepository.unlikePost(like.id);
+      return await this.postsRepository.unlikePost(like.id);
     }
 
-    return this.postsRepository.likePost(userId, postId);
+    return await this.postsRepository.likePost(userId, postId);
   }
 
   async updatePost(
@@ -96,12 +96,12 @@ export class PostsService {
 
       await this.awsService.uploadImages(updatePostImagesDto, uploadPath);
 
-      return this.postsRepository.updatePost(post.id, { ...updatePostDto, images: uploadPath });
+      return await this.postsRepository.updatePost(post.id, { ...updatePostDto, images: uploadPath });
     }
 
     const images = post.images;
 
-    return this.postsRepository.updatePost(post.id, { ...updatePostDto, images });
+    return await this.postsRepository.updatePost(post.id, { ...updatePostDto, images });
   }
 
   async deletePost(userId: number, postId: number) {
@@ -119,6 +119,6 @@ export class PostsService {
       await this.awsService.deleteImages(post.images);
     }
 
-    return this.postsRepository.deletePost(post.id);
+    return await this.postsRepository.deletePost(post.id);
   }
 }

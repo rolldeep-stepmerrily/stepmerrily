@@ -30,7 +30,7 @@ export class CommentsService {
       }
     }
 
-    return this.commentsRepository.createComment(userId, createCommentDto);
+    return await this.commentsRepository.createComment(userId, createCommentDto);
   }
 
   async findComment(commentId: number) {
@@ -47,10 +47,10 @@ export class CommentsService {
     const like = comment.likes.find((like) => like.profileId === userId);
 
     if (like) {
-      return this.commentsRepository.unlikeComment(like.id);
+      return await this.commentsRepository.unlikeComment(like.id);
     }
 
-    return this.commentsRepository.likeComment(userId, commentId);
+    return await this.commentsRepository.likeComment(userId, commentId);
   }
 
   async updateComment(userId: number, commentId: number, updateCommentDto: UpdateCommentDto) {
@@ -64,7 +64,7 @@ export class CommentsService {
       throw new BadRequestException('댓글 작성자만 수정할 수 있습니다.');
     }
 
-    return this.commentsRepository.updateComment(commentId, updateCommentDto);
+    return await this.commentsRepository.updateComment(commentId, updateCommentDto);
   }
 
   async deleteComment(userId: number, commentId: number) {
@@ -78,6 +78,6 @@ export class CommentsService {
       throw new BadRequestException('댓글 작성자만 삭제할 수 있습니다.');
     }
 
-    return this.commentsRepository.deleteComment(commentId);
+    return await this.commentsRepository.deleteComment(commentId);
   }
 }
