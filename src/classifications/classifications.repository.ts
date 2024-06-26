@@ -103,6 +103,7 @@ export class ClassificationsRepository {
     try {
       return await this.prismaService.minorClassification.findUnique({
         where: { id: minorClassificationId, deletedAt: null },
+        select: { id: true },
       });
     } catch (e) {
       console.error(e);

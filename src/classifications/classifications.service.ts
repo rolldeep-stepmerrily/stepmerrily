@@ -22,11 +22,15 @@ export class ClassificationsService {
     return { majorClassifications };
   }
 
+  async findMajorClassification(majorClassificationId: number) {
+    return await this.classificationsRepository.findMajorClassification(majorClassificationId);
+  }
+
   async updateMajorClassification(
     majorClassificationId: number,
     updateMajorClassificationDto: UpdateMajorClassificationDto,
   ) {
-    const majorClassification = await this.classificationsRepository.findMajorClassification(majorClassificationId);
+    const majorClassification = await this.findMajorClassification(majorClassificationId);
 
     if (!majorClassification) {
       throw new NotFoundException('악기 분류를 찾을 수 없습니다.');
@@ -36,7 +40,7 @@ export class ClassificationsService {
   }
 
   async deleteMajorClassification(majorClassificationId: number) {
-    const classification = await this.classificationsRepository.findMajorClassification(majorClassificationId);
+    const classification = await this.findMajorClassification(majorClassificationId);
 
     if (!classification) {
       throw new NotFoundException('악기 분류를 찾을 수 없습니다.');
@@ -55,26 +59,33 @@ export class ClassificationsService {
     return { minorClassifications };
   }
 
+  async findMinorClassification(minorClassificationId: number) {
+    return await this.classificationsRepository.findMinorClassification(minorClassificationId);
+  }
+
   async updateMinorClassification(
     minorClassificationId: number,
     updateMinorClassificationDto: UpdateMinorClassificationDto,
   ) {
-    const majorClassification = await this.classificationsRepository.findMinorClassification(minorClassificationId);
+    const minorClassification = await this.findMinorClassification(minorClassificationId);
 
-    if (!majorClassification) {
+    if (!minorClassification) {
       throw new NotFoundException('악기 분류를 찾을 수 없습니다.');
     }
 
-    await this.classificationsRepository.updateMinorClassification(minorClassificationId, updateMinorClassificationDto);
+    await this.classificationsRepository.updateMinorClassification(
+      minorClassification.id,
+      updateMinorClassificationDto,
+    );
   }
 
   async deleteMinorClassification(minorClassificationId: number) {
-    const classification = await this.classificationsRepository.findMinorClassification(minorClassificationId);
+    const minorClassification = await this.findMinorClassification(minorClassificationId);
 
-    if (!classification) {
+    if (!minorClassification) {
       throw new NotFoundException('악기 분류를 찾을 수 없습니다.');
     }
 
-    await this.classificationsRepository.deleteMinorClassification(minorClassificationId);
+    await this.classificationsRepository.deleteMinorClassification(minorClassification.id);
   }
 }

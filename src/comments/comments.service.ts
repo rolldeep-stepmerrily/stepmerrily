@@ -33,6 +33,10 @@ export class CommentsService {
     return this.commentsRepository.createComment(userId, createCommentDto);
   }
 
+  async findComment(commentId: number) {
+    return await this.commentsRepository.findComment(commentId);
+  }
+
   async likeComment(userId: number, commentId: number) {
     const comment = await this.commentsRepository.findComment(commentId);
 
@@ -50,7 +54,7 @@ export class CommentsService {
   }
 
   async updateComment(userId: number, commentId: number, updateCommentDto: UpdateCommentDto) {
-    const comment = await this.commentsRepository.findComment(commentId);
+    const comment = await this.findComment(commentId);
 
     if (!comment) {
       throw new NotFoundException('댓글을 찾을 수 없습니다.');
@@ -64,7 +68,7 @@ export class CommentsService {
   }
 
   async deleteComment(userId: number, commentId: number) {
-    const comment = await this.commentsRepository.findComment(commentId);
+    const comment = await this.findComment(commentId);
 
     if (!comment) {
       throw new NotFoundException('댓글을 찾을 수 없습니다.');

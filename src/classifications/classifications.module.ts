@@ -9,5 +9,6 @@ import { ClassificationsRepository } from './classifications.repository';
   imports: [PrismaModule],
   controllers: [ClassificationsController],
   providers: [ClassificationsService, ClassificationsRepository],
+  exports: [ClassificationsService],
 })
 export class ClassificationsModule {}

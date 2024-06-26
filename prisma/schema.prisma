@@ -76,14 +76,25 @@ model Instrument {
   id                    Int       @id @default(autoincrement())
   name                  String
   minorClassificationId Int
-  manufacturer          String
-  serialNumber          String
+  manufacturerId        Int
+  serialNumber          String?   @unique
   createdAt             DateTime  @default(now())
   updatedAt             DateTime? @updatedAt
   deletedAt             DateTime?
 
   profiles            Profile[]
   minorClassification MinorClassification @relation(fields: [minorClassificationId], references: [id])
+  manufacturer        Manufacturer        @relation(fields: [manufacturerId], references: [id])
+}
+
+model Manufacturer {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  deletedAt DateTime?
+
+  instruments Instrument[]
 }
 
 model MajorClassification {
