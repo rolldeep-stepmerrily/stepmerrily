@@ -1,4 +1,5 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import dayjs from 'dayjs';
 
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -64,6 +65,46 @@ export class MusicsRepository {
     try {
       return await this.prismaService.music.findUnique({
         where: { id: musicId, deletedAt: null, album: { deletedAt: null, artist: { deletedAt: null } } },
+        select: { id: true },
+      });
+    } catch (e) {
+      console.error(e);
+
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async createMusic(albumId: number, title: string, duration: number, isLeadSingle: boolean) {
+    try {
+      return await this.prismaService.music.create({
+        data: { title, duration, isLeadSingle, album: { connect: { id: albumId } } },
+      });
+    } catch (e) {
+      console.error(e);
+
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async updateMusic(musicId: number, albumId: number, title: string, duration: number, isLeadSingle: boolean) {
+    try {
+      return await this.prismaService.music.update({
+        where: { id: musicId },
+        data: { title, duration, isLeadSingle, album: { connect: { id: albumId } } },
+        select: { id: true },
+      });
+    } catch (e) {
+      console.error(e);
+
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async deleteMusic(musicId: number) {
+    try {
+      return await this.prismaService.music.update({
+        where: { id: musicId },
+        data: { deletedAt: dayjs().toISOString() },
         select: { id: true },
       });
     } catch (e) {
