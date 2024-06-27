@@ -1,7 +1,7 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
 import { IsPositive, IsString } from 'class-validator';
 
-import { Music } from './entities/music.entity';
+import { Music } from './entities';
 
 export class SearchMusicsDto {
   @ApiProperty({ description: '검색어', example: '한계', required: true })
