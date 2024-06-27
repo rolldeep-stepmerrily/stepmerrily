@@ -44,6 +44,9 @@ const { REDIS_HOST, REDIS_PORT, REDIS_PASSWORD } = process.env;
         REDIS_PASSWORD: Joi.string().required(),
         REDIS_PORT: Joi.number().required(),
         GIT_ACCEESS_TOKEN: Joi.string().required(),
+        LAST_FM_API_KEY: Joi.string().required(),
+        LAST_FM_API_SECRET: Joi.string().required(),
+        LAST_FM_API_URL: Joi.string().required(),
       }),
       validationOptions: {
         abortEarly: true,

@@ -16,5 +16,8 @@ declare namespace NodeJS {
     REDIS_PASSWORD: string;
     REDIS_PORT: number;
     GIT_ACCEESS_TOKEN: string;
+    LAST_FM_API_KEY: string;
+    LAST_FM_API_SECRET: string;
+    LAST_FM_API_URL: string;
   }
 }

@@ -21,8 +21,14 @@ export class ProfilesController {
 
   @ApiOperation({ summary: '프로필 뮤직 검색' })
   @Get('musics')
-  async searchMusics(@Query('q') query: string) {
-    return await this.musicService.searchMusics(query);
+  async searchMusicsFromDatabase(@Query('q') query: string) {
+    return await this.musicService.searchMusicsFromDatabase(query);
+  }
+
+  @ApiOperation({ summary: '프로필 뮤직 변경' })
+  @Patch('music')
+  async updateMusic(@User('id') profileId: number, @Body() updateMusicDto: UpdateMusicDto) {
+    await this.profilesService.updateMusic(profileId, updateMusicDto);
   }
 
   @ApiOperation({ summary: '프로필 조회' })
@@ -50,11 +56,5 @@ export class ProfilesController {
   @Patch('status')
   async updateStatus(@User('id') profileId: number, @Body() updateStatusDto: UpdateStatusDto) {
     await this.profilesService.updateStatus(profileId, updateStatusDto);
-  }
-
-  @ApiOperation({ summary: '프로필 뮤직 변경' })
-  @Patch('music')
-  async updateMusic(@User('id') profileId: number, @Body() updateMusicDto: UpdateMusicDto) {
-    await this.profilesService.updateMusic(profileId, updateMusicDto);
   }
 }
