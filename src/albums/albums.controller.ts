@@ -32,19 +32,19 @@ import { ParsePositiveIntPipe } from 'src/common/pipes';
 export class AlbumsController {
   constructor(private readonly albumsService: AlbumsService) {}
 
-  @ApiOperation({ summary: '앨범 리스트 조회' })
-  @Get()
-  async findAlbums() {
-    return await this.albumsService.findAlbums();
-  }
-
   @ApiOperation({ summary: '앨범 등록' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: CreateAlbumWithCoverDto })
   @UseInterceptors(FilesInterceptor('cover', 1))
   @Post()
   async createAlbum(@Body() createAlbumDto: CreateAlbumDto, @UploadedFiles() createCoverDto: CreateCoverDto) {
-    return await this.albumsService.createAlbum(createAlbumDto, createCoverDto);
+    await this.albumsService.createAlbum(createAlbumDto, createCoverDto);
+  }
+
+  @ApiOperation({ summary: '앨범 리스트 조회' })
+  @Get()
+  async findAlbums() {
+    return await this.albumsService.findAlbums();
   }
 
   @ApiOperation({ summary: '앨범 수정' })
@@ -57,12 +57,12 @@ export class AlbumsController {
     @Body() updateAlbumDto: UpdateAlbumDto,
     @UploadedFiles() updateCoverDto: UpdateCoverDto,
   ) {
-    return await this.albumsService.updateAlbum(albumId, updateAlbumDto, updateCoverDto);
+    await this.albumsService.updateAlbum(albumId, updateAlbumDto, updateCoverDto);
   }
 
   @ApiOperation({ summary: '앨범 삭제' })
   @Delete(':id')
   async deleteAlbum(@Param('id', ParsePositiveIntPipe) albumId: number) {
-    return await this.albumsService.deleteAlbum(albumId);
+    await this.albumsService.deleteAlbum(albumId);
   }
 }

@@ -1,7 +1,7 @@
 import { ApiProperty, IntersectionType, PickType } from '@nestjs/swagger';
+import { IsDateString } from 'class-validator';
 
 import { Album } from './entities';
-import { IsDateString } from 'class-validator';
 
 export class CreateAlbumDto extends PickType(Album, ['artistId', 'title', 'description', 'cover', 'time'] as const) {
   @ApiProperty({ description: '발매일' })

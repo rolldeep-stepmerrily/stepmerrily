@@ -13,6 +13,12 @@ import { ParsePositiveIntPipe } from 'src/common/pipes';
 export class MusicsController {
   constructor(private readonly musicsService: MusicsService) {}
 
+  @ApiOperation({ summary: '음악 등록' })
+  @Post()
+  async createMusic(@Body() createMusicDto: CreateMusicDto) {
+    return await this.musicsService.createMusic(createMusicDto);
+  }
+
   @ApiOperation({ summary: '음악 리스트 조회' })
   @Get()
   async findMusics() {
@@ -23,12 +29,6 @@ export class MusicsController {
   @Get('search')
   async searchMusicsFromLastFM(@Query() searchMusicsDto: SearchMusicsDto) {
     return await this.musicsService.searchMusicsFromLastFM(searchMusicsDto);
-  }
-
-  @ApiOperation({ summary: '음악 등록' })
-  @Post()
-  async createMusic(@Body() createMusicDto: CreateMusicDto) {
-    return await this.musicsService.createMusic(createMusicDto);
   }
 
   @ApiOperation({ summary: '음악 수정' })
