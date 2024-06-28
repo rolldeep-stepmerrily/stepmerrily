@@ -1,9 +1,29 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  UploadedFiles,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 import { AlbumsService } from './albums.service';
-import { CreateAlbumDto } from './albums.dto';
+import {
+  CreateAlbumDto,
+  CreateAlbumWithCoverDto,
+  CreateCoverDto,
+  UpdateAlbumDto,
+  UpdateAlbumWithCoverDto,
+  UpdateCoverDto,
+} from './albums.dto';
+import { ParsePositiveIntPipe } from 'src/common/pipes';
 
 @ApiTags('Albums ⚠️')
 @ApiBearerAuth('accessToken')
@@ -19,8 +39,30 @@ export class AlbumsController {
   }
 
   @ApiOperation({ summary: '앨범 등록' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ type: CreateAlbumWithCoverDto })
+  @UseInterceptors(FilesInterceptor('cover', 1))
   @Post()
-  async createAlbum(@Body() createAlbumDto: CreateAlbumDto) {
-    return await this.albumsService.createAlbum(createAlbumDto);
+  async createAlbum(@Body() createAlbumDto: CreateAlbumDto, @UploadedFiles() createCoverDto: CreateCoverDto) {
+    return await this.albumsService.createAlbum(createAlbumDto, createCoverDto);
+  }
+
+  @ApiOperation({ summary: '앨범 수정' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ type: UpdateAlbumWithCoverDto })
+  @UseInterceptors(FilesInterceptor('cover', 1))
+  @Put(':id')
+  async updateAlbum(
+    @Param('id', ParsePositiveIntPipe) albumId: number,
+    @Body() updateAlbumDto: UpdateAlbumDto,
+    @UploadedFiles() updateCoverDto: UpdateCoverDto,
+  ) {
+    return await this.albumsService.updateAlbum(albumId, updateAlbumDto, updateCoverDto);
+  }
+
+  @ApiOperation({ summary: '앨범 삭제' })
+  @Delete(':id')
+  async deleteAlbum(@Param('id', ParsePositiveIntPipe) albumId: number) {
+    return await this.albumsService.deleteAlbum(albumId);
   }
 }

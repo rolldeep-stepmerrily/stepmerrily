@@ -29,8 +29,6 @@ export class Album extends Common implements AlbumModel {
 
   duration: number;
 
-  @ApiProperty({ description: '발매일', required: true, example: '2021-01-01' })
-  @IsString()
   releasedAt: Date;
 
   @ApiProperty({ description: '재생 시간', required: true, example: '00:00:00' })

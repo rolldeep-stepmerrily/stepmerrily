@@ -38,9 +38,10 @@ async function bootstrap() {
     app.use(helmet());
   }
 
-  //swagger는 delevelopment 환경에서만 사용. stepmerrily는 일단 그냥 오픈.
-  app.use(['/docs', '/docs-json'], expressBasicAuth({ challenge: true, users: { [ADMIN_NAME]: ADMIN_PASSWORD } }));
+  // 잠시 express-basic-auth를 비활성화.(2024-06-28 16:11)
+  // app.use(['/docs', '/docs-json'], expressBasicAuth({ challenge: true, users: { [ADMIN_NAME]: ADMIN_PASSWORD } }));
 
+  //swagger는 delevelopment 환경에서만 사용. stepmerrily는 일단 그냥 오픈.
   const config = new DocumentBuilder()
     .setTitle('stepmerrily API Docs')
     .setDescription('⚠️: ADMIN 계정으로 로그인해주세요.')
@@ -55,4 +56,5 @@ async function bootstrap() {
 
   await app.listen(PORT);
 }
+
 bootstrap();
