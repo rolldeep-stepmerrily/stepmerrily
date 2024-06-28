@@ -1,6 +1,5 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
-import expressBasicAuth from 'express-basic-auth';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
@@ -10,7 +9,7 @@ import { TransfromInterceptor } from './common/interceptors';
 import { HttpExceptionFilter } from './common/filters';
 import helmet from 'helmet';
 
-const { NODE_ENV, ADMIN_NAME, ADMIN_PASSWORD, PORT } = process.env;
+const { NODE_ENV, PORT } = process.env;
 
 const isProduction = NODE_ENV === 'production';
 
