@@ -1,10 +1,22 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  UploadedFiles,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 
 import { ArtistsService } from './artists.service';
-import { CreateArtistDto, UpdateArtistDto } from './artists.dto';
+import { CreateArtistAvatarDto, CreateArtistDto, CreateArtistWithAvatarDto, UpdateArtistDto } from './artists.dto';
 import { ParsePositiveIntPipe } from 'src/common/pipes';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Artists')
 @ApiBearerAuth('accessToken')
@@ -14,9 +26,15 @@ export class ArtistsController {
   constructor(private readonly artistsService: ArtistsService) {}
 
   @ApiOperation({ summary: '아티스트 등록' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ type: CreateArtistWithAvatarDto })
+  @UseInterceptors(FilesInterceptor('avatar', 1))
   @Post()
-  async createArtist(@Body() createArtistDto: CreateArtistDto) {
-    await this.artistsService.createArtist(createArtistDto);
+  async createArtist(
+    @Body() createArtistDto: CreateArtistDto,
+    @UploadedFiles() createArtistAvatarDto: CreateArtistAvatarDto,
+  ) {
+    await this.artistsService.createArtist(createArtistDto, createArtistAvatarDto);
   }
 
   @ApiOperation({ summary: '아티스트 리스트 조회' })

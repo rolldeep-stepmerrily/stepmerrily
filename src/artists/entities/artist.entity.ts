@@ -23,7 +23,6 @@ export class Artist extends Common implements ArtistModel {
     example: 'Jazzyfact는 2010년에 결성된 대한민국의 힙합 듀오이다.',
     required: false,
   })
-  @IsOptional()
   @IsString()
   description: string | null;
 }

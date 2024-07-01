@@ -1,11 +1,15 @@
 import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 
 import { ArtistsRepository } from './artists.repository';
-import { CreateArtistDto, UpdateArtistDto } from './artists.dto';
+import { AwsService } from 'src/aws/aws.service';
+import { CreateArtistAvatarDto, CreateArtistDto, UpdateArtistDto } from './artists.dto';
 
 @Injectable()
 export class ArtistsService {
-  constructor(private readonly artistsRepository: ArtistsRepository) {}
+  constructor(
+    private readonly artistsRepository: ArtistsRepository,
+    private readonly awsService: AwsService,
+  ) {}
 
   async findArtists() {
     const artists = await this.artistsRepository.findArtists();
@@ -21,14 +25,26 @@ export class ArtistsService {
     return await this.artistsRepository.findArtistByName(name);
   }
 
-  async createArtist({ name }: CreateArtistDto) {
+  async createArtist({ name, description }: CreateArtistDto, createArtistAvatarDto: CreateArtistAvatarDto) {
     const artist = await this.findArtistByName(name);
 
     if (artist) {
       throw new ConflictException('이미 등록된 아티스트 입니다.');
     }
 
-    return await this.artistsRepository.createArtist(name);
+    if (createArtistAvatarDto.length > 0) {
+      const lastArtist = await this.artistsRepository.findLastArtist();
+
+      const lastArtistId = lastArtist?.id ?? 0;
+
+      const uploadPath = `artists/${lastArtistId + 1}/avatar`;
+
+      await this.awsService.uploadImages(createArtistAvatarDto, uploadPath);
+
+      return await this.artistsRepository.createArtist(name, description, uploadPath);
+    }
+
+    return await this.artistsRepository.createArtist(name, description);
   }
 
   async updateArtist(artistId: number, { name }: UpdateArtistDto) {

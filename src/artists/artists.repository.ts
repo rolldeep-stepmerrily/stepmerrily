@@ -7,12 +7,19 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class ArtistsRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
+  async findLastArtist() {
+    try {
+      return await this.prismaService.artist.findFirst({ orderBy: { id: 'desc' }, select: { id: true } });
+    } catch (e) {
+      console.error(e);
+
+      throw new InternalServerErrorException();
+    }
+  }
+
   async findArtists() {
     try {
-      return await this.prismaService.artist.findMany({
-        where: { deletedAt: null },
-        select: { id: true, name: true },
-      });
+      return await this.prismaService.artist.findMany({ where: { deletedAt: null }, select: { id: true, name: true } });
     } catch (e) {
       console.error(e);
 
@@ -35,10 +42,7 @@ export class ArtistsRepository {
 
   async findArtistByName(name: string) {
     try {
-      return await this.prismaService.artist.findUnique({
-        where: { name },
-        select: { id: true },
-      });
+      return await this.prismaService.artist.findUnique({ where: { name }, select: { id: true } });
     } catch (e) {
       console.error(e);
 
@@ -46,12 +50,9 @@ export class ArtistsRepository {
     }
   }
 
-  async createArtist(name: string) {
+  async createArtist(name: string, description: string | null, avatar: string | null = null) {
     try {
-      return await this.prismaService.artist.create({
-        data: { name },
-        select: { id: true },
-      });
+      return await this.prismaService.artist.create({ data: { name, description, avatar }, select: { id: true } });
     } catch (e) {
       console.error(e);
 
@@ -61,11 +62,7 @@ export class ArtistsRepository {
 
   async updateArtist(artistId: number, name: string) {
     try {
-      return await this.prismaService.artist.update({
-        where: { id: artistId },
-        data: { name },
-        select: { id: true },
-      });
+      return await this.prismaService.artist.update({ where: { id: artistId }, data: { name }, select: { id: true } });
     } catch (e) {
       console.error(e);
 
