@@ -21,14 +21,15 @@
 6. 유저의 악기 등록 기능 🔲 
 
 
-## Technologies Used in This Project
-* ![NestJS](https://img.shields.io/badge/NestJS-%23E0234E.svg?style=for_the_badge&logo=NestJS&logoColor=white)
-* ![TypeScript](https://img.shields.io/badge/TypeScript-%23007ACC.svg?style=for_the_badge&logo=TypeScript&logoColor=white)
-* ![Prisma](https://img.shields.io/badge/Prisma-%232D3748.svg?style=for_the_badge&logo=Prisma&logoColor=white)
-* ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-%23316192.svg?style=for_the_badge&logo=PostgreSQL&logoColor=white)
-* ![EC2](https://img.shields.io/badge/EC2-%23FF9900.svg?style=for_the_badge&logo=amazonec2&logoColor=white)
-* ![S3](https://img.shields.io/badge/S3-%23569A31.svg?style=for_the_badge&logo=amazons3&logoColor=white)
-* ![RDS](https://img.shields.io/badge/RDS-%23527FFF.svg?style=for_the_badge&logo=amazonrds&logoColor=white)
-* ![Redis](https://img.shields.io/badge/Redis-%23FF4438.svg?style=for_the_badge&logo=redis&logoColor=white)
-* ![NGINX](https://img.shields.io/badge/NGINX-%23009639.svg?style=for_the_badge&logo=nginx&logoColor=white)
-* ![PM2](https://img.shields.io/badge/PM2-%232B037A.svg?style=for_the_badge&logo=pm2&logoColor=white)
+## Technologies Used in This Project 
+* [![NestJS](https://img.shields.io/badge/NestJS-%23E0234E.svg?style=for_the_badge&logo=NestJS&logoColor=white)](https://docs.nestjs.com/)
+* [![TypeScript](https://img.shields.io/badge/TypeScript-%23007ACC.svg?style=for_the_badge&logo=TypeScript&logoColor=white)](https://www.typescriptlang.org/docs/)
+* [![Prisma](https://img.shields.io/badge/Prisma-%232D3748.svg?style=for_the_badge&logo=Prisma&logoColor=white)](https://www.prisma.io/docs/)
+* [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-%23316192.svg?style=for_the_badge&logo=PostgreSQL&logoColor=white)](https://www.postgresql.org/docs/)
+* [![EC2](https://img.shields.io/badge/EC2-%23FF9900.svg?style=for_the_badge&logo=amazonec2&logoColor=white)](https://docs.aws.amazon.com/ec2/)
+* [![S3](https://img.shields.io/badge/S3-%23569A31.svg?style=for_the_badge&logo=amazons3&logoColor=white)](https://docs.aws.amazon.com/s3/)
+* [![RDS](https://img.shields.io/badge/RDS-%23527FFF.svg?style=for_the_badge&logo=amazonrds&logoColor=white)](https://docs.aws.amazon.com/rds/)
+* [![Redis](https://img.shields.io/badge/Redis-%23FF4438.svg?style=for_the_badge&logo=redis&logoColor=white)](https://redis.io/docs/)
+* [![NGINX](https://img.shields.io/badge/NGINX-%23009639.svg?style=for_the_badge&logo=nginx&logoColor=white)](https://nginx.org/en/docs/)
+* [![PM2](https://img.shields.io/badge/PM2-%232B037A.svg?style=for_the_badge&logo=pm2&logoColor=white)](https://pm2.keymetrics.io/docs/usage/quick-start/)
+
