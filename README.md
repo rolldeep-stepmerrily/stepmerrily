@@ -8,6 +8,11 @@ _<p align="right">designed by DALL·E</p>_
 
 ## Description
 
+<p align="center">
+  <a href="https://stepmerrily.com/docs" target="blank">API Documentation</a>
+</p>
+
+
 음악 테마의 커뮤니티 입니다.
 
 게시글, 댓글 작성 및 추천 기능이 제공되고 프로필 사진, 뮤직, 상태메시지 기능으로 타인과 소통할 수 있습니다.
