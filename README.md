@@ -39,3 +39,5 @@ _<p align="right">designed by DALL·E</p>_
 - [![Redis](https://img.shields.io/badge/Redis-%23FF4438.svg?style=for_the_badge&logo=redis&logoColor=white)](https://redis.io/docs/)
 - [![NGINX](https://img.shields.io/badge/NGINX-%23009639.svg?style=for_the_badge&logo=nginx&logoColor=white)](https://nginx.org/en/docs/)
 - [![PM2](https://img.shields.io/badge/PM2-%232B037A.svg?style=for_the_badge&logo=pm2&logoColor=white)](https://pm2.keymetrics.io/docs/usage/quick-start/)
+
+[NestJS]: https://docs.nestjs.com/
