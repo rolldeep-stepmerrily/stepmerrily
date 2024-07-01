@@ -29,7 +29,7 @@ _<p align="right">designed by DALL·E</p>_
 
 ## Technologies Used in This Project
 
-- [![NestJS](https://img.shields.io/badge/NestJS-%23E0234E.svg?style=for_the_badge&logo=NestJS&logoColor=white)]
+- ![NestJS](https://img.shields.io/badge/NestJS-%23E0234E.svg?style=for_the_badge&logo=NestJS&logoColor=white)
 - [![TypeScript](https://img.shields.io/badge/TypeScript-%23007ACC.svg?style=for_the_badge&logo=TypeScript&logoColor=white)](https://www.typescriptlang.org/docs/)
 - [![Prisma](https://img.shields.io/badge/Prisma-%232D3748.svg?style=for_the_badge&logo=Prisma&logoColor=white)](https://www.prisma.io/docs/)
 - [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-%23316192.svg?style=for_the_badge&logo=PostgreSQL&logoColor=white)](https://www.postgresql.org/docs/)
