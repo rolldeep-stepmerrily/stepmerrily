@@ -19,7 +19,11 @@ export class ArtistsRepository {
 
   async findArtists() {
     try {
-      return await this.prismaService.artist.findMany({ where: { deletedAt: null }, select: { id: true, name: true } });
+      return await this.prismaService.artist.findMany({
+        where: { deletedAt: null },
+        select: { id: true, name: true, description: true, avatar: true },
+        orderBy: { id: 'asc' },
+      });
     } catch (e) {
       console.error(e);
 
@@ -60,9 +64,13 @@ export class ArtistsRepository {
     }
   }
 
-  async updateArtist(artistId: number, name: string) {
+  async updateArtist(artistId: number, name: string, description: string | null, avatar: string | null = null) {
     try {
-      return await this.prismaService.artist.update({ where: { id: artistId }, data: { name }, select: { id: true } });
+      return await this.prismaService.artist.update({
+        where: { id: artistId },
+        data: { name, description, avatar },
+        select: { id: true },
+      });
     } catch (e) {
       console.error(e);
 

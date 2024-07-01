@@ -14,7 +14,14 @@ import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nes
 import { AuthGuard } from '@nestjs/passport';
 
 import { ArtistsService } from './artists.service';
-import { CreateArtistAvatarDto, CreateArtistDto, CreateArtistWithAvatarDto, UpdateArtistDto } from './artists.dto';
+import {
+  CreateArtistAvatarDto,
+  CreateArtistDto,
+  CreateArtistWithAvatarDto,
+  UpdateArtistAvatarDto,
+  UpdateArtistDto,
+  UpdateArtistWithAvatarDto,
+} from './artists.dto';
 import { ParsePositiveIntPipe } from 'src/common/pipes';
 import { FilesInterceptor } from '@nestjs/platform-express';
 
@@ -44,9 +51,16 @@ export class ArtistsController {
   }
 
   @ApiOperation({ summary: '아티스트 수정' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ type: UpdateArtistWithAvatarDto })
+  @UseInterceptors(FilesInterceptor('avatar', 1))
   @Put(':id')
-  async updateArtist(@Param('id', ParsePositiveIntPipe) artistId: number, @Body() updateArtistDto: UpdateArtistDto) {
-    await this.artistsService.updateArtist(artistId, updateArtistDto);
+  async updateArtist(
+    @Param('id', ParsePositiveIntPipe) artistId: number,
+    @Body() updateArtistDto: UpdateArtistDto,
+    @UploadedFiles() updateArtistAvatarDto: UpdateArtistAvatarDto,
+  ) {
+    await this.artistsService.updateArtist(artistId, updateArtistDto, updateArtistAvatarDto);
   }
 
   @ApiOperation({ summary: '아티스트 삭제' })

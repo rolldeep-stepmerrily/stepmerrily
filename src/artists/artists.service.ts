@@ -2,7 +2,7 @@ import { BadRequestException, ConflictException, Injectable, NotFoundException }
 
 import { ArtistsRepository } from './artists.repository';
 import { AwsService } from 'src/aws/aws.service';
-import { CreateArtistAvatarDto, CreateArtistDto, UpdateArtistDto } from './artists.dto';
+import { CreateArtistAvatarDto, CreateArtistDto, UpdateArtistAvatarDto, UpdateArtistDto } from './artists.dto';
 
 @Injectable()
 export class ArtistsService {
@@ -12,7 +12,17 @@ export class ArtistsService {
   ) {}
 
   async findArtists() {
-    const artists = await this.artistsRepository.findArtists();
+    const findArtists = await this.artistsRepository.findArtists();
+
+    const artistsAsync = findArtists.map(async (artist) => {
+      const avatars = artist.avatar ? await this.awsService.findImages(artist.avatar) : null;
+
+      const avatar = avatars ? `${process.env.AWS_CLOUDFRONT_DOMAIN}/${avatars[avatars.length - 1].Key}` : null;
+
+      return { ...artist, avatar };
+    });
+
+    const artists = await Promise.all(artistsAsync);
 
     return { artists };
   }
@@ -47,24 +57,36 @@ export class ArtistsService {
     return await this.artistsRepository.createArtist(name, description);
   }
 
-  async updateArtist(artistId: number, { name }: UpdateArtistDto) {
+  async updateArtist(
+    artistId: number,
+    { name, description }: UpdateArtistDto,
+    updateArtistAvatarDto: UpdateArtistAvatarDto,
+  ) {
     const findArtist = await this.findArtist(artistId);
 
     if (!findArtist) {
       throw new NotFoundException('아티스트를 찾을 수 없습니다.');
     }
 
-    if (findArtist.name === name) {
-      throw new BadRequestException('기존 이름과 변경하려는 이름이 동일합니다.');
+    if (findArtist.name !== name) {
+      const findArtistByName = await this.findArtistByName(name);
+
+      if (findArtistByName) {
+        throw new ConflictException('이미 등록된 아티스트 입니다.');
+      }
     }
 
-    const findArtistByName = await this.findArtistByName(name);
+    if (updateArtistAvatarDto.length > 0) {
+      const uploadPath = `artists/${artistId}/avatar`;
 
-    if (findArtistByName) {
-      throw new ConflictException('이미 등록된 아티스트 입니다.');
+      await this.awsService.deleteImages(uploadPath);
+
+      await this.awsService.uploadImages(updateArtistAvatarDto, uploadPath);
+
+      return await this.artistsRepository.updateArtist(artistId, name, description, uploadPath);
     }
 
-    return await this.artistsRepository.updateArtist(artistId, name);
+    return await this.artistsRepository.updateArtist(artistId, name, description);
   }
 
   async deleteArtist(artistId: number) {

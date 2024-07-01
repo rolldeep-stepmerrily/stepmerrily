@@ -17,3 +17,15 @@ export class CreateArtistAvatarDto extends Array<Express.Multer.File> {
 export class CreateArtistWithAvatarDto extends IntersectionType(CreateArtistDto, CreateArtistAvatarDto) {}
 
 export class UpdateArtistDto extends PickType(Artist, ['name', 'description'] as const) {}
+
+export class UpdateArtistAvatarDto extends Array<Express.Multer.File> {
+  @ApiProperty({
+    type: 'string',
+    format: 'binary',
+    description: '아티스트 이미지',
+    required: false,
+  })
+  avatar: Express.Multer.File[];
+}
+
+export class UpdateArtistWithAvatarDto extends IntersectionType(UpdateArtistDto, UpdateArtistAvatarDto) {}
