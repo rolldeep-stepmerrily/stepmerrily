@@ -11,10 +11,7 @@ export class CommentsRepository {
   async createComment(userId: number, createCommentDto: CreateCommentDto) {
     try {
       return await this.prismaService.comment.create({
-        data: {
-          profileId: userId,
-          ...createCommentDto,
-        },
+        data: { profileId: userId, ...createCommentDto },
         select: { id: true },
       });
     } catch (e) {

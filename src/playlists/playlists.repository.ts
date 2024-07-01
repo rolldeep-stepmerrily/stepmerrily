@@ -10,9 +10,7 @@ export class PlaylistsRepository {
 
   async findPlaylists() {
     try {
-      return await this.prismaService.playlist.findMany({
-        where: { deletedAt: null, profile: { deletedAt: null } },
-      });
+      return await this.prismaService.playlist.findMany({ where: { deletedAt: null, profile: { deletedAt: null } } });
     } catch (e) {
       console.error(e);
 

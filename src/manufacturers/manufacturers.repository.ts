@@ -10,10 +10,7 @@ export class ManufacturersRepository {
 
   async createManufacturer(createManufacturerDto: CreateManufacturerDto) {
     try {
-      return await this.prismaService.manufacturer.create({
-        data: createManufacturerDto,
-        select: { id: true },
-      });
+      return await this.prismaService.manufacturer.create({ data: createManufacturerDto, select: { id: true } });
     } catch (e) {
       console.error(e);
 

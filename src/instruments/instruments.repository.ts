@@ -10,10 +10,7 @@ export class InstrumentsRepository {
 
   async createInstrument(createInstrumentDto: CreateInstrumentDto) {
     try {
-      return await this.prismaService.instrument.create({
-        data: createInstrumentDto,
-        select: { id: true },
-      });
+      return await this.prismaService.instrument.create({ data: createInstrumentDto, select: { id: true } });
     } catch (e) {
       console.error(e);
 
