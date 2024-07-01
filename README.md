@@ -1,7 +1,7 @@
 ## stepmerrily
 
 <p align="center">
-  <a href="https://stepmerrily.com/docs" target="blank"><img src="https://d1zuvtsumd8p96.cloudfront.net/icons/stepmerrily-logo.png" width="400" alt="stepmerrily logo" /></a>
+  <a href="https://stepmerrily.com/docs" target="_blank"><img src="https://d1zuvtsumd8p96.cloudfront.net/icons/stepmerrily-logo.png" width="400" alt="stepmerrily logo" /></a>
 </p>
 
 _<p align="right">designed by DALL·E</p>_
@@ -9,9 +9,8 @@ _<p align="right">designed by DALL·E</p>_
 ## Description
 
 <p align="center">
-  <a href="https://stepmerrily.com/docs" target="blank">API Documentation</a>
+  <a href="https://stepmerrily.com/docs" target="_blank">API Documentation</a>
 </p>
-
 
 음악 테마의 커뮤니티 입니다.
 
