@@ -12,4 +12,8 @@ export class PlaylistsService {
 
     //playlist 생성부터
   }
+
+  async findPlaylists() {
+    return await this.playlistsRepository.findPlaylists();
+  }
 }

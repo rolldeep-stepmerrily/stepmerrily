@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -17,5 +17,11 @@ export class PlaylistsController {
   @Post()
   async createPlaylist(@User('id') profileId: number, @Body() createPlaylistDto: CreatePlaylistDto) {
     await this.playlistsService.createPlaylist(profileId, createPlaylistDto);
+  }
+
+  @ApiOperation({ summary: '플레이 리스트 조회' })
+  @Get()
+  async findPlaylists() {
+    return await this.playlistsService.findPlaylists();
   }
 }
