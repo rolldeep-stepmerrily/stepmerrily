@@ -1,5 +1,3 @@
-## stepmerrily
-
 <p align="center">
  <picture >
   <source media="(prefers-color-scheme: dark)" srcset="https://d1zuvtsumd8p96.cloudfront.net/icons/stepmerrily-dark-logo.png">
