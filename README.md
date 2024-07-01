@@ -1,7 +1,11 @@
 ## stepmerrily
 
 <p align="center">
-  <a href="https://stepmerrily.com/docs" target="_blank"><img src="https://d1zuvtsumd8p96.cloudfront.net/icons/stepmerrily-logo.png" width="400" alt="stepmerrily logo" /></a>
+ <picture >
+  <source media="(prefers-color-scheme: dark)" srcset="https://d1zuvtsumd8p96.cloudfront.net/icons/stepmerrily-dark-logo.png">
+  <source media="(prefers-color-scheme: light)" srcset="https://d1zuvtsumd8p96.cloudfront.net/icons/stepmerrily-light-logo.png">
+  <img alt="stepmerrily-logo" src="https://d1zuvtsumd8p96.cloudfront.net/icons/stepmerrily-light-logo.png" width="400">
+ </picture>
 </p>
 
 _<p align="right">designed by DALL·E</p>_
