@@ -85,12 +85,8 @@ export class UsersRepository {
           name,
           phoneNumber,
           password,
-          term: {
-            create: { isService, isPrivacy, isPrivacyOption, isAge },
-          },
-          profile: {
-            create: { nickname },
-          },
+          term: { create: { isService, isPrivacy, isPrivacyOption, isAge } },
+          profile: { create: { nickname } },
         },
         select: { id: true },
       });
@@ -103,10 +99,7 @@ export class UsersRepository {
 
   async updatePassword({ username, password }: UpdatePasswordDto) {
     try {
-      await this.prismaService.user.update({
-        where: { username, deletedAt: null },
-        data: { password },
-      });
+      await this.prismaService.user.update({ where: { username, deletedAt: null }, data: { password } });
     } catch (e) {
       console.error(e);
 
