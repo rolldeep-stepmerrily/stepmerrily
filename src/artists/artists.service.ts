@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 
 import { ArtistsRepository } from './artists.repository';
 import { AwsService } from 'src/aws/aws.service';
