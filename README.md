@@ -11,7 +11,7 @@ _<p align="right">designed by DALL·E</p>_
 ## Description
 
 <p align="center">
-  <a href="https://stepmerrily.com/docs" target="_blank"><span style="color:#E0234E">API Documentation</span></a>
+  <a href="https://stepmerrily.com/docs" target="_blank">API Documentation</a>
 </p>
 
 음악 테마의 커뮤니티 입니다.
