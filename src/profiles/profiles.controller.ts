@@ -5,6 +5,7 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 
 import { ProfilesService } from './profiles.service';
 import { MusicsService } from 'src/musics/musics.service';
+import { InstrumentsService } from 'src/instruments/instruments.service';
 import { User } from 'src/auth/decorators';
 import { UpdateAvatarDto, UpdateMusicDto, UpdateNicknameDto, UpdateStatusDto } from './profiles.dto';
 import { ParsePositiveIntPipe } from 'src/common/pipes';
@@ -17,6 +18,7 @@ export class ProfilesController {
   constructor(
     private readonly profilesService: ProfilesService,
     private readonly musicService: MusicsService,
+    private readonly instrumentsService: InstrumentsService,
   ) {}
 
   @ApiOperation({ summary: '프로필 뮤직 검색' })
@@ -56,5 +58,11 @@ export class ProfilesController {
   @Patch('status')
   async updateStatus(@User('id') profileId: number, @Body() updateStatusDto: UpdateStatusDto) {
     await this.profilesService.updateStatus(profileId, updateStatusDto);
+  }
+
+  @ApiOperation({ summary: '프로필 악기 리스트 조회' })
+  @Get('instruments')
+  async findInstruments() {
+    return await this.instrumentsService.findInstruments();
   }
 }

@@ -11,5 +11,6 @@ import { InstrumentsRepository } from './instruments.repository';
   imports: [PrismaModule, ClassificationsModule, ManufacturersModule],
   controllers: [InstrumentsController],
   providers: [InstrumentsService, InstrumentsRepository],
+  exports: [InstrumentsService],
 })
 export class InstrumentsModule {}
