@@ -24,7 +24,7 @@ export class CreateCoverDto extends Array<Express.Multer.File> {
 export class CreateAlbumWithCoverDto extends IntersectionType(CreateAlbumDto, CreateCoverDto) {}
 
 export class UpdateAlbumDto extends PickType(Album, ['artistId', 'title', 'description', 'cover', 'time'] as const) {
-  @ApiProperty({ description: '발매일' })
+  @ApiProperty({ description: '발매일', example: '2006-09-20T15:00:00.000Z' })
   @IsDateString()
   releasedAt: string | Date;
 

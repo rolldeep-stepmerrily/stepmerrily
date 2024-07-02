@@ -32,6 +32,7 @@ NestJS Restful API - stepmerrily
 4. LAST FM API를 통한 음악 검색 기능 ✅
 5. 플레이리스트 (플레이리스트 등록, 공유 등) 기능 🔲
 6. 유저의 악기 등록 기능 🔲
+7. Date DTO Refactoring 🔲
 
 ## Technologies
 
