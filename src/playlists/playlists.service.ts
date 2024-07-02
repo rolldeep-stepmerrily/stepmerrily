@@ -30,22 +30,22 @@ export class PlaylistsService {
 
       let duration = 0;
 
-      const coversAndCalcDurationAsync = playlist.musics.map(async (music) => {
-        duration += music.duration;
+      const covers = await Promise.all(
+        playlist.musics.map(async (music) => {
+          duration += music.duration;
 
-        const covers = music.album.cover ? await this.awsService.findImages(music.album.cover) : null;
+          const covers = music.album.cover ? await this.awsService.findImages(music.album.cover) : null;
 
-        return covers ? `${AWS_CLOUDFRONT_DOMAIN}/${covers[covers.length - 1].Key}` : null;
-      });
-
-      const cover = await Promise.all(coversAndCalcDurationAsync);
+          return covers ? `${AWS_CLOUDFRONT_DOMAIN}/${covers[covers.length - 1].Key}` : null;
+        }),
+      );
 
       const formattedDuration = dayjs.duration(duration, 'seconds').format('HH:mm:ss');
 
       return {
         ...playlist,
         profile: { ...playlist.profile, avatar },
-        musics: playlist.musics.map((music, index) => ({ ...music, cover: cover[index] })),
+        musics: playlist.musics.map((music, index) => ({ ...music, album: { ...music.album, cover: covers[index] } })),
         duration: formattedDuration,
       };
     });
