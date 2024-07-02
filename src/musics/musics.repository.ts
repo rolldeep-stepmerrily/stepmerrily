@@ -26,6 +26,7 @@ export class MusicsRepository {
             },
           },
         },
+        orderBy: { id: 'asc' },
       });
     } catch (e) {
       console.error(e);
