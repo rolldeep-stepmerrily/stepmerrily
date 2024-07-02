@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 dayjs.extend(duration);
 
 import { PlaylistsRepository } from './playlists.repository';
-import { CreatePlaylistDto } from './playlists.dto';
+import { CreatePlaylistDto, UpdatePlaylistDto } from './playlists.dto';
 import { AwsService } from 'src/aws/aws.service';
 
 const { AWS_CLOUDFRONT_DOMAIN } = process.env;
@@ -53,5 +53,37 @@ export class PlaylistsService {
     const playlists = await Promise.all(playlistsAsync);
 
     return { playlists };
+  }
+
+  async findPlaylist(playlistId: number) {
+    return await this.playlistsRepository.findPlaylist(playlistId);
+  }
+
+  async updatePlaylist(profileId: number, playlistId: number, updatePlaylistDto: UpdatePlaylistDto) {
+    const playlist = await this.findPlaylist(playlistId);
+
+    if (!playlist) {
+      throw new NotFoundException('플레이리스트를 찾을 수 없습니다.');
+    }
+
+    if (playlist.profile.id !== profileId) {
+      throw new BadRequestException('플레이리스트 생성자만 수정할 수 있습니다.');
+    }
+
+    return await this.playlistsRepository.updatePlaylist(profileId, updatePlaylistDto);
+  }
+
+  async deletePlaylist(profileId: number, playlistId: number) {
+    const playlist = await this.findPlaylist(playlistId);
+
+    if (!playlist) {
+      throw new NotFoundException('플레이리스트를 찾을 수 없습니다.');
+    }
+
+    if (playlist.profile.id !== profileId) {
+      throw new BadRequestException('플레이리스트 생성자만 삭제할 수 있습니다.');
+    }
+
+    return await this.playlistsRepository.deletePlaylist(playlistId);
   }
 }

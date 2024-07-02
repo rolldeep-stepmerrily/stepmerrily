@@ -9,3 +9,10 @@ export class CreatePlaylistDto extends PickType(Playlist, ['name'] as const) {
   @IsPositive({ each: true })
   musicIds: number[];
 }
+
+export class UpdatePlaylistDto extends PickType(Playlist, ['name'] as const) {
+  @ApiProperty({ description: '뮤직 ID', minimum: 1, example: [1, 2, 3] })
+  @IsArray()
+  @IsPositive({ each: true })
+  musicIds: number[];
+}
