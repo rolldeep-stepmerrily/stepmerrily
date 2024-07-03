@@ -9,7 +9,7 @@ import { TransfromInterceptor } from './common/interceptors';
 import { HttpExceptionFilter } from './common/filters';
 import helmet from 'helmet';
 
-const { NODE_ENV, PORT } = process.env;
+const { NODE_ENV, AWS_CLOUDFRONT_DOMAIN, PORT } = process.env;
 
 const isProduction = NODE_ENV === 'production';
 
@@ -34,7 +34,15 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter());
 
   if (isProduction) {
-    app.use(helmet());
+    app.use(
+      helmet({
+        contentSecurityPolicy: {
+          directives: {
+            defaultSrc: ["'self'"],
+            imgSrc: ["'self'", 'data:', `${AWS_CLOUDFRONT_DOMAIN}`],
+        },
+      }),
+    );
   }
 
   // 잠시 express-basic-auth를 비활성화.(2024-06-28 16:11)
