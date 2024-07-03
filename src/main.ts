@@ -40,6 +40,7 @@ async function bootstrap() {
           directives: {
             defaultSrc: ["'self'"],
             imgSrc: ["'self'", 'data:', `${AWS_CLOUDFRONT_DOMAIN}`],
+          },
         },
       }),
     );
