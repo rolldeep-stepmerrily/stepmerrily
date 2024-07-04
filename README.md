@@ -10,14 +10,14 @@ _<p align="right">designed by DALL·E</p>_
 
 ## Description
 
-<p align="center">
+<p align="center"> 
   <a href="https://api.stepmerrily.com/docs" target="_blank" >API Documentation</a> 
-  <br/><br/>
-  <span style="color:#EA285D;">Express Basic Auth</span>
+  <br/><br/> 
+  $\bf{\color{#EA285D}Express\ Basic\ Auth}$
   <br/>
-  <span style="color:#EA285D;">ID : guest</span>
+  $\bf{\color{#EA285D}ID : guest}$
   <br/>
-  <span style="color:#EA285D;">Password : qwer1234!</span>
+   $\bf{\color{#EA285D}Password : qwer1234!}$
   <br/>
 </p>
 
