@@ -13,11 +13,11 @@ _<p align="right">designed by DALL·E</p>_
 <p align="center"> 
   <a href="https://api.stepmerrily.com/docs" target="_blank" >API Documentation</a> 
   <br/><br/> 
-  $\bf{\color{#EA285D}Express\ Basic\ Auth}$
+   Express Basic Auth
   <br/>
-  $\bf{\color{#EA285D}ID : guest}$
+   ID : guest
   <br/>
-   $\bf{\color{#EA285D}Password : qwer1234!}$
+   Password : qwer1234!
   <br/>
 </p>
 
