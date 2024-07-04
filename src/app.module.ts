@@ -8,7 +8,6 @@ import Joi from 'joi';
 import { PrismaModule } from './prisma/prisma.module';
 import { UsersModule } from './users/users.module';
 import { HttpLoggerMiddleware } from './common/middlewares';
-import { AppController } from './app.controller';
 import { PostsModule } from './posts/posts.module';
 import { CommentsModule } from './comments/comments.module';
 import { AuthModule } from './auth/auth.module';
@@ -28,10 +27,12 @@ const { REDIS_HOST, REDIS_PORT, REDIS_PASSWORD } = process.env;
       validationSchema: Joi.object({
         SERVER_URL: Joi.string().required(),
         NODE_ENV: Joi.string().valid('development', 'production', 'provision').default('development'),
-        PORT: Joi.number().default(3000),
+        PORT: Joi.number().default(3065),
         DATABASE_URL: Joi.string().required(),
         ADMIN_NAME: Joi.string().required(),
         ADMIN_PASSWORD: Joi.string().required(),
+        GUEST_NAME: Joi.string().required(),
+        GUEST_PASSWORD: Joi.string().required(),
         JWT_SECRET_KEY: Joi.string().required(),
         EMAIL_ADDRESS: Joi.string().required(),
         EMAIL_PASSWORD: Joi.string().required(),
@@ -72,7 +73,6 @@ const { REDIS_HOST, REDIS_PORT, REDIS_PASSWORD } = process.env;
     InstrumentsModule,
     ManufacturersModule,
   ],
-  controllers: [AppController],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

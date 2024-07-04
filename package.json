@@ -1,6 +1,6 @@
 {
   "name": "stepmerrily",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "",
   "author": "",
   "private": true,
@@ -44,7 +44,6 @@
     "class-validator": "^0.14.1",
     "dayjs": "^1.11.11",
     "express-basic-auth": "^1.2.1",
-    "hbs": "^4.2.0",
     "helmet": "^7.1.0",
     "joi": "^17.12.3",
     "nodemailer": "^6.9.14",

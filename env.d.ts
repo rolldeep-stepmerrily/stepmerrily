@@ -6,6 +6,8 @@ declare namespace NodeJS {
     DATABASE_URL: string;
     ADMIN_NAME: string;
     ADMIN_PASSWORD: string;
+    GUEST_NAME: string;
+    GUEST_PASSWORD: string;
     JWT_SECRET_KEY: string;
     AWS_ACCESS_KEY_ID: string;
     AWS_SECRET_ACCESS_KEY: string;
