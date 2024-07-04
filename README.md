@@ -11,7 +11,7 @@ _<p align="right">designed by DALL·E</p>_
 ## Description
 
 <p align="center">
-  <a href="https://stepmerrily.com/docs" target="_blank">API Documentation</a>
+  <a href="https://api.stepmerrily.com/docs" target="_blank">API Documentation</a>
 </p>
 
 NestJS Restful API - stepmerrily
