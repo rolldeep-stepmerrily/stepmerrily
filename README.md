@@ -11,7 +11,14 @@ _<p align="right">designed by DALL·E</p>_
 ## Description
 
 <p align="center">
-  <a href="https://api.stepmerrily.com/docs" target="_blank">API Documentation</a>
+  <a href="https://api.stepmerrily.com/docs" target="_blank" >API Documentation</a> 
+  <br/><br/>
+  <span style="color:#EA285D;">Express Basic Auth</span>
+  <br/>
+  <span style="color:#EA285D;">ID : guest</span>
+  <br/>
+  <span style="color:#EA285D;">Password : qwer1234!</span>
+  <br/>
 </p>
 
 NestJS Restful API - stepmerrily
