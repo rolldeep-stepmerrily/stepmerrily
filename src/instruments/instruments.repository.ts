@@ -38,6 +38,24 @@ export class InstrumentsRepository {
     }
   }
 
+  async findInstrumentsByIds(instrumentIds: number[]) {
+    try {
+      return await this.prismaService.instrument.findMany({
+        where: {
+          id: { in: instrumentIds },
+          deletedAt: null,
+          minorClassification: { deletedAt: null },
+          manufacturer: { deletedAt: null },
+        },
+        select: { id: true },
+      });
+    } catch (e) {
+      console.error(e);
+
+      throw new InternalServerErrorException();
+    }
+  }
+
   async findInstrument(instrumentId: number) {
     try {
       return await this.prismaService.instrument.findUnique({

@@ -7,7 +7,13 @@ import { ProfilesService } from './profiles.service';
 import { MusicsService } from 'src/musics/musics.service';
 import { InstrumentsService } from 'src/instruments/instruments.service';
 import { User } from 'src/auth/decorators';
-import { UpdateAvatarDto, UpdateMusicDto, UpdateNicknameDto, UpdateStatusDto } from './profiles.dto';
+import {
+  UpdateAvatarDto,
+  UpdateInstrumentsDto,
+  UpdateMusicDto,
+  UpdateNicknameDto,
+  UpdateStatusDto,
+} from './profiles.dto';
 import { ParsePositiveIntPipe } from 'src/common/pipes';
 
 @ApiTags('Profiles')
@@ -64,5 +70,11 @@ export class ProfilesController {
   @Get('instruments')
   async findInstruments() {
     return await this.instrumentsService.findInstruments();
+  }
+
+  @ApiOperation({ summary: '프로필 악기 변경' })
+  @Patch('instruments')
+  async updateInstruments(@User('id') profileId: number, @Body() updateInstrumentsDto: UpdateInstrumentsDto) {
+    await this.profilesService.updateInstruments(profileId, updateInstrumentsDto);
   }
 }

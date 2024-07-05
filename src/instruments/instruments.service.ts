@@ -48,6 +48,10 @@ export class InstrumentsService {
     return { instruments };
   }
 
+  async findInstrumentsByIds(instrumentIds: number[]) {
+    return await this.instrumentsRepository.findInstrumentsByIds(instrumentIds);
+  }
+
   async findInstrument(instrumentId: number) {
     return await this.instrumentsRepository.findInstrument(instrumentId);
   }

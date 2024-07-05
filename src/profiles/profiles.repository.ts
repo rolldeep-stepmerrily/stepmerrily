@@ -121,4 +121,22 @@ export class ProfilesRepository {
       throw new InternalServerErrorException();
     }
   }
+
+  async updateInstruments(profileId: number, instrumentIds: number[]) {
+    try {
+      return await this.prismaService.profile.update({
+        where: { id: profileId },
+        data: {
+          instruments: {
+            connect: instrumentIds.map((id) => ({ id })),
+          },
+        },
+        select: { id: true },
+      });
+    } catch (e) {
+      console.error(e);
+
+      throw new InternalServerErrorException();
+    }
+  }
 }

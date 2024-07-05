@@ -1,12 +1,19 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 dayjs.extend(duration);
 
 import { ProfilesRepository } from './profiles.repository';
-import { UpdateAvatarDto, UpdateMusicDto, UpdateNicknameDto, UpdateStatusDto } from './profiles.dto';
+import {
+  UpdateAvatarDto,
+  UpdateInstrumentsDto,
+  UpdateMusicDto,
+  UpdateNicknameDto,
+  UpdateStatusDto,
+} from './profiles.dto';
 import { AwsService } from 'src/aws/aws.service';
 import { MusicsService } from 'src/musics/musics.service';
+import { InstrumentsService } from 'src/instruments/instruments.service';
 
 const { AWS_CLOUDFRONT_DOMAIN } = process.env;
 
@@ -16,6 +23,7 @@ export class ProfilesService {
     private readonly profilesRepository: ProfilesRepository,
     private readonly awsService: AwsService,
     private readonly musicService: MusicsService,
+    private readonly instrumentsService: InstrumentsService,
   ) {}
 
   async findProfile(profileId: number) {
@@ -64,22 +72,10 @@ export class ProfilesService {
   }
 
   async updateStatus(profileId: number, updateStatusDto: UpdateStatusDto) {
-    const profile = await this.findProfile(profileId);
-
-    if (!profile) {
-      throw new BadRequestException('유저를 찾을 수 없습니다.');
-    }
-
     return await this.profilesRepository.updateStatus(profileId, updateStatusDto);
   }
 
   async updateAvatar(profileId: number, updateAvatarDto: UpdateAvatarDto) {
-    const profile = await this.findProfile(profileId);
-
-    if (!profile) {
-      throw new BadRequestException('유저를 찾을 수 없습니다.');
-    }
-
     const uploadPath = `users/${profileId}/profiles/avatar`;
 
     await this.awsService.uploadImages(updateAvatarDto, uploadPath);
@@ -88,12 +84,6 @@ export class ProfilesService {
   }
 
   async updateMusic(profileId: number, { musicId }: UpdateMusicDto) {
-    const profile = await this.findProfile(profileId);
-
-    if (!profile) {
-      throw new BadRequestException('유저를 찾을 수 없습니다.');
-    }
-
     const music = await this.musicService.findMusic(musicId);
 
     if (!music) {
@@ -101,5 +91,15 @@ export class ProfilesService {
     }
 
     return await this.profilesRepository.updateMusic(profileId, musicId);
+  }
+
+  async updateInstruments(profileId: number, { instrumentIds }: UpdateInstrumentsDto) {
+    const instruments = await this.instrumentsService.findInstrumentsByIds(instrumentIds);
+
+    if (instruments.length !== instrumentIds.length) {
+      throw new NotFoundException('악기를 찾을 수 없습니다.');
+    }
+
+    return await this.profilesRepository.updateInstruments(profileId, instrumentIds);
   }
 }
