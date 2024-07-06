@@ -45,6 +45,7 @@ export class ProfilesRepository {
               },
             },
           },
+          instruments: { select: { id: true, name: true } },
         },
       });
     } catch (e) {
