@@ -50,10 +50,7 @@ export class CommentsRepository {
 
   async likeComment(userId: number, commentId: number) {
     try {
-      return await this.prismaService.like.create({
-        data: { profileId: userId, commentId },
-        select: { id: true },
-      });
+      return await this.prismaService.like.create({ data: { profileId: userId, commentId }, select: { id: true } });
     } catch (e) {
       console.error(e);
 
