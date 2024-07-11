@@ -1,19 +1,14 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
+import { IsArray, IsPositive } from 'class-validator';
 
 import { Profile } from './entities';
-import { IsArray, IsPositive } from 'class-validator';
 
 export class UpdateNicknameDto extends PickType(Profile, ['nickname'] as const) {}
 
 export class UpdateStatusDto extends PickType(Profile, ['status'] as const) {}
 
 export class UpdateAvatarDto extends Array<Express.Multer.File> {
-  @ApiProperty({
-    type: 'string',
-    format: 'binary',
-    description: '프로필 아바타',
-    required: true,
-  })
+  @ApiProperty({ type: 'string', format: 'binary', description: '프로필 아바타', required: true })
   avatar: Express.Multer.File;
 }
 
