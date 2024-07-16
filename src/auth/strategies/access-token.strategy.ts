@@ -9,13 +9,15 @@ interface IValidate {
   id: number;
 }
 
+const { JWT_SECRET_KEY } = process.env;
+
 @Injectable()
 export class AccessTokenStrategy extends PassportStrategy(Strategy, 'access') {
   constructor(private readonly usersRepository: UsersRepository) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreElements: false,
-      secretOrKey: process.env.JWT_SECRET_KEY,
+      secretOrKey: JWT_SECRET_KEY,
     });
   }
 
