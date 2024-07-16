@@ -49,11 +49,7 @@ export class AuthService {
         throw new InternalServerErrorException('메일 전송 실패');
       }
 
-      const authData: ICacheDataEmail = {
-        authCode,
-        count: (cachedData?.count ?? 0) + 1,
-        isCertified: false,
-      };
+      const authData: ICacheDataEmail = { authCode, count: (cachedData?.count ?? 0) + 1, isCertified: false };
 
       await this.cacheManager.set(`${SERVER_URL}/auth/certification/${email}`, authData);
     } catch (e) {
@@ -109,8 +105,6 @@ export class AuthService {
 
     const expiresIn = NODE_ENV === 'production' ? '15m' : '150m';
 
-    return {
-      accessToken: this.jwtService.sign({ sub: 'access', id }, { secret: JWT_SECRET_KEY, expiresIn }),
-    };
+    return { accessToken: this.jwtService.sign({ sub: 'access', id }, { secret: JWT_SECRET_KEY, expiresIn }) };
   }
 }

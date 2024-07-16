@@ -20,14 +20,9 @@ import { AuthController } from './auth.controller';
         transport: {
           host: 'smtp.daum.net',
           port: 465,
-          auth: {
-            user: process.env.EMAIL_ADDRESS,
-            pass: process.env.EMAIL_PASSWORD,
-          },
+          auth: { user: process.env.EMAIL_ADDRESS, pass: process.env.EMAIL_PASSWORD },
         },
-        defaults: {
-          from: `stepmerrily <rolldeep@stepmerrily.com>`,
-        },
+        defaults: { from: `stepmerrily <rolldeep@stepmerrily.com>` },
       }),
     }),
   ],
