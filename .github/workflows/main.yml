@@ -45,7 +45,7 @@ jobs:
             cd ~/stepmerrily
             npm ci || (echo "fail - Deploy (install dependencies on server)" && exit 1)
             npx prisma generate || (echo "fail - Deploy (generate prisma client on server)" && exit 1)
-            pm2 delete main || true
+            pm2 delete stepmerrily || true
             pm2 start dist/main.js --name stepmerrily || (echo "fail - Deploy (start application with PM2)" && exit 1)
             rm -f ~/deploy.tar.gz || (echo "fail - Deploy (remove deployment package)" && exit 1)' || (echo "fail - Deploy (execute commands on server)" && exit 1)
             rm -f private_key
