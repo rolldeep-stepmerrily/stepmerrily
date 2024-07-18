@@ -17,19 +17,19 @@ jobs:
           node-version: '18.x'
 
       - name: Install Dependencies
-        run: npm ci || exit 1
+        run: npm ci || (echo "fail - Install Dependencies" && exit 1)
 
       - name: Prisma Generate
-        run: npx prisma generate || exit 1
+        run: npx prisma generate || (echo "fail - Prisma Generate" && exit 1)
 
       - name: Build
-        run: npm run build || exit 1
+        run: npm run build || (echo "fail - Build" && exit 1)
 
       - name: Prepare Deployment Package
         run: |
           mkdir -p deploy
           cp -r dist prisma package.json package-lock.json tsconfig.json deploy/
-          tar -czf deploy.tar.gz -C deploy .
+          tar -czf deploy.tar.gz -C deploy . || (echo "fail - Prepare Deployment Package" && exit 1)
 
       - name: Deploy
         env:
@@ -38,12 +38,13 @@ jobs:
           USER: ${{ secrets.EC2_USER }}
         run: |
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          scp -o StrictHostKeyChecking=no -i private_key deploy.tar.gz ${USER}@${HOST}:~/
+          scp -o StrictHostKeyChecking=no -i private_key deploy.tar.gz ${USER}@${HOST}:~/ || (echo "fail - Deploy (copy deployment package to server)" && exit 1)
           ssh -o StrictHostKeyChecking=no -i private_key ${USER}@${HOST} '
             mkdir -p ~/stepmerrily
-            tar -xzf deploy.tar.gz -C ~/stepmerrily
+            tar -xzf deploy.tar.gz -C ~/stepmerrily || (echo "fail - Deploy (extract deployment package on server)" && exit 1)
             cd ~/stepmerrily
-            npm ci
-            npx prisma generate
-            pm2 restart main' || exit 1
+            npm ci || (echo "fail - Deploy (install dependencies on server)" && exit 1)
+            npx prisma generate || (echo "fail - Deploy (generate prisma client on server)" && exit 1)
+            pm2 restart main || pm2 start main || (echo "fail - Deploy (start/restart application with PM2)" && exit 1)
+          ' || (echo "fail - Deploy (execute commands on server)" && exit 1)
           rm -f private_key
