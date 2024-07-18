@@ -6,7 +6,7 @@ import helmet from 'helmet';
 import expressBasicAuth from 'express-basic-auth';
 
 import { AppModule } from './app.module';
-import { TransfromInterceptor } from './common/interceptors';
+import { TransformInterceptor } from './common/interceptors';
 import { HttpExceptionFilter } from './common/filters';
 
 const { NODE_ENV, AWS_CLOUDFRONT_DOMAIN, PORT, GUEST_NAME, GUEST_PASSWORD } = process.env;
@@ -16,7 +16,7 @@ const isProduction = NODE_ENV === 'production';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  app.useGlobalInterceptors(new TransfromInterceptor());
+  app.useGlobalInterceptors(new TransformInterceptor());
 
   app.useGlobalPipes(
     new ValidationPipe({

@@ -1,1 +1,1 @@
-export { TransfromInterceptor } from './transfrom.interceptor';
+export { TransformInterceptor } from './transform.interceptor';
