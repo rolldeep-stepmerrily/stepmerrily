@@ -84,6 +84,7 @@ export class PostsController {
   @ApiOperation({ summary: '게시물 삭제' })
   @Delete(':id')
   async deletePost(@User('id') userId: number, @Param('id', ParsePositiveIntPipe) postId: number) {
+    console.log('deploy test');
     await this.postsService.deletePost(userId, postId);
   }
 }
