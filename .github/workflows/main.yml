@@ -39,14 +39,12 @@ jobs:
         run: |
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
           scp -o StrictHostKeyChecking=no -i private_key deploy.tar.gz ${USER}@${HOST}:~/ || (echo "fail - Deploy (copy deployment package to server)" && exit 1)
-          ENV_BASE64=$(echo "$ENV_FILE" | base64 -w 0)
           ssh -o StrictHostKeyChecking=no -i private_key ${USER}@${HOST} '
             mkdir -p ~/stepmerrily
             tar -xzf deploy.tar.gz -C ~/stepmerrily || (echo "fail - Deploy (extract deployment package on server)" && exit 1)
             cd ~/stepmerrily 
             npm ci || (echo "fail - Deploy (install dependencies on server)" && exit 1)
             npx prisma generate || (echo "fail - Deploy (generate prisma client on server)" && exit 1)
-            pm2 delete stepmerrily || true
-            pm2 start dist/main.js --name stepmerrily || (echo "fail - Deploy (start application with PM2)" && exit 1)
+            pm2 reload stepmerrily || pm2 start dist/main.js --name stepmerrily || (echo "fail - Deploy (start/reload application with PM2)" && exit 1)
             rm -f ~/deploy.tar.gz || (echo "fail - Deploy (remove deployment package)" && exit 1)' || (echo "fail - Deploy (execute commands on server)" && exit 1)
             rm -f private_key
