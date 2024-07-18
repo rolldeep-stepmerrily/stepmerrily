@@ -36,7 +36,6 @@ jobs:
           PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           HOST: ${{ secrets.EC2_HOST }}
           USER: ${{ secrets.EC2_USER }}
-          ENV_FILE: ${{ secrets.ENV_FILE }}
         run: |
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
           scp -o StrictHostKeyChecking=no -i private_key deploy.tar.gz ${USER}@${HOST}:~/ || (echo "fail - Deploy (copy deployment package to server)" && exit 1)
@@ -44,8 +43,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i private_key ${USER}@${HOST} '
             mkdir -p ~/stepmerrily
             tar -xzf deploy.tar.gz -C ~/stepmerrily || (echo "fail - Deploy (extract deployment package on server)" && exit 1)
-            cd ~/stepmerrily
-            echo "$ENV_BASE64" | base64 -d > .env || (echo "fail - Deploy (create .env file)" && exit 1)
+            cd ~/stepmerrily 
             npm ci || (echo "fail - Deploy (install dependencies on server)" && exit 1)
             npx prisma generate || (echo "fail - Deploy (generate prisma client on server)" && exit 1)
             pm2 delete stepmerrily || true
