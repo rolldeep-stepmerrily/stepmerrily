@@ -3,13 +3,12 @@ import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import helmet from 'helmet';
-import expressBasicAuth from 'express-basic-auth';
 
 import { AppModule } from './app.module';
 import { TransformInterceptor } from './common/interceptors';
 import { HttpExceptionFilter } from './common/filters';
 
-const { NODE_ENV, AWS_CLOUDFRONT_DOMAIN, PORT, GUEST_NAME, GUEST_PASSWORD } = process.env;
+const { NODE_ENV, AWS_CLOUDFRONT_DOMAIN, PORT } = process.env;
 
 const isProduction = NODE_ENV === 'production';
 
@@ -39,7 +38,7 @@ async function bootstrap() {
     );
   }
 
-  app.use(['/', '/-json'], expressBasicAuth({ challenge: true, users: { [GUEST_NAME]: GUEST_PASSWORD } }));
+  // app.use(['/', '/-json'], expressBasicAuth({ challenge: true, users: { [GUEST_NAME]: GUEST_PASSWORD } }));
 
   const config = new DocumentBuilder()
     .setTitle('stepmerrily API Docs')
