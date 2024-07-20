@@ -45,6 +45,6 @@ jobs:
             cd ~/stepmerrily 
             npm ci || (echo "fail - Deploy (install dependencies on server)" && exit 1)
             npx prisma generate || (echo "fail - Deploy (generate prisma client on server)" && exit 1)
-            pm2 reload ecosystem.config.js --update-env || pm2 start ecosystem.config.js || (echo "fail - Deploy (start/reload application with PM2)" && exit 1)
+            pm2 reload ecosystem.config.js || pm2 start ecosystem.config.js || (echo "fail - Deploy (start/reload application with PM2)" && exit 1)
             rm -f ~/deploy.tar.gz || (echo "fail - Deploy (remove deployment package)" && exit 1)' || (echo "fail - Deploy (execute commands on server)" && exit 1)
           rm -f private_key
