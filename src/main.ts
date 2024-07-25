@@ -3,6 +3,8 @@ import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import helmet from 'helmet';
+import * as express from 'express';
+import { join } from 'path';
 
 import { AppModule } from './app.module';
 import { TransformInterceptor } from './common/interceptors';
@@ -40,6 +42,8 @@ async function bootstrap() {
 
   // app.use(['/', '/-json'], expressBasicAuth({ challenge: true, users: { [GUEST_NAME]: GUEST_PASSWORD } }));
 
+  app.use(express.static(join(__dirname, '..', 'public')));
+
   const config = new DocumentBuilder()
     .setTitle('stepmerrily API Docs')
     .setDescription('⚠️: ADMIN 계정으로 로그인해야합니다..')
@@ -57,6 +61,8 @@ async function bootstrap() {
       syntaxHighlight: { theme: 'arta' },
       tryItOutEnabled: true,
     },
+    customJs: '/swagger-dark.js',
+    customCssUrl: '/swagger-dark.css',
   });
 
   await app.listen(PORT);
