@@ -50,7 +50,14 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
 
-  SwaggerModule.setup('/', app, document, { swaggerOptions: { defaultModelsExpandDepth: 0 } });
+  SwaggerModule.setup('/', app, document, {
+    swaggerOptions: {
+      defaultModelsExpandDepth: 0,
+      persistAuthorization: true,
+      syntaxHighlight: { theme: 'arta' },
+      tryItOutEnabled: true,
+    },
+  });
 
   await app.listen(PORT);
 }
