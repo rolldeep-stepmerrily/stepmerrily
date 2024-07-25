@@ -18,7 +18,7 @@ export class AlbumsService {
 
   async findAlbums() {
     const findAlbums = await this.albumsRepository.findAlbums();
-    ``;
+
     const albumsAsync = findAlbums.map(async (album) => {
       const duration = album.duration > 0 ? dayjs.duration(album.duration, 'seconds').format('HH:mm:ss') : null;
 
