@@ -1306,9 +1306,7 @@
 
   .swagger-ui textarea {
     background: rgba(28, 28, 33, 0.8);
-    color: #b5bac9;
-    min-height: 80px;
-    max-width: 340px;
+    color: #b5bac9; 
   }
 
   .swagger-ui input[disabled],
