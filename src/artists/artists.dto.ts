@@ -16,7 +16,7 @@ export class CreateArtistAvatarDto extends Array<Express.Multer.File> {
 
 export class CreateArtistWithAvatarDto extends IntersectionType(CreateArtistDto, CreateArtistAvatarDto) {}
 
-export class UpdateArtistDto extends PickType(Artist, ['name', 'description'] as const) {}
+export class UpdateArtistDto extends PickType(Artist, ['name', 'description', 'avatar'] as const) {}
 
 export class UpdateArtistAvatarDto extends Array<Express.Multer.File> {
   @ApiProperty({

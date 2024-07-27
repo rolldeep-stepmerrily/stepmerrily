@@ -57,19 +57,15 @@ export class ArtistsService {
     return await this.artistsRepository.createArtist(name, description);
   }
 
-  async updateArtist(
-    artistId: number,
-    { name, description }: UpdateArtistDto,
-    updateArtistAvatarDto: UpdateArtistAvatarDto,
-  ) {
+  async updateArtist(artistId: number, updateArtistDto: UpdateArtistDto, updateArtistAvatarDto: UpdateArtistAvatarDto) {
     const findArtist = await this.findArtist(artistId);
 
     if (!findArtist) {
       throw new NotFoundException('아티스트를 찾을 수 없습니다.');
     }
 
-    if (findArtist.name !== name) {
-      const findArtistByName = await this.findArtistByName(name);
+    if (findArtist.name !== updateArtistDto.name) {
+      const findArtistByName = await this.findArtistByName(updateArtistDto.name);
 
       if (findArtistByName) {
         throw new ConflictException('이미 등록된 아티스트 입니다.');
@@ -83,10 +79,10 @@ export class ArtistsService {
 
       await this.awsService.uploadImages(updateArtistAvatarDto, uploadPath);
 
-      return await this.artistsRepository.updateArtist(artistId, name, description, uploadPath);
+      updateArtistDto.avatar = uploadPath;
     }
 
-    return await this.artistsRepository.updateArtist(artistId, name, description);
+    return await this.artistsRepository.updateArtist(artistId, updateArtistDto);
   }
 
   async deleteArtist(artistId: number) {

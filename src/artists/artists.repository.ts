@@ -2,6 +2,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import dayjs from 'dayjs';
 
 import { PrismaService } from 'src/prisma/prisma.service';
+import { UpdateArtistDto } from './artists.dto';
 
 @Injectable()
 export class ArtistsRepository {
@@ -64,11 +65,11 @@ export class ArtistsRepository {
     }
   }
 
-  async updateArtist(artistId: number, name: string, description: string | null, avatar: string | null = null) {
+  async updateArtist(artistId: number, updateArtistDto: UpdateArtistDto) {
     try {
       return await this.prismaService.artist.update({
         where: { id: artistId },
-        data: { name, description, avatar },
+        data: { ...updateArtistDto },
         select: { id: true },
       });
     } catch (e) {
