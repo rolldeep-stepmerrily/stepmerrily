@@ -5,12 +5,14 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import helmet from 'helmet';
 import * as express from 'express';
 import { join } from 'path';
+import expressBasicAuth from 'express-basic-auth';
+import * as fs from 'fs';
 
 import { AppModule } from './app.module';
 import { TransformInterceptor } from './common/interceptors';
 import { HttpExceptionFilter } from './common/filters';
 
-const { NODE_ENV, AWS_CLOUDFRONT_DOMAIN, PORT } = process.env;
+const { NODE_ENV, AWS_CLOUDFRONT_DOMAIN, PORT, GUEST_NAME, GUEST_PASSWORD } = process.env;
 
 const isProduction = NODE_ENV === 'production';
 
@@ -40,14 +42,17 @@ async function bootstrap() {
     );
   }
 
-  // app.use(['/', '/-json'], expressBasicAuth({ challenge: true, users: { [GUEST_NAME]: GUEST_PASSWORD } }));
+  app.use(['/', '/-json'], expressBasicAuth({ challenge: true, users: { [GUEST_NAME]: GUEST_PASSWORD } }));
 
-  app.use(express.static(join(__dirname, '..', 'public')));
+  app.use(express.static(join(__dirname, '..', 'swagger')));
+  app.useStaticAssets(join(__dirname, '..', 'swagger'), {
+    prefix: '/swagger/',
+  });
+
+  const updateInfo = fs.readFileSync(join(__dirname, '..', 'swagger', 'swagger-info.md'), 'utf8');
 
   const config = new DocumentBuilder()
-    .setTitle('stepmerrily API Docs')
-    .setDescription('⚠️: ADMIN 계정으로 로그인해야합니다..')
-    .setVersion('1.0.0')
+    .setDescription(updateInfo)
     .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }, 'accessToken')
     .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }, 'refreshToken')
     .build();

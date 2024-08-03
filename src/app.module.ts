@@ -18,6 +18,7 @@ import { PlaylistsModule } from './playlists/playlists.module';
 import { ClassificationsModule } from './classifications/classifications.module';
 import { InstrumentsModule } from './instruments/instruments.module';
 import { ManufacturersModule } from './manufacturers/manufacturers.module';
+import { AppController } from './app.controller';
 
 const { REDIS_HOST, REDIS_PORT, REDIS_PASSWORD } = process.env;
 
@@ -73,6 +74,7 @@ const { REDIS_HOST, REDIS_PORT, REDIS_PASSWORD } = process.env;
     InstrumentsModule,
     ManufacturersModule,
   ],
+  controllers: [AppController],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
