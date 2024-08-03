@@ -36,7 +36,11 @@ async function bootstrap() {
     app.use(
       helmet({
         contentSecurityPolicy: {
-          directives: { defaultSrc: ["'self'"], imgSrc: ["'self'", 'data:', `${AWS_CLOUDFRONT_DOMAIN}`] },
+          directives: {
+            defaultSrc: ["'self'"],
+            imgSrc: ["'self'", 'data:', `${AWS_CLOUDFRONT_DOMAIN}`],
+            scriptSrc: ["'self'", 'https://cdn.jsdelivr.net'],
+          },
         },
       }),
     );
