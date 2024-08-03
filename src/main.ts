@@ -31,7 +31,6 @@ async function bootstrap() {
   );
 
   app.useGlobalFilters(new HttpExceptionFilter());
-
   if (isProduction) {
     app.use(
       helmet({
@@ -39,7 +38,7 @@ async function bootstrap() {
           directives: {
             defaultSrc: ["'self'"],
             imgSrc: ["'self'", 'data:', `${AWS_CLOUDFRONT_DOMAIN}`],
-            scriptSrc: ["'self'", 'https://cdn.jsdelivr.net'],
+            scriptSrc: ["'self'", 'https://cdn.jsdelivr.net', "'unsafe-inline'"],
           },
         },
       }),
