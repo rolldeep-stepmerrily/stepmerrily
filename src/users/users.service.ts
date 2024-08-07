@@ -31,6 +31,7 @@ export class UsersService {
       throw new ConflictException('이미 존재하는 아이디 입니다.');
     }
   }
+
   async checkEmailForSignUp({ email }: CheckEmailForSignUpDto) {
     const user = await this.usersRepository.findUserByEmail(email);
 
