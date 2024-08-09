@@ -19,6 +19,7 @@ import { ClassificationsModule } from './classifications/classifications.module'
 import { InstrumentsModule } from './instruments/instruments.module';
 import { ManufacturersModule } from './manufacturers/manufacturers.module';
 import { AppController } from './app.controller';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 const { REDIS_HOST, REDIS_PORT, REDIS_PASSWORD } = process.env;
 
@@ -73,8 +74,10 @@ const { REDIS_HOST, REDIS_PORT, REDIS_PASSWORD } = process.env;
     ClassificationsModule,
     InstrumentsModule,
     ManufacturersModule,
+    ThrottlerModule.forRoot([{ ttl: 60000, limit: 10 }]),
   ],
   controllers: [AppController],
+  providers: [{ provide: 'APP_GUARD', useClass: ThrottlerGuard }],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
