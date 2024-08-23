@@ -17,6 +17,7 @@ export class AppController {
     // }
 
     const filePath = join(__dirname, '..', 'swagger', 'swagger-version-log.md');
+
     const content = await readFile(filePath, { encoding: 'utf-8' });
 
     return `
