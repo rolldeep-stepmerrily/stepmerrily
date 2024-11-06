@@ -1,19 +1,23 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
-import axios from 'axios';
-
 dayjs.extend(duration);
 
-import { MusicsRepository } from './musics.repository';
-import { IMusic } from './musics.interface';
-import { CreateMusicDto, SearchMusicsDto, UpdateMusicDto } from './musics.dto';
+import { CustomHttpException } from '@@exceptions';
 
-const { LAST_FM_API_URL, LAST_FM_API_KEY } = process.env;
+import { CreateMusicDto, SearchMusicsDto, UpdateMusicDto } from './musics.dto';
+import { MUSIC_ERRORS } from './musics.exception';
+import { IMusic } from './musics.interface';
+import { MusicsRepository } from './musics.repository';
 
 @Injectable()
 export class MusicsService {
-  constructor(private readonly musicsRepository: MusicsRepository) {}
+  constructor(
+    private readonly musicsRepository: MusicsRepository,
+    @Inject('LAST_FM_API_URL') private readonly lastFmApiUrl: string,
+    @Inject('LAST_FM_API_KEY') private readonly lastFmApiKey: string,
+  ) {}
 
   async findMusics() {
     const musics = await this.musicsRepository.findMusics();
@@ -25,7 +29,7 @@ export class MusicsService {
     const findMusics = await this.musicsRepository.searchMusics(query);
 
     if (!findMusics.length) {
-      throw new NotFoundException('검색 결과가 없습니다.');
+      throw new CustomHttpException(MUSIC_ERRORS.MUSIC_NOT_FOUND);
     }
 
     const musics = findMusics.map((music) => {
@@ -38,29 +42,29 @@ export class MusicsService {
   }
 
   async searchMusicsFromLastFM({ query, page }: SearchMusicsDto) {
-    try {
-      const url = `${LAST_FM_API_URL}/?method=track.search&track=${query}&api_key=${LAST_FM_API_KEY}&format=json&limit=20&page=${page}`;
+    const url = `${this.lastFmApiUrl}/?method=track.search&track=${query}&api_key=${this.lastFmApiKey}&format=json&limit=20&page=${page}`;
 
-      const result = await axios.get(url);
+    const response = await fetch(url);
 
-      const tracks = result.data.results.trackmatches.track;
-
-      const musics = tracks.map((track: IMusic, index: number) => {
-        return {
-          id: index + 1,
-          title: track.name,
-          artist: track.artist,
-          listeners: parseInt(track.listeners) ?? 0,
-          images: track.image,
-        };
-      });
-
-      return { musics };
-    } catch (e) {
-      console.error(e);
-
-      throw new InternalServerErrorException();
+    if (!response.ok) {
+      throw new CustomHttpException(MUSIC_ERRORS.FAILED_TO_FETCH);
     }
+
+    const result = await response.json();
+
+    const tracks = result.data.results.trackmatches.track;
+
+    const musics = tracks.map((track: IMusic, index: number) => {
+      return {
+        id: index + 1,
+        title: track.name,
+        artist: track.artist,
+        listeners: parseInt(track.listeners) ?? 0,
+        images: track.image,
+      };
+    });
+
+    return { musics };
   }
 
   async findMusic(musicId: number) {
@@ -79,7 +83,7 @@ export class MusicsService {
     const music = await this.findMusic(musicId);
 
     if (!music) {
-      throw new NotFoundException('음악을 찾을 수 없습니다.');
+      throw new CustomHttpException(MUSIC_ERRORS.MUSIC_NOT_FOUND);
     }
 
     const [hours, minutes, seconds] = time.split(':').map(Number);
@@ -93,7 +97,7 @@ export class MusicsService {
     const music = await this.findMusic(musicId);
 
     if (!music) {
-      throw new NotFoundException('음악을 찾을 수 없습니다.');
+      throw new CustomHttpException(MUSIC_ERRORS.MUSIC_NOT_FOUND);
     }
 
     return await this.musicsRepository.deleteMusic(musicId);

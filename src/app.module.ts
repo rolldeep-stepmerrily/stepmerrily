@@ -1,27 +1,27 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
 import { CacheModule } from '@nestjs/cache-manager';
-import { RedisClientOptions } from 'redis';
-import { redisStore } from 'cache-manager-redis-yet';
-import Joi from 'joi';
-
-import { PrismaModule } from './prisma/prisma.module';
-import { UsersModule } from './users/users.module';
-import { HttpLoggerMiddleware } from './common/middlewares';
-import { PostsModule } from './posts/posts.module';
-import { CommentsModule } from './comments/comments.module';
-import { AuthModule } from './auth/auth.module';
-import { MusicsModule } from './musics/musics.module';
-import { ArtistsModule } from './artists/artists.module';
-import { AlbumsModule } from './albums/albums.module';
-import { PlaylistsModule } from './playlists/playlists.module';
-import { ClassificationsModule } from './classifications/classifications.module';
-import { InstrumentsModule } from './instruments/instruments.module';
-import { ManufacturersModule } from './manufacturers/manufacturers.module';
-import { AppController } from './app.controller';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
-const { REDIS_HOST, REDIS_PORT, REDIS_PASSWORD } = process.env;
+import { redisStore } from 'cache-manager-redis-yet';
+import Joi from 'joi';
+import { RedisClientOptions } from 'redis';
+
+import { AlbumsModule } from './albums/albums.module';
+import { AppController } from './app.controller';
+import { ArtistsModule } from './artists/artists.module';
+import { AuthModule } from './auth/auth.module';
+import { ClassificationsModule } from './classifications/classifications.module';
+import { CommentsModule } from './comments/comments.module';
+import { ConfigProviderModule } from './common/config-provider/config-provider.module';
+import { HttpLoggerMiddleware } from './common/middlewares';
+import { InstrumentsModule } from './instruments/instruments.module';
+import { ManufacturersModule } from './manufacturers/manufacturers.module';
+import { MusicsModule } from './musics/musics.module';
+import { PlaylistsModule } from './playlists/playlists.module';
+import { PostsModule } from './posts/posts.module';
+import { PrismaModule } from './prisma/prisma.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -46,22 +46,30 @@ const { REDIS_HOST, REDIS_PORT, REDIS_PASSWORD } = process.env;
         REDIS_HOST: Joi.string().required(),
         REDIS_PASSWORD: Joi.string().required(),
         REDIS_PORT: Joi.number().required(),
-        GIT_ACCEESS_TOKEN: Joi.string().required(),
+        GIT_ACCESS_TOKEN: Joi.string().required(),
         LAST_FM_API_KEY: Joi.string().required(),
         LAST_FM_API_SECRET: Joi.string().required(),
         LAST_FM_API_URL: Joi.string().required(),
       }),
+      isGlobal: true,
       validationOptions: {
         abortEarly: true,
       },
     }),
     PrismaModule,
-    CacheModule.register<RedisClientOptions>({
-      store: redisStore,
-      socket: { host: REDIS_HOST, port: REDIS_PORT },
-      password: REDIS_PASSWORD,
-      ttl: 5 * 60 * 1000,
+    CacheModule.registerAsync<RedisClientOptions>({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        store: redisStore,
+        socket: {
+          host: configService.getOrThrow<string>('REDIS_HOST'),
+          port: configService.getOrThrow<number>('REDIS_PORT'),
+        },
+        password: configService.getOrThrow<string>('REDIS_PASSWORD'),
+        ttl: 5 * 60 * 1000,
+      }),
       isGlobal: true,
+      inject: [ConfigService],
     }),
     AuthModule,
     UsersModule,
@@ -75,6 +83,7 @@ const { REDIS_HOST, REDIS_PORT, REDIS_PASSWORD } = process.env;
     InstrumentsModule,
     ManufacturersModule,
     ThrottlerModule.forRoot([{ ttl: 60000, limit: 10 }]),
+    ConfigProviderModule,
   ],
   controllers: [AppController],
   providers: [{ provide: 'APP_GUARD', useClass: ThrottlerGuard }],

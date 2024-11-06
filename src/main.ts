@@ -1,23 +1,26 @@
-import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { NestExpressApplication } from '@nestjs/platform-express';
-import helmet from 'helmet';
-import * as express from 'express';
-import { join } from 'path';
-import expressBasicAuth from 'express-basic-auth';
 import * as fs from 'fs';
+import { join } from 'path';
+
+import { ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+
+import * as express from 'express';
+import expressBasicAuth from 'express-basic-auth';
+import helmet from 'helmet';
 
 import { AppModule } from './app.module';
-import { TransformInterceptor } from './common/interceptors';
 import { HttpExceptionFilter } from './common/filters';
-
-const { NODE_ENV, AWS_CLOUDFRONT_DOMAIN, PORT, GUEST_NAME, GUEST_PASSWORD } = process.env;
-
-const isProduction = NODE_ENV === 'production';
+import { TransformInterceptor } from './common/interceptors';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  const configService = app.get(ConfigService);
+
+  const isProduction = configService.getOrThrow<string>('NODE_ENV') === 'production';
 
   app.useGlobalInterceptors(new TransformInterceptor());
 
@@ -33,12 +36,14 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter());
 
   if (isProduction) {
+    const awsCloudfrontDomain = configService.getOrThrow<string>('AWS_CLOUDFRONT_DOMAIN');
+
     app.use(
       helmet({
         contentSecurityPolicy: {
           directives: {
             defaultSrc: ["'self'"],
-            imgSrc: ["'self'", 'data:', `${AWS_CLOUDFRONT_DOMAIN}`],
+            imgSrc: ["'self'", 'data:', `${awsCloudfrontDomain}`],
             scriptSrc: ["'self'", 'https://cdn.jsdelivr.net', "'unsafe-inline'"],
           },
         },
@@ -46,7 +51,10 @@ async function bootstrap() {
     );
   }
 
-  app.use(['/', '/-json'], expressBasicAuth({ challenge: true, users: { [GUEST_NAME]: GUEST_PASSWORD } }));
+  const guestName = configService.getOrThrow<string>('GUEST_NAME');
+  const guestPassword = configService.getOrThrow<string>('GUEST_PASSWORD');
+
+  app.use(['/', '/-json'], expressBasicAuth({ challenge: true, users: { [guestName]: guestPassword } }));
 
   app.use(express.static(join(__dirname, '..', 'swagger')));
   app.useStaticAssets(join(__dirname, '..', 'swagger'), {
@@ -74,7 +82,9 @@ async function bootstrap() {
     customCssUrl: '/swagger-dark.css',
   });
 
-  await app.listen(PORT);
+  const port = configService.getOrThrow<number>('PORT');
+
+  await app.listen(port);
 }
 
 bootstrap();

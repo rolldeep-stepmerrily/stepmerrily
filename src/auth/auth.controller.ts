@@ -1,8 +1,9 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
-import { AuthService } from './auth.service';
 import { CertifyEmailDto, VerifyEmailDto } from 'src/users/users.dto';
+
+import { AuthService } from './auth.service';
 
 @ApiTags('Auth')
 @Controller('auth')

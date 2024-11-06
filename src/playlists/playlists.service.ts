@@ -1,19 +1,23 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 dayjs.extend(duration);
 
-import { PlaylistsRepository } from './playlists.repository';
-import { CreatePlaylistDto, UpdatePlaylistDto } from './playlists.dto';
+import { CustomHttpException } from '@@exceptions';
+
 import { AwsService } from 'src/aws/aws.service';
 
-const { AWS_CLOUDFRONT_DOMAIN } = process.env;
+import { CreatePlaylistDto, UpdatePlaylistDto } from './playlists.dto';
+import { PLAYLIST_ERRORS } from './playlists.exception';
+import { PlaylistsRepository } from './playlists.repository';
 
 @Injectable()
 export class PlaylistsService {
   constructor(
     private readonly playlistsRepository: PlaylistsRepository,
     private readonly awsService: AwsService,
+    @Inject('AWS_CLOUDFRONT_DOMAIN') private readonly awsCloudfrontDomain: string,
   ) {}
 
   async createPlaylist(profileId: number, createPlaylistDto: CreatePlaylistDto) {
@@ -26,7 +30,7 @@ export class PlaylistsService {
     const playlistsAsync = findPlaylists.map(async (playlist) => {
       const avatars = playlist.profile.avatar ? await this.awsService.findImages(playlist.profile.avatar) : null;
 
-      const avatar = avatars ? `${AWS_CLOUDFRONT_DOMAIN}/${avatars[avatars.length - 1].Key}` : null;
+      const avatar = avatars ? `${this.awsCloudfrontDomain}/${avatars[avatars.length - 1].Key}` : null;
 
       let duration = 0;
 
@@ -36,7 +40,7 @@ export class PlaylistsService {
 
           const covers = music.album.cover ? await this.awsService.findImages(music.album.cover) : null;
 
-          return covers ? `${AWS_CLOUDFRONT_DOMAIN}/${covers[covers.length - 1].Key}` : null;
+          return covers ? `${this.awsCloudfrontDomain}/${covers[covers.length - 1].Key}` : null;
         }),
       );
 
@@ -63,11 +67,11 @@ export class PlaylistsService {
     const playlist = await this.findPlaylist(playlistId);
 
     if (!playlist) {
-      throw new NotFoundException('플레이리스트를 찾을 수 없습니다.');
+      throw new CustomHttpException(PLAYLIST_ERRORS.PLAYLIST_NOT_FOUND);
     }
 
     if (playlist.profile.id !== profileId) {
-      throw new BadRequestException('플레이리스트 생성자만 수정할 수 있습니다.');
+      throw new CustomHttpException(PLAYLIST_ERRORS.INVALID_USER);
     }
 
     return await this.playlistsRepository.updatePlaylist(profileId, updatePlaylistDto);
@@ -77,11 +81,11 @@ export class PlaylistsService {
     const playlist = await this.findPlaylist(playlistId);
 
     if (!playlist) {
-      throw new NotFoundException('플레이리스트를 찾을 수 없습니다.');
+      throw new CustomHttpException(PLAYLIST_ERRORS.PLAYLIST_NOT_FOUND);
     }
 
     if (playlist.profile.id !== profileId) {
-      throw new BadRequestException('플레이리스트 생성자만 삭제할 수 있습니다.');
+      throw new CustomHttpException(PLAYLIST_ERRORS.INVALID_USER);
     }
 
     return await this.playlistsRepository.deletePlaylist(playlistId);

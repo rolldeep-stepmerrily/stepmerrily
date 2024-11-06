@@ -1,10 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
+
 import { Profile as ProfileModel } from '@prisma/client';
 import { IsOptional, IsPositive, IsString, Matches } from 'class-validator';
 
-import { Common } from 'src/common/entities';
+import { BaseEntity } from '@@entities';
 
-export class Profile extends Common implements ProfileModel {
+export class Profile extends BaseEntity implements ProfileModel {
   @ApiProperty({ description: '프로필 ID', example: 1 })
   @IsPositive()
   id: number;

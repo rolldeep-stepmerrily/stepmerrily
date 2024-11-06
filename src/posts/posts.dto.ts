@@ -1,4 +1,5 @@
 import { ApiProperty, IntersectionType, PickType } from '@nestjs/swagger';
+
 import { IsInt, Min } from 'class-validator';
 
 import { Post } from './entities';

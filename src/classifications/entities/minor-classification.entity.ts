@@ -1,10 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
+
 import { MinorClassification as MinorClassificationModel } from '@prisma/client';
 import { IsPositive, IsString } from 'class-validator';
 
-import { Common } from 'src/common/entities';
+import { BaseEntity } from '@@entities';
 
-export class MinorClassification extends Common implements MinorClassificationModel {
+export class MinorClassification extends BaseEntity implements MinorClassificationModel {
   @ApiProperty({ description: '소분류 ID', minimum: 1 })
   @IsPositive()
   id: number;

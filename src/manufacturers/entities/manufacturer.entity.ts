@@ -1,10 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
+
 import { Manufacturer as ManufacturerModel } from '@prisma/client';
 import { IsPositive, IsString } from 'class-validator';
 
-import { Common } from 'src/common/entities';
+import { BaseEntity } from '@@entities';
 
-export class Manufacturer extends Common implements ManufacturerModel {
+export class Manufacturer extends BaseEntity implements ManufacturerModel {
   @ApiProperty({ description: '제조사 ID' })
   @IsPositive()
   id: number;

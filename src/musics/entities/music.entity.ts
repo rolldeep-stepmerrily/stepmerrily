@@ -1,10 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
+
 import { Music as MusicModel } from '@prisma/client';
 import { IsBoolean, IsPositive, IsString, Matches } from 'class-validator';
 
-import { Common } from 'src/common/entities';
+import { BaseEntity } from '@@entities';
 
-export class Music extends Common implements MusicModel {
+export class Music extends BaseEntity implements MusicModel {
   @ApiProperty({ description: '음악 ID' })
   @IsPositive()
   id: number;

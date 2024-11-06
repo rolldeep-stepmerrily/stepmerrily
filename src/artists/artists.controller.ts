@@ -10,10 +10,12 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 
-import { ArtistsService } from './artists.service';
+import { ParsePositiveIntPipe } from '@@pipes';
+
 import {
   CreateArtistAvatarDto,
   CreateArtistDto,
@@ -22,8 +24,7 @@ import {
   UpdateArtistDto,
   UpdateArtistWithAvatarDto,
 } from './artists.dto';
-import { ParsePositiveIntPipe } from 'src/common/pipes';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { ArtistsService } from './artists.service';
 
 @ApiTags('Artists')
 @ApiBearerAuth('accessToken')

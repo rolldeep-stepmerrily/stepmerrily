@@ -1,14 +1,19 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 
-import { ArtistsRepository } from './artists.repository';
+import { CustomHttpException } from '@@exceptions';
+
 import { AwsService } from 'src/aws/aws.service';
+
 import { CreateArtistAvatarDto, CreateArtistDto, UpdateArtistAvatarDto, UpdateArtistDto } from './artists.dto';
+import { ARTIST_ERRORS } from './artists.exception';
+import { ArtistsRepository } from './artists.repository';
 
 @Injectable()
 export class ArtistsService {
   constructor(
     private readonly artistsRepository: ArtistsRepository,
     private readonly awsService: AwsService,
+    @Inject('AWS_CLOUDFRONT_DOMAIN') private readonly awsCloudfrontDomain: string,
   ) {}
 
   async findArtists() {
@@ -17,7 +22,7 @@ export class ArtistsService {
     const artistsAsync = findArtists.map(async (artist) => {
       const avatars = artist.avatar ? await this.awsService.findImages(artist.avatar) : null;
 
-      const avatar = avatars ? `${process.env.AWS_CLOUDFRONT_DOMAIN}/${avatars[avatars.length - 1].Key}` : null;
+      const avatar = avatars ? `${this.awsCloudfrontDomain}/${avatars[avatars.length - 1].Key}` : null;
 
       return { ...artist, avatar };
     });
@@ -39,7 +44,7 @@ export class ArtistsService {
     const artist = await this.findArtistByName(name);
 
     if (artist) {
-      throw new ConflictException('이미 등록된 아티스트 입니다.');
+      throw new CustomHttpException(ARTIST_ERRORS.DUPLICATED_ARTIST);
     }
 
     if (createArtistAvatarDto.length > 0) {
@@ -61,14 +66,14 @@ export class ArtistsService {
     const findArtist = await this.findArtist(artistId);
 
     if (!findArtist) {
-      throw new NotFoundException('아티스트를 찾을 수 없습니다.');
+      throw new CustomHttpException(ARTIST_ERRORS.ARTIST_NOT_FOUND);
     }
 
     if (findArtist.name !== updateArtistDto.name) {
       const findArtistByName = await this.findArtistByName(updateArtistDto.name);
 
       if (findArtistByName) {
-        throw new ConflictException('이미 등록된 아티스트 입니다.');
+        throw new CustomHttpException(ARTIST_ERRORS.DUPLICATED_ARTIST);
       }
     }
 
@@ -89,7 +94,7 @@ export class ArtistsService {
     const artist = await this.findArtist(artistId);
 
     if (!artist) {
-      throw new NotFoundException('아티스트를 찾을 수 없습니다.');
+      throw new CustomHttpException(ARTIST_ERRORS.ARTIST_NOT_FOUND);
     }
 
     return await this.artistsRepository.deleteArtist(artistId);

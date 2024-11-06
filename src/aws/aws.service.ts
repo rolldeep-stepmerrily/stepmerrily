@@ -1,24 +1,32 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+
 import { S3 } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
 import dayjs from 'dayjs';
 
-const { AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_S3_BUCKET } = process.env;
+import { CustomHttpException } from '@@exceptions';
+
+import { AWS_ERRORS } from './aws.exception';
 
 @Injectable()
 export class AwsService {
   private readonly s3: S3;
 
-  constructor() {
+  constructor(
+    @Inject('AWS_REGION') private readonly awsRegion: string,
+    @Inject('AWS_ACCESS_KEY_ID') private readonly awsAccessKeyId: string,
+    @Inject('AWS_SECRET_ACCESS_KEY') private readonly awsSecretAccessKey: string,
+    @Inject('AWS_S3_BUCKET') private readonly awsS3Bucket: string,
+  ) {
     this.s3 = new S3({
-      region: AWS_REGION,
-      credentials: { accessKeyId: AWS_ACCESS_KEY_ID, secretAccessKey: AWS_SECRET_ACCESS_KEY },
+      region: this.awsRegion,
+      credentials: { accessKeyId: this.awsAccessKeyId, secretAccessKey: this.awsSecretAccessKey },
     });
   }
 
   async findImages(prefix: string) {
     const objects = await this.s3.listObjectsV2({
-      Bucket: AWS_S3_BUCKET,
+      Bucket: this.awsS3Bucket,
       Prefix: prefix,
     });
 
@@ -29,7 +37,7 @@ export class AwsService {
     try {
       const promises = images.map(async (image, index) => {
         const params = {
-          Bucket: AWS_S3_BUCKET,
+          Bucket: this.awsS3Bucket,
           Key: `${path}/${dayjs().unix()}_${index}`,
           Body: image.buffer,
           ContentType: image.mimetype,
@@ -42,13 +50,13 @@ export class AwsService {
     } catch (e) {
       console.error(e);
 
-      throw new InternalServerErrorException();
+      throw new CustomHttpException(AWS_ERRORS.FAILED_TO_UPLOAD_FILE);
     }
   }
 
   async deleteImages(prefix: string) {
     const objects = await this.s3.listObjectsV2({
-      Bucket: AWS_S3_BUCKET,
+      Bucket: this.awsS3Bucket,
       Prefix: prefix,
     });
 
@@ -56,7 +64,7 @@ export class AwsService {
       const keys = objects.Contents.map((object) => ({ Key: object.Key }));
 
       await this.s3.deleteObjects({
-        Bucket: AWS_S3_BUCKET,
+        Bucket: this.awsS3Bucket,
         Delete: { Objects: keys },
       });
     }

@@ -1,10 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
+
 import { Album as AlbumModel } from '@prisma/client';
 import { IsOptional, IsPositive, IsString, Matches } from 'class-validator';
 
-import { Common } from 'src/common/entities';
+import { BaseEntity } from '@@entities';
 
-export class Album extends Common implements AlbumModel {
+export class Album extends BaseEntity implements AlbumModel {
   @ApiProperty({ description: '앨범 ID', minimum: 1 })
   @IsPositive()
   id: number;

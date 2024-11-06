@@ -1,10 +1,11 @@
-import { Term as TermModel } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
+
+import { Term as TermModel } from '@prisma/client';
 import { IsBoolean, IsPositive } from 'class-validator';
 
-import { Common } from 'src/common/entities';
+import { BaseEntity } from '@@entities';
 
-export class Term extends Common implements TermModel {
+export class Term extends BaseEntity implements TermModel {
   @ApiProperty({ description: 'ID', minimum: 1 })
   @IsPositive()
   id: number;

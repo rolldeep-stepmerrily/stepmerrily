@@ -1,12 +1,15 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { ConfigService } from '@nestjs/config';
 
-const { NODE_ENV } = process.env;
+import { PrismaClient } from '@prisma/client';
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
-  constructor() {
-    super({ log: NODE_ENV === 'development' ? ['query', 'info', 'warn', 'error'] : ['warn', 'error'] });
+  constructor(private readonly configService: ConfigService) {
+    super({
+      log:
+        configService.getOrThrow<string>('NODE_ENV') === 'development' ? ['info', 'warn', 'error'] : ['warn', 'error'],
+    });
   }
 
   async onModuleInit() {

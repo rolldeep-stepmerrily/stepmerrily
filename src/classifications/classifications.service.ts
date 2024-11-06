@@ -1,12 +1,15 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
-import { ClassificationsRepository } from './classifications.repository';
+import { CustomHttpException } from '@@exceptions';
+
 import {
   CreateMajorClassificationDto,
   CreateMinorClassificationDto,
   UpdateMajorClassificationDto,
   UpdateMinorClassificationDto,
 } from './classifications.dto';
+import { CLASSIFICATIONS_ERRORS } from './classifications.exception';
+import { ClassificationsRepository } from './classifications.repository';
 
 @Injectable()
 export class ClassificationsService {
@@ -33,7 +36,7 @@ export class ClassificationsService {
     const majorClassification = await this.findMajorClassification(majorClassificationId);
 
     if (!majorClassification) {
-      throw new NotFoundException('악기 분류를 찾을 수 없습니다.');
+      throw new CustomHttpException(CLASSIFICATIONS_ERRORS.CLASSIFICATION_NOT_FOUND);
     }
 
     return await this.classificationsRepository.updateMajorClassification(
@@ -46,7 +49,7 @@ export class ClassificationsService {
     const classification = await this.findMajorClassification(majorClassificationId);
 
     if (!classification) {
-      throw new NotFoundException('악기 분류를 찾을 수 없습니다.');
+      throw new CustomHttpException(CLASSIFICATIONS_ERRORS.CLASSIFICATION_NOT_FOUND);
     }
 
     return await this.classificationsRepository.deleteMajorClassification(majorClassificationId);
@@ -73,7 +76,7 @@ export class ClassificationsService {
     const minorClassification = await this.findMinorClassification(minorClassificationId);
 
     if (!minorClassification) {
-      throw new NotFoundException('악기 분류를 찾을 수 없습니다.');
+      throw new CustomHttpException(CLASSIFICATIONS_ERRORS.CLASSIFICATION_NOT_FOUND);
     }
 
     return await this.classificationsRepository.updateMinorClassification(
@@ -86,7 +89,7 @@ export class ClassificationsService {
     const minorClassification = await this.findMinorClassification(minorClassificationId);
 
     if (!minorClassification) {
-      throw new NotFoundException('악기 분류를 찾을 수 없습니다.');
+      throw new CustomHttpException(CLASSIFICATIONS_ERRORS.CLASSIFICATION_NOT_FOUND);
     }
 
     return await this.classificationsRepository.deleteMinorClassification(minorClassification.id);

@@ -1,8 +1,12 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 
-import { CommentsRepository } from './comments.repository';
+import { CustomHttpException } from '@@exceptions';
+
 import { PostsRepository } from 'src/posts/posts.repository';
+
 import { CreateCommentDto, UpdateCommentDto } from './comments.dto';
+import { COMMENT_ERRORS } from './comments.exception';
+import { CommentsRepository } from './comments.repository';
 
 @Injectable()
 export class CommentsService {
@@ -15,18 +19,18 @@ export class CommentsService {
     const post = await this.postsRepository.findPost(createCommentDto.postId);
 
     if (!post) {
-      throw new NotFoundException('게시물을 찾을 수 없습니다.');
+      throw new CustomHttpException(COMMENT_ERRORS.POST_NOT_FOUND);
     }
 
     if (createCommentDto.commentId) {
       const comment = await this.commentsRepository.findComment(createCommentDto.commentId);
 
       if (!comment) {
-        throw new NotFoundException('댓글을 찾을 수 없습니다.');
+        throw new CustomHttpException(COMMENT_ERRORS.COMMENT_NOT_FOUND);
       }
 
       if (comment?.commentId) {
-        throw new BadRequestException('대댓글에 대한 대댓글은 달 수 없습니다.');
+        throw new CustomHttpException(COMMENT_ERRORS.INVALID_COMMENT);
       }
     }
 
@@ -41,7 +45,7 @@ export class CommentsService {
     const comment = await this.commentsRepository.findComment(commentId);
 
     if (!comment) {
-      throw new NotFoundException('댓글을 찾을 수 없습니다.');
+      throw new CustomHttpException(COMMENT_ERRORS.COMMENT_NOT_FOUND);
     }
 
     const like = comment.likes.find((like) => like.profileId === userId);
@@ -57,11 +61,11 @@ export class CommentsService {
     const comment = await this.findComment(commentId);
 
     if (!comment) {
-      throw new NotFoundException('댓글을 찾을 수 없습니다.');
+      throw new CustomHttpException(COMMENT_ERRORS.COMMENT_NOT_FOUND);
     }
 
     if (comment.profileId !== userId) {
-      throw new BadRequestException('댓글 작성자만 수정할 수 있습니다.');
+      throw new CustomHttpException(COMMENT_ERRORS.INVALID_USER);
     }
 
     return await this.commentsRepository.updateComment(commentId, updateCommentDto);
@@ -71,11 +75,11 @@ export class CommentsService {
     const comment = await this.findComment(commentId);
 
     if (!comment) {
-      throw new NotFoundException('댓글을 찾을 수 없습니다.');
+      throw new CustomHttpException(COMMENT_ERRORS.COMMENT_NOT_FOUND);
     }
 
     if (comment.profileId !== userId) {
-      throw new BadRequestException('댓글 작성자만 삭제할 수 있습니다.');
+      throw new CustomHttpException(COMMENT_ERRORS.INVALID_USER);
     }
 
     return await this.commentsRepository.deleteComment(commentId);

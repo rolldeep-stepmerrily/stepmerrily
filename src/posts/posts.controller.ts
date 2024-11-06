@@ -1,4 +1,3 @@
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import {
   Body,
   Controller,
@@ -15,9 +14,11 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 
-import { PostsService } from './posts.service';
-import { User } from 'src/auth/decorators';
+import { User } from '@@decorators';
+import { ParsePositiveIntPipe } from '@@pipes';
+
 import {
   CreatePostDto,
   CreatePostImagesDto,
@@ -27,7 +28,7 @@ import {
   UpdatePostImagesDto,
   UpdatePostWithImagesDto,
 } from './posts.dto';
-import { ParsePositiveIntPipe } from 'src/common/pipes';
+import { PostsService } from './posts.service';
 
 @ApiTags('Posts')
 @ApiBearerAuth('accessToken')

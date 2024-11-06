@@ -1,15 +1,16 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
-import { ClassificationsService } from './classifications.service';
+import { ParsePositiveIntPipe } from '@@pipes';
+
 import {
   CreateMajorClassificationDto,
   CreateMinorClassificationDto,
   UpdateMajorClassificationDto,
   UpdateMinorClassificationDto,
 } from './classifications.dto';
-import { ParsePositiveIntPipe } from 'src/common/pipes';
+import { ClassificationsService } from './classifications.service';
 
 @ApiTags('Classifications ⚠️')
 @ApiBearerAuth('accessToken')

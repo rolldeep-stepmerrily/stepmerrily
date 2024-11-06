@@ -1,14 +1,16 @@
-import { BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
+import { Injectable, PipeTransform } from '@nestjs/common';
+
+import { CustomHttpException, GLOBAL_ERRORS } from '@@exceptions';
 
 @Injectable()
 export class ParsePositiveIntPipe implements PipeTransform {
   transform(value: string) {
-    const parsedValue = parseInt(value, 10);
+    const parsedInt = parseInt(value, 10);
 
-    if (isNaN(parsedValue) || parsedValue < 0) {
-      return new BadRequestException();
+    if (isNaN(parsedInt) || parsedInt < 0) {
+      throw new CustomHttpException(GLOBAL_ERRORS.INVALID_POSITIVE_INT);
     }
 
-    return parsedValue;
+    return parsedInt;
   }
 }

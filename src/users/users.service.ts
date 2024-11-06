@@ -1,9 +1,11 @@
-import { BadRequestException, ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Cache } from 'cache-manager';
-import bcrypt from 'bcrypt';
+import { Inject, Injectable } from '@nestjs/common';
 
-import { UsersRepository } from './users.repository';
+import bcrypt from 'bcrypt';
+import { Cache } from 'cache-manager';
+
+import { CustomHttpException } from '@@exceptions';
+
 import {
   CheckEmailForSignUpDto,
   CheckNicknameForSignUpDto,
@@ -13,22 +15,23 @@ import {
   FindUsernameByEmailDto,
   UpdatePasswordDto,
 } from './users.dto';
+import { USER_ERRORS } from './users.exception';
 import { ICacheDataEmail } from './users.interface';
-
-const { SERVER_URL } = process.env;
+import { UsersRepository } from './users.repository';
 
 @Injectable()
 export class UsersService {
   constructor(
     private readonly usersRepository: UsersRepository,
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
+    @Inject('SERVER_URL') private readonly serverUrl: string,
   ) {}
 
   async checkUsernameForSignUp({ username }: CheckUsernameForSignUpDto) {
     const user = await this.usersRepository.findUserByUsername(username);
 
     if (user) {
-      throw new ConflictException('이미 존재하는 아이디 입니다.');
+      throw new CustomHttpException(USER_ERRORS.DUPLICATED_USERNAME);
     }
   }
 
@@ -36,7 +39,7 @@ export class UsersService {
     const user = await this.usersRepository.findUserByEmail(email);
 
     if (user) {
-      throw new ConflictException('해당 이메일로 가입된 계정이 존재합니다.');
+      throw new CustomHttpException(USER_ERRORS.DUPLICATED_EMAIL);
     }
   }
 
@@ -44,7 +47,7 @@ export class UsersService {
     const user = await this.usersRepository.findUserByNickname(nickname);
 
     if (user) {
-      throw new ConflictException('해당 닉네임으로 가입된 계정이 존재합니다.');
+      throw new CustomHttpException(USER_ERRORS.DUPLICATED_NICKNAME);
     }
   }
 
@@ -52,19 +55,19 @@ export class UsersService {
     const user = await this.usersRepository.findUserByPhoneNumber(phoneNumber);
 
     if (user) {
-      throw new ConflictException('해당 전화번로 가입된 계정이 존재합니다.');
+      throw new CustomHttpException(USER_ERRORS.DUPLICATED_PHONE_NUMBER);
     }
   }
 
   async createUser({ username, email, password, name, nickname, phoneNumber, terms }: CreateUserDto) {
     if (!terms.isService || !terms.isPrivacy || !terms.isAge) {
-      throw new BadRequestException('약관에 동의해주세요.');
+      throw new CustomHttpException(USER_ERRORS.INVALID_TERMS);
     }
 
-    const cachedData = await this.cacheManager.get<ICacheDataEmail>(`${SERVER_URL}/auth/certification/${email}`);
+    const cachedData = await this.cacheManager.get<ICacheDataEmail>(`${this.serverUrl}/auth/certification/${email}`);
 
     if (!cachedData || !cachedData.isCertified) {
-      throw new BadRequestException('이메일 인증을 진행해주세요.');
+      throw new CustomHttpException(USER_ERRORS.UNAUTHORIZED_EMAIL);
     }
 
     await Promise.all([
@@ -76,7 +79,7 @@ export class UsersService {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await this.cacheManager.del(`${SERVER_URL}/users/signup/certification/${email}`);
+    await this.cacheManager.del(`${this.serverUrl}/users/signup/certification/${email}`);
 
     return this.usersRepository.createUser({
       username,
@@ -90,20 +93,20 @@ export class UsersService {
   }
 
   async findUsernameByEmail({ email }: FindUsernameByEmailDto) {
-    const cachedData = await this.cacheManager.get<ICacheDataEmail>(`${SERVER_URL}/auth/certification/${email}`);
+    const cachedData = await this.cacheManager.get<ICacheDataEmail>(`${this.serverUrl}/auth/certification/${email}`);
 
     if (!cachedData || !cachedData.isCertified) {
-      throw new BadRequestException('이메일 인증을 진행해주세요.');
+      throw new CustomHttpException(USER_ERRORS.UNAUTHORIZED_EMAIL);
     }
 
     const user = await this.usersRepository.findUserByEmail(email);
 
     if (!user) {
-      throw new NotFoundException('해당 이메일로 가입된 계정이 없습니다.');
+      throw new CustomHttpException(USER_ERRORS.USER_NOT_FOUND);
     }
 
     if (user?.deletedAt) {
-      throw new BadRequestException('탈퇴한 회원입니다.');
+      throw new CustomHttpException(USER_ERRORS.WITHDRAWAL_USER);
     }
 
     return { username: user.username };
@@ -113,17 +116,19 @@ export class UsersService {
     const user = await this.usersRepository.findUserByUsername(username);
 
     if (!user) {
-      throw new NotFoundException('해당 회원을 찾을 수 없습니다.');
+      throw new CustomHttpException(USER_ERRORS.USER_NOT_FOUND);
     }
 
     if (user.deletedAt) {
-      throw new BadRequestException('탈퇴한 회원입니다.');
+      throw new CustomHttpException(USER_ERRORS.WITHDRAWAL_USER);
     }
 
-    const cachedData = await this.cacheManager.get<ICacheDataEmail>(`${SERVER_URL}/auth/certification/${user.email}`);
+    const cachedData = await this.cacheManager.get<ICacheDataEmail>(
+      `${this.serverUrl}/auth/certification/${user.email}`,
+    );
 
     if (!cachedData || !cachedData.isCertified) {
-      throw new BadRequestException('이메일 인증을 진행해주세요.');
+      throw new CustomHttpException(USER_ERRORS.UNAUTHORIZED_EMAIL);
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -135,11 +140,11 @@ export class UsersService {
     const user = await this.usersRepository.findUserById(id);
 
     if (!user) {
-      throw new BadRequestException('해당 회원을 찾을 수 없습니다.');
+      throw new CustomHttpException(USER_ERRORS.USER_NOT_FOUND);
     }
 
     if (user.deletedAt) {
-      throw new BadRequestException('이미 탈퇴한 회원입니다.');
+      throw new CustomHttpException(USER_ERRORS.WITHDRAWAL_USER);
     }
 
     return await this.usersRepository.deleteUser(id);

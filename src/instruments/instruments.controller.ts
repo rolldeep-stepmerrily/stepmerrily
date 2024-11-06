@@ -1,10 +1,11 @@
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
-import { InstrumentsService } from './instruments.service';
-import { CreateInstrumentDto, UpdateInstrumentDto } from './instruments.dto';
 import { ParsePositiveIntPipe } from 'src/common/pipes';
+
+import { CreateInstrumentDto, UpdateInstrumentDto } from './instruments.dto';
+import { InstrumentsService } from './instruments.service';
 
 @ApiTags('Instruments ⚠️')
 @ApiBearerAuth('accessToken')

@@ -1,10 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
+
 import { Instrument as InstrumentModel } from '@prisma/client';
 import { IsOptional, IsPositive, IsString } from 'class-validator';
 
-import { Common } from 'src/common/entities';
+import { BaseEntity } from '@@entities';
 
-export class Instrument extends Common implements InstrumentModel {
+export class Instrument extends BaseEntity implements InstrumentModel {
   @ApiProperty({ description: '악기 ID', example: 1 })
   @IsPositive()
   id: number;

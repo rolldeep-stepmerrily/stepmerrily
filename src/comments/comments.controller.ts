@@ -1,11 +1,13 @@
 import { Body, Controller, Delete, Param, Patch, Post, Put, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
-import { CommentsService } from './comments.service';
-import { User } from 'src/auth/decorators';
-import { CreateCommentDto, UpdateCommentDto } from './comments.dto';
+import { User } from '@@decorators';
+
 import { ParsePositiveIntPipe } from 'src/common/pipes';
+
+import { CreateCommentDto, UpdateCommentDto } from './comments.dto';
+import { CommentsService } from './comments.service';
 
 @ApiTags('Comments')
 @ApiBearerAuth('accessToken')

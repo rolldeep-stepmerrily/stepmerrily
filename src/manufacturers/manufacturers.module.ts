@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 
 import { PrismaModule } from 'src/prisma/prisma.module';
+
 import { ManufacturersController } from './manufacturers.controller';
-import { ManufacturersService } from './manufacturers.service';
 import { ManufacturersRepository } from './manufacturers.repository';
+import { ManufacturersService } from './manufacturers.service';
 
 @Module({
   imports: [PrismaModule],

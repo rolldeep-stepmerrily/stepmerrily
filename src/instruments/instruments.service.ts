@@ -1,9 +1,13 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
-import { InstrumentsRepository } from './instruments.repository';
+import { CustomHttpException } from '@@exceptions';
+
 import { ClassificationsService } from 'src/classifications/classifications.service';
 import { ManufacturersService } from 'src/manufacturers/manufacturers.service';
+
 import { CreateInstrumentDto } from './instruments.dto';
+import { INSTRUMENT_ERRORS } from './instruments.exception';
+import { InstrumentsRepository } from './instruments.repository';
 
 @Injectable()
 export class InstrumentsService {
@@ -18,20 +22,20 @@ export class InstrumentsService {
       const instrument = await this.instrumentsRepository.findInstrumentBySerialNumber(serialNumber);
 
       if (instrument) {
-        throw new BadRequestException('이미 등록된 시리얼 번호입니다.');
+        throw new CustomHttpException(INSTRUMENT_ERRORS.DUPLICATED_SERIAL_NUMBER);
       }
     }
 
     const minorClassification = await this.classificationService.findMinorClassification(minorClassificationId);
 
     if (!minorClassification) {
-      throw new BadRequestException('소분류가 존재하지 않습니다.');
+      throw new CustomHttpException(INSTRUMENT_ERRORS.MINOR_CLASSIFICATION_NOT_FOUND);
     }
 
     const manufacturer = await this.manufacturerService.findManufacturer(manufacturerId);
 
     if (!manufacturer) {
-      throw new BadRequestException('제조사가 존재하지 않습니다.');
+      throw new CustomHttpException(INSTRUMENT_ERRORS.MANUFACTURER_NOT_FOUND);
     }
 
     return await this.instrumentsRepository.createInstrument({
@@ -63,19 +67,19 @@ export class InstrumentsService {
     const instrument = await this.findInstrument(instrumentId);
 
     if (!instrument) {
-      throw new BadRequestException('악기가 존재하지 않습니다.');
+      throw new CustomHttpException(INSTRUMENT_ERRORS.INSTRUMENT_NOT_FOUND);
     }
 
     const minorClassification = await this.classificationService.findMinorClassification(minorClassificationId);
 
     if (!minorClassification) {
-      throw new BadRequestException('소분류가 존재하지 않습니다.');
+      throw new CustomHttpException(INSTRUMENT_ERRORS.MINOR_CLASSIFICATION_NOT_FOUND);
     }
 
     const manufacturer = await this.manufacturerService.findManufacturer(manufacturerId);
 
     if (!manufacturer) {
-      throw new BadRequestException('제조사가 존재하지 않습니다.');
+      throw new CustomHttpException(INSTRUMENT_ERRORS.MANUFACTURER_NOT_FOUND);
     }
 
     return await this.instrumentsRepository.updateInstrument(instrumentId, {
@@ -90,7 +94,7 @@ export class InstrumentsService {
     const instrument = await this.findInstrument(instrumentId);
 
     if (!instrument) {
-      throw new BadRequestException('악기가 존재하지 않습니다.');
+      throw new CustomHttpException(INSTRUMENT_ERRORS.INSTRUMENT_NOT_FOUND);
     }
 
     return await this.instrumentsRepository.deleteInstrument(instrumentId);

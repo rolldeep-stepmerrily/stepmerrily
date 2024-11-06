@@ -1,4 +1,5 @@
 import { ApiProperty, IntersectionType, PickType } from '@nestjs/swagger';
+
 import { IsDateString } from 'class-validator';
 
 import { Album } from './entities';
@@ -12,12 +13,7 @@ export class CreateAlbumDto extends PickType(Album, ['artistId', 'title', 'descr
 }
 
 export class CreateCoverDto extends Array<Express.Multer.File> {
-  @ApiProperty({
-    type: 'string',
-    format: 'binary',
-    description: '앨범 커버 이미지',
-    required: true,
-  })
+  @ApiProperty({ type: 'string', format: 'binary', description: '앨범 커버 이미지', required: true })
   cover: Express.Multer.File;
 }
 
@@ -32,12 +28,7 @@ export class UpdateAlbumDto extends PickType(Album, ['artistId', 'title', 'descr
 }
 
 export class UpdateCoverDto extends Array<Express.Multer.File> {
-  @ApiProperty({
-    type: 'string',
-    format: 'binary',
-    description: '앨범 커버 이미지',
-    required: true,
-  })
+  @ApiProperty({ type: 'string', format: 'binary', description: '앨범 커버 이미지', required: true })
   cover: Express.Multer.File;
 }
 

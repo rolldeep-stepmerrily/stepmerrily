@@ -10,11 +10,12 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 
-import { AlbumsService } from './albums.service';
+import { ParsePositiveIntPipe } from '@@pipes';
+
 import {
   CreateAlbumDto,
   CreateAlbumWithCoverDto,
@@ -23,7 +24,7 @@ import {
   UpdateAlbumWithCoverDto,
   UpdateCoverDto,
 } from './albums.dto';
-import { ParsePositiveIntPipe } from 'src/common/pipes';
+import { AlbumsService } from './albums.service';
 
 @ApiTags('Albums ⚠️')
 @ApiBearerAuth('accessToken')

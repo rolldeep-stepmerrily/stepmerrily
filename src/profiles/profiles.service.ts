@@ -1,9 +1,15 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 dayjs.extend(duration);
 
-import { ProfilesRepository } from './profiles.repository';
+import { CustomHttpException } from '@@exceptions';
+
+import { AwsService } from 'src/aws/aws.service';
+import { InstrumentsService } from 'src/instruments/instruments.service';
+import { MusicsService } from 'src/musics/musics.service';
+
 import {
   UpdateAvatarDto,
   UpdateInstrumentsDto,
@@ -11,11 +17,8 @@ import {
   UpdateNicknameDto,
   UpdateStatusDto,
 } from './profiles.dto';
-import { AwsService } from 'src/aws/aws.service';
-import { MusicsService } from 'src/musics/musics.service';
-import { InstrumentsService } from 'src/instruments/instruments.service';
-
-const { AWS_CLOUDFRONT_DOMAIN } = process.env;
+import { PROFILE_ERRORS } from './profiles.exception';
+import { ProfilesRepository } from './profiles.repository';
 
 @Injectable()
 export class ProfilesService {
@@ -24,6 +27,7 @@ export class ProfilesService {
     private readonly awsService: AwsService,
     private readonly musicService: MusicsService,
     private readonly instrumentsService: InstrumentsService,
+    @Inject('AWS_CLOUDFRONT_DOMAIN') private readonly awsCloudfrontDomain: string,
   ) {}
 
   async findProfile(profileId: number) {
@@ -34,12 +38,12 @@ export class ProfilesService {
     const profile = await this.profilesRepository.findProfileDetail(profileId);
 
     if (!profile) {
-      throw new BadRequestException('유저를 찾을 수 없습니다.');
+      throw new CustomHttpException(PROFILE_ERRORS.PROFILE_NOT_FOUND);
     }
 
     const avatars = profile.avatar ? await this.awsService.findImages(profile.avatar) : null;
 
-    const avatar = avatars ? `${AWS_CLOUDFRONT_DOMAIN}/${avatars[avatars.length - 1].Key}` : null;
+    const avatar = avatars ? `${this.awsCloudfrontDomain}/${avatars[avatars.length - 1].Key}` : null;
 
     const formattedMusic = profile.music
       ? {
@@ -55,17 +59,17 @@ export class ProfilesService {
     const profile = await this.findProfile(profileId);
 
     if (!profile) {
-      throw new BadRequestException('유저를 찾을 수 없습니다.');
+      throw new CustomHttpException(PROFILE_ERRORS.PROFILE_NOT_FOUND);
     }
 
     if (profile.nickname === nickname) {
-      throw new BadRequestException('기존 닉네임과 변경하려는 닉네임이 동일합니다.');
+      throw new CustomHttpException(PROFILE_ERRORS.NICKNAME_UNCHANGED);
     }
 
     const isDuplicated = !!(await this.profilesRepository.findProfileByNickname(nickname));
 
     if (isDuplicated) {
-      throw new BadRequestException('이미 사용중인 닉네임입니다.');
+      throw new CustomHttpException(PROFILE_ERRORS.DUPLICATED_NICKNAME);
     }
 
     return await this.profilesRepository.updateNickname(profileId, nickname);
@@ -87,7 +91,7 @@ export class ProfilesService {
     const music = await this.musicService.findMusic(musicId);
 
     if (!music) {
-      throw new BadRequestException('음악을 찾을 수 없습니다.');
+      throw new CustomHttpException(PROFILE_ERRORS.MUSIC_NOT_FOUND);
     }
 
     return await this.profilesRepository.updateMusic(profileId, musicId);
@@ -97,7 +101,7 @@ export class ProfilesService {
     const instruments = await this.instrumentsService.findInstrumentsByIds(instrumentIds);
 
     if (instruments.length !== instrumentIds.length) {
-      throw new NotFoundException('악기를 찾을 수 없습니다.');
+      throw new CustomHttpException(PROFILE_ERRORS.INSTRUMENT_NOT_FOUND);
     }
 
     return await this.profilesRepository.updateInstruments(profileId, instrumentIds);

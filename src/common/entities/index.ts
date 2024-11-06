@@ -1,1 +1,1 @@
-export { Common } from './common.entity';
+export { BaseEntity } from './base.entity';

@@ -1,10 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
+
 import { Comment as CommentModel } from '@prisma/client';
 import { IsOptional, IsPositive, IsString } from 'class-validator';
 
-import { Common } from 'src/common/entities';
+import { BaseEntity } from '@@entities';
 
-export class Comment extends Common implements CommentModel {
+export class Comment extends BaseEntity implements CommentModel {
   @ApiProperty({ description: 'ID', minimum: 1 })
   @IsPositive()
   id: number;

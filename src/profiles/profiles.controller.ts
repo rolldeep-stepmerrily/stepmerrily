@@ -1,12 +1,14 @@
 import { Body, Controller, Get, Param, Patch, Query, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 
-import { ProfilesService } from './profiles.service';
-import { MusicsService } from 'src/musics/musics.service';
+import { User } from '@@decorators';
+import { ParsePositiveIntPipe } from '@@pipes';
+
 import { InstrumentsService } from 'src/instruments/instruments.service';
-import { User } from 'src/auth/decorators';
+import { MusicsService } from 'src/musics/musics.service';
+
 import {
   UpdateAvatarDto,
   UpdateInstrumentsDto,
@@ -14,7 +16,7 @@ import {
   UpdateNicknameDto,
   UpdateStatusDto,
 } from './profiles.dto';
-import { ParsePositiveIntPipe } from 'src/common/pipes';
+import { ProfilesService } from './profiles.service';
 
 @ApiTags('Profiles')
 @ApiBearerAuth('accessToken')

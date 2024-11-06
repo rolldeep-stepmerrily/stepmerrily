@@ -1,10 +1,11 @@
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
-import { ManufacturersService } from './manufacturers.service';
-import { CreateManufacturerDto, UpdateManufacturerDto } from './manufacturers.dto';
 import { ParsePositiveIntPipe } from 'src/common/pipes';
+
+import { CreateManufacturerDto, UpdateManufacturerDto } from './manufacturers.dto';
+import { ManufacturersService } from './manufacturers.service';
 
 @ApiTags('Manufacturers ⚠️')
 @ApiBearerAuth('accessToken')

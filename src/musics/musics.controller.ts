@@ -1,10 +1,11 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
-import { MusicsService } from './musics.service';
-import { CreateMusicDto, SearchMusicsDto, UpdateMusicDto } from './musics.dto';
 import { ParsePositiveIntPipe } from 'src/common/pipes';
+
+import { CreateMusicDto, SearchMusicsDto, UpdateMusicDto } from './musics.dto';
+import { MusicsService } from './musics.service';
 
 @ApiTags('Musics ⚠️')
 @ApiBearerAuth('accessToken')

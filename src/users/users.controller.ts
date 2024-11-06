@@ -1,8 +1,11 @@
 import { Body, Controller, Delete, Get, Post, Put, Query, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
-import { UsersService } from './users.service';
+import { User } from '@@decorators';
+
+import { AuthService } from 'src/auth/auth.service';
+
 import {
   CheckEmailForSignUpDto,
   CheckNicknameForSignUpDto,
@@ -13,8 +16,7 @@ import {
   SignInDto,
   UpdatePasswordDto,
 } from './users.dto';
-import { AuthService } from 'src/auth/auth.service';
-import { User } from 'src/auth/decorators';
+import { UsersService } from './users.service';
 
 @ApiTags('Users')
 @Controller('users')

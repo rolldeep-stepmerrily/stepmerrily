@@ -1,10 +1,11 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
-import { PlaylistsService } from './playlists.service';
-import { User } from 'src/auth/decorators';
+import { User } from '@@decorators';
+
 import { CreatePlaylistDto, UpdatePlaylistDto } from './playlists.dto';
+import { PlaylistsService } from './playlists.service';
 
 @ApiTags('Playlists')
 @ApiBearerAuth('accessToken')

@@ -1,23 +1,23 @@
-import { Controller, Get, NotFoundException } from '@nestjs/common';
-import { ApiExcludeController } from '@nestjs/swagger';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 
-const { NODE_ENV } = process.env;
+import { Controller, Get, Inject } from '@nestjs/common';
+import { ApiExcludeController } from '@nestjs/swagger';
+
+import { CustomHttpException, GLOBAL_ERRORS } from '@@exceptions';
 
 @ApiExcludeController()
 @Controller()
 export class AppController {
-  constructor() {}
+  constructor(@Inject('NODE_ENV') private NODE_ENV: string) {}
 
   @Get('version-log')
   async versionLog() {
-    // if (NODE_ENV !== 'development') {
-    // throw new NotFoundException('Cannot GET /version-log');
-    // }
+    if (this.NODE_ENV !== 'development') {
+      throw new CustomHttpException(GLOBAL_ERRORS.VERSION_LOG_NOT_FOUND);
+    }
 
     const filePath = join(__dirname, '..', 'swagger', 'swagger-version-log.md');
-
     const content = await readFile(filePath, { encoding: 'utf-8' });
 
     return `
@@ -55,9 +55,10 @@ export class AppController {
           </style>
         </head>
         <body>
+      
           <div id="content"></div>
           <script>
-            document.getElementById('content').innerHTML = marked.parse(${JSON.stringify(content)});
+            document.getElementById('content').innerHTML = marked.parse(${JSON.stringify(content)}); 
           </script>
         </body>
       </html>

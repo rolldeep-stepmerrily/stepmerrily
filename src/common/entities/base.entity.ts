@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
+
 import { IsDate, IsOptional } from 'class-validator';
 
-export class Common {
+export class BaseEntity {
   @ApiProperty({ description: '생성일자' })
   @IsDate()
   createdAt: Date;

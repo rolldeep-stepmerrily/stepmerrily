@@ -1,10 +1,11 @@
-import { Post as PostModel } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
+
+import { Post as PostModel } from '@prisma/client';
 import { IsOptional, IsPositive, IsString } from 'class-validator';
 
-import { Common } from 'src/common/entities';
+import { BaseEntity } from '@@entities';
 
-export class Post extends Common implements PostModel {
+export class Post extends BaseEntity implements PostModel {
   @ApiProperty({ description: 'ID', minimum: 1 })
   @IsPositive()
   id: number;

@@ -1,16 +1,19 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 
-import { PostsRepository } from './posts.repository';
+import { CustomHttpException } from '@@exceptions';
+
 import { AwsService } from 'src/aws/aws.service';
-import { CreatePostDto, CreatePostImagesDto, FindPostsDto, UpdatePostDto, UpdatePostImagesDto } from './posts.dto';
 
-const { AWS_CLOUDFRONT_DOMAIN } = process.env;
+import { CreatePostDto, CreatePostImagesDto, FindPostsDto, UpdatePostDto, UpdatePostImagesDto } from './posts.dto';
+import { POST_ERRORS } from './posts.entity';
+import { PostsRepository } from './posts.repository';
 
 @Injectable()
 export class PostsService {
   constructor(
     private readonly postsRepository: PostsRepository,
     private readonly awsService: AwsService,
+    @Inject('AWS_CLOUDFRONT_DOMAIN') private readonly awsCloudfrontDomain: string,
   ) {}
 
   async createPost(userId: number, createPostDto: CreatePostDto, createPostImagesDto: CreatePostImagesDto) {
@@ -39,7 +42,7 @@ export class PostsService {
     const post = await this.postsRepository.findPost(postId);
 
     if (!post) {
-      throw new NotFoundException('게시물을 찾을 수 없습니다.');
+      throw new CustomHttpException(POST_ERRORS.POST_NOT_FOUND);
     }
 
     const comments = post.comments.map((comment) => {
@@ -52,7 +55,7 @@ export class PostsService {
 
     const findImages = post.images ? await this.awsService.findImages(post.images) : null;
 
-    const images = findImages?.map((image) => `${AWS_CLOUDFRONT_DOMAIN}/${image.Key}`) ?? null;
+    const images = findImages?.map((image) => `${this.awsCloudfrontDomain}/${image.Key}`) ?? null;
 
     return { post: { ...post, comments }, images };
   }
@@ -61,7 +64,7 @@ export class PostsService {
     const post = await this.postsRepository.findPostId(postId);
 
     if (!post) {
-      throw new NotFoundException('게시물을 찾을 수 없습니다.');
+      throw new CustomHttpException(POST_ERRORS.POST_NOT_FOUND);
     }
 
     const like = post.likes.find((like) => like.profileId === userId);
@@ -82,11 +85,11 @@ export class PostsService {
     const post = await this.postsRepository.findPost(postId);
 
     if (!post) {
-      throw new NotFoundException('게시물을 찾을 수 없습니다.');
+      throw new CustomHttpException(POST_ERRORS.POST_NOT_FOUND);
     }
 
     if (post.profile.id !== userId) {
-      throw new BadRequestException('게시물 작성자만 수정할 수 있습니다.');
+      throw new CustomHttpException(POST_ERRORS.INVALID_USER);
     }
 
     if (updatePostImagesDto.length > 0) {
@@ -108,11 +111,11 @@ export class PostsService {
     const post = await this.postsRepository.findPost(postId);
 
     if (!post) {
-      throw new NotFoundException('게시물을 찾을 수 없습니다.');
+      throw new CustomHttpException(POST_ERRORS.POST_NOT_FOUND);
     }
 
     if (post.profile.id !== userId) {
-      throw new BadRequestException('게시물 작성자만 삭제할 수 있습니다.');
+      throw new CustomHttpException(POST_ERRORS.INVALID_USER);
     }
 
     if (post.images) {

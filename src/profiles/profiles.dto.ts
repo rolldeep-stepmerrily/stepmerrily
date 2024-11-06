@@ -1,4 +1,5 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
+
 import { IsArray, IsPositive } from 'class-validator';
 
 import { Profile } from './entities';

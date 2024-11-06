@@ -1,19 +1,23 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 dayjs.extend(duration);
 
-import { AlbumsRepository } from './albums.repository';
-import { AwsService } from 'src/aws/aws.service';
-import { CreateAlbumDto, CreateCoverDto, UpdateAlbumDto, UpdateCoverDto } from './albums.dto';
+import { CustomHttpException } from '@@exceptions';
 
-const { AWS_CLOUDFRONT_DOMAIN } = process.env;
+import { AwsService } from 'src/aws/aws.service';
+
+import { CreateAlbumDto, CreateCoverDto, UpdateAlbumDto, UpdateCoverDto } from './albums.dto';
+import { ALBUM_ERRORS } from './albums.exception';
+import { AlbumsRepository } from './albums.repository';
 
 @Injectable()
 export class AlbumsService {
   constructor(
     private readonly albumsRepository: AlbumsRepository,
     private readonly awsService: AwsService,
+    @Inject('AWS_CLOUDFRONT_DOMAIN') private readonly awsCloudfrontDomain: string,
   ) {}
 
   async findAlbums() {
@@ -24,7 +28,7 @@ export class AlbumsService {
 
       const covers = album.cover ? await this.awsService.findImages(album.cover) : null;
 
-      const cover = covers ? `${AWS_CLOUDFRONT_DOMAIN}/${covers[covers.length - 1].Key}` : null;
+      const cover = covers ? `${this.awsCloudfrontDomain}/${covers[covers.length - 1].Key}` : null;
 
       return { ...album, cover, duration };
     });
@@ -64,7 +68,7 @@ export class AlbumsService {
     const album = await this.findAlbum(albumId);
 
     if (!album) {
-      throw new NotFoundException('앨범을 찾을 수 없습니다.');
+      throw new CustomHttpException(ALBUM_ERRORS.ALBUM_NOT_FOUND);
     }
 
     const [hours, minutes, seconds] = updateAlbumDto.time.split(':').map(Number);
@@ -97,7 +101,7 @@ export class AlbumsService {
     const album = await this.findAlbum(albumId);
 
     if (!album) {
-      throw new NotFoundException('앨범을 찾을 수 없습니다.');
+      throw new CustomHttpException(ALBUM_ERRORS.ALBUM_NOT_FOUND);
     }
 
     return await this.albumsRepository.deleteAlbum(albumId);

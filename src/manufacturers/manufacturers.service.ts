@@ -1,7 +1,10 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
-import { ManufacturersRepository } from './manufacturers.repository';
+import { CustomHttpException } from '@@exceptions';
+
 import { CreateManufacturerDto, UpdateManufacturerDto } from './manufacturers.dto';
+import { MANUFACTURER_ERRORS } from './manufacturers.exception';
+import { ManufacturersRepository } from './manufacturers.repository';
 
 @Injectable()
 export class ManufacturersService {
@@ -11,7 +14,7 @@ export class ManufacturersService {
     const manufacturer = await this.manufacturersRepository.findManufacturerByName(createManufacturerDto.name);
 
     if (manufacturer) {
-      throw new BadRequestException('이미 존재하는 제조사입니다.');
+      throw new CustomHttpException(MANUFACTURER_ERRORS.DUPLICATED_MANUFACTURER);
     }
 
     return await this.manufacturersRepository.createManufacturer(createManufacturerDto);
@@ -31,7 +34,7 @@ export class ManufacturersService {
     const manufacturer = await this.findManufacturer(manufacturerId);
 
     if (!manufacturer) {
-      throw new BadRequestException('제조사가 존재하지 않습니다.');
+      throw new CustomHttpException(MANUFACTURER_ERRORS.MANUFACTURER_NOT_FOUND);
     }
 
     return await this.manufacturersRepository.updateManufacturer(manufacturerId, updateManufacturerDto);
@@ -41,7 +44,7 @@ export class ManufacturersService {
     const manufacturer = await this.findManufacturer(manufacturerId);
 
     if (!manufacturer) {
-      throw new BadRequestException('제조사가 존재하지 않습니다.');
+      throw new CustomHttpException(MANUFACTURER_ERRORS.MANUFACTURER_NOT_FOUND);
     }
 
     return await this.manufacturersRepository.deleteManufacturer(manufacturerId);

@@ -1,10 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
+
 import { Artist as ArtistModel } from '@prisma/client';
 import { IsOptional, IsPositive, IsString } from 'class-validator';
 
-import { Common } from 'src/common/entities';
+import { BaseEntity } from '@@entities';
 
-export class Artist extends Common implements ArtistModel {
+export class Artist extends BaseEntity implements ArtistModel {
   @ApiProperty({ description: '아티스트 ID', example: 1 })
   @IsPositive()
   id: number;

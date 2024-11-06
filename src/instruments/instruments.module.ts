@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
 
-import { PrismaModule } from 'src/prisma/prisma.module';
 import { ClassificationsModule } from 'src/classifications/classifications.module';
 import { ManufacturersModule } from 'src/manufacturers/manufacturers.module';
+import { PrismaModule } from 'src/prisma/prisma.module';
+
 import { InstrumentsController } from './instruments.controller';
-import { InstrumentsService } from './instruments.service';
 import { InstrumentsRepository } from './instruments.repository';
+import { InstrumentsService } from './instruments.service';
 
 @Module({
   imports: [PrismaModule, ClassificationsModule, ManufacturersModule],
