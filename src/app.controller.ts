@@ -4,8 +4,6 @@ import { join } from 'path';
 import { Controller, Get, Inject } from '@nestjs/common';
 import { ApiExcludeController } from '@nestjs/swagger';
 
-import { CustomHttpException, GLOBAL_ERRORS } from '@@exceptions';
-
 @ApiExcludeController()
 @Controller()
 export class AppController {
@@ -13,10 +11,6 @@ export class AppController {
 
   @Get('version-log')
   async versionLog() {
-    if (this.NODE_ENV !== 'development') {
-      throw new CustomHttpException(GLOBAL_ERRORS.VERSION_LOG_NOT_FOUND);
-    }
-
     const filePath = join(__dirname, '..', 'swagger', 'swagger-version-log.md');
     const content = await readFile(filePath, { encoding: 'utf-8' });
 
