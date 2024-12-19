@@ -31,6 +31,7 @@ export class NowplayingmanService {
       redirect_uri: this.threadsRedirectUri,
       code,
     };
+    console.log({ shortPayload });
 
     const getShortResponse = await fetch(getShortUrl, {
       method: 'POST',
@@ -50,7 +51,7 @@ export class NowplayingmanService {
       access_token: shortAccessToken,
     };
 
-    console.log(longPayload);
+    console.log({ longPayload });
 
     const getLongResponse = await fetch(getLongUrl, {
       method: 'POST',
