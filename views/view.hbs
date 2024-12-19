@@ -1,0 +1,12 @@
+<form id='uploadForm' enctype='multipart/form-data'>
+  <input type='file' name='file' id='fileInput' />
+  <button type='submit'>파일 업로드</button>
+</form>
+
+<script>
+  document.getElementById('uploadForm').addEventListener('submit', async (event) => { event.preventDefault(); const
+  fileInput = document.getElementById('fileInput'); const formData = new FormData(); formData.append('file',
+  fileInput.files[0]); formData.append('token', '{{token}}'); const response = await fetch('/nowplayingman/upload', {
+  method: 'POST', body: formData, }); if (response.ok) { console.log('파일 업로드 성공'); } else { console.error('파일
+  업로드 실패'); } });
+</script>

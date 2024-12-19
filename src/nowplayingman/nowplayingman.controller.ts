@@ -1,27 +1,26 @@
-import { Body, Controller, Get, Inject, Post, Query, Render } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, Render, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 import { NowplayingmanService } from './nowplayingman.service';
 
 @Controller('nowplayingman')
 export class NowplayingmanController {
-  constructor(
-    private readonly nowplayingmanService: NowplayingmanService,
-    @Inject('THREADS_APP_ID') private readonly threadsAppId: string,
-    @Inject('THREADS_REDIRECT_URI') private readonly threadsRedirectUri: string,
-    @Inject('THREADS_SCOPE') private readonly threadsScope: string,
-  ) {}
+  constructor(private readonly nowplayingmanService: NowplayingmanService) {}
 
   @Get('auth')
-  @Render('auth')
-  async auth() {
-    return {
-      url: `https://threads.net/oauth/authorize?client_id=${this.threadsAppId}&redirect_uri=${this.threadsRedirectUri}&scope=${this.threadsScope}&response_type=code`,
-    };
+  async auth(@Res() res: any) {
+    const url = await this.nowplayingmanService.getAuthUrl();
+
+    return res.redirect(url);
   }
 
   @Get('redirect')
-  async redirect(@Query() query: any) {
-    console.log(query);
+  async redirect(@Query() query: any, @Res() res: any) {
+    const code = query.code;
+
+    const token = await this.nowplayingmanService.getToken(code);
+
+    return res.redirect(`/nowplayingman/view?token=${token}`);
   }
 
   @Post('cancel')
@@ -32,5 +31,17 @@ export class NowplayingmanController {
   @Post('delete')
   async deletes(@Body() deletes: any) {
     console.log(deletes);
+  }
+
+  @Get('view')
+  @Render('view')
+  async view(@Query() query: any) {
+    return { token: query.token };
+  }
+
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('file'))
+  async upload(@UploadedFile() file: Express.Multer.File, @Body() body: any) {
+    await this.nowplayingmanService.processImage(file, body.token);
   }
 }

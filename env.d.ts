@@ -25,5 +25,6 @@ declare namespace NodeJS {
     THREADS_REDIRECT_URI: string;
     THREADS_SCOPE: string;
     THREADS_APP_SECRET: string;
+    THREADS_USER_ID: string;
   }
 }
