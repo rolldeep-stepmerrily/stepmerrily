@@ -1,12 +1,13 @@
-<form id='uploadForm' enctype='multipart/form-data'>
-  <input type='file' name='file' id='fileInput' />
-  <button type='submit'>파일 업로드</button>
-</form>
+<div style='display: flex; justify-content: center; align-items: center; height: 100vh;'>
+  <input type='file' id='fileInput' />
+  <button id='uploadButton'>파일 업로드</button>
+</div>
 
 <script>
-  document.getElementById('uploadForm').addEventListener('submit', async (event) => { event.preventDefault(); const
-  fileInput = document.getElementById('fileInput'); const formData = new FormData(); formData.append('file',
-  fileInput.files[0]); formData.append('token', '{{token}}'); const response = await fetch('/nowplayingman/upload', {
-  method: 'POST', body: formData, }); if (response.ok) { console.log('파일 업로드 성공'); } else { console.error('파일
-  업로드 실패'); } });
+  document.getElementById('uploadButton').addEventListener('click', async () => { const fileInput =
+  document.getElementById('fileInput'); if (fileInput.files.length === 0) { alert('파일을 선택해 주세요.'); return; }
+  const formData = new FormData(); formData.append('file', fileInput.files[0]); formData.append('token', '{{token}}');
+  try { const response = await fetch('/nowplayingman/upload', { method: 'POST', body: formData, }); if (response.ok) {
+  console.log('파일 업로드 성공'); } else { const errorMessage = await response.text(); console.error('파일 업로드
+  실패:', errorMessage); } } catch (error) { console.error('네트워크 오류:', error); } });
 </script>
