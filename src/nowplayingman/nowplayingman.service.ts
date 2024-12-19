@@ -1,5 +1,3 @@
-import { stringify } from 'querystring';
-
 import { Inject, Injectable } from '@nestjs/common';
 
 import dayjs from 'dayjs';
@@ -26,19 +24,19 @@ export class NowplayingmanService {
   async getToken(code: string) {
     const getShortUrl = 'https://graph.threads.net/oauth/access_token';
 
-    const shortPayload = {
+    const shorPayloadForm = new URLSearchParams({
       client_id: String(this.threadsAppId),
       client_secret: this.threadsAppSecret,
       grant_type: 'authorization_code',
       redirect_uri: this.threadsRedirectUri,
       code,
-    };
+    });
 
-    console.log({ shortPayload });
+    console.log({ shorPayloadForm });
 
     const getShortResponse = await fetch(getShortUrl, {
       method: 'POST',
-      body: stringify(shortPayload),
+      body: shorPayloadForm.toString(),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
@@ -58,17 +56,17 @@ export class NowplayingmanService {
 
     const getLongUrl = 'https://graph.threads.net/access_token';
 
-    const longPayload = {
+    const longPayloadForm = new URLSearchParams({
       grant_type: 'th_exchange_token',
       client_secret: this.threadsAppSecret,
       access_token: shortAccessToken,
-    };
+    });
 
-    console.log({ longPayload });
+    console.log({ longPayloadForm });
 
     const getLongResponse = await fetch(getLongUrl, {
       method: 'POST',
-      body: stringify(longPayload),
+      body: longPayloadForm.toString(),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
