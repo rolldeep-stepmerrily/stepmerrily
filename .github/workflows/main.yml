@@ -28,7 +28,7 @@ jobs:
       - name: Prepare Deployment Package
         run: |
           mkdir -p deploy
-          cp -r dist prisma package.json package-lock.json tsconfig.json ecosystem.config.js swagger deploy/
+          cp -r dist prisma package.json package-lock.json tsconfig.json ecosystem.config.js swagger public views deploy/
           tar -czf deploy.tar.gz -C deploy . || (echo "fail - Prepare Deployment Package" && exit 1)
 
       - name: Deploy
