@@ -60,21 +60,9 @@ export class NowplayingmanService {
 
     const getLongUrl = 'https://graph.threads.net/access_token';
 
-    const longPayloadForm = new URLSearchParams({
-      grant_type: 'th_exchange_token',
-      client_secret: this.threadsAppSecret,
-      access_token: shortAccessToken,
-    });
-
-    console.log('Sending payload:', longPayloadForm.toString());
-
-    const getLongResponse = await fetch(getLongUrl, {
-      method: 'POST',
-      body: longPayloadForm.toString(),
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-    });
+    const getLongResponse = await fetch(
+      `${getLongUrl}?grant_type=th_exchange_token&client_secret=${this.threadsAppSecret}&access_token=${shortAccessToken}`,
+    );
 
     if (!getLongResponse.ok) {
       const errorMessage = await getLongResponse.text();
