@@ -37,6 +37,7 @@ export class NowplayingmanService {
       body: JSON.stringify(shortPayload),
     });
 
+    console.log(getShortResponse);
     const shortData = await getShortResponse.json();
 
     const shortAccessToken = shortData.access_token;
@@ -49,10 +50,14 @@ export class NowplayingmanService {
       access_token: shortAccessToken,
     };
 
+    console.log(longPayload);
+
     const getLongResponse = await fetch(getLongUrl, {
       method: 'POST',
       body: JSON.stringify(longPayload),
     });
+
+    console.dir(getLongResponse, { depth: null });
 
     const longData = await getLongResponse.json();
 
