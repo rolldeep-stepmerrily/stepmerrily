@@ -70,9 +70,9 @@ export class NowplayingmanService {
     const metadata = await sharp(file.buffer).metadata();
 
     const width = metadata.width ?? 0;
-    const height = (metadata.height ?? 0) - 600;
+    const height = (metadata.height ?? 0) - 860;
 
-    const buffer = await sharp(file.buffer).extract({ left: 0, top: 300, width, height }).toBuffer();
+    const buffer = await sharp(file.buffer).extract({ left: 0, top: 325, width, height }).toBuffer();
 
     const now = dayjs().unix();
     const path = `nowplayingman/${now}`;
