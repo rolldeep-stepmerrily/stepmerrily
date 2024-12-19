@@ -37,6 +37,9 @@ export class NowplayingmanService {
     const getShortResponse = await fetch(getShortUrl, {
       method: 'POST',
       body: JSON.stringify(shortPayload),
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
     });
 
     if (!getShortResponse.ok) {
@@ -64,6 +67,9 @@ export class NowplayingmanService {
     const getLongResponse = await fetch(getLongUrl, {
       method: 'POST',
       body: JSON.stringify(longPayload),
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
     });
 
     if (!getLongResponse.ok) {
