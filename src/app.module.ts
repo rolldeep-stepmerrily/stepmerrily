@@ -22,6 +22,7 @@ import { PlaylistsModule } from './playlists/playlists.module';
 import { PostsModule } from './posts/posts.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { UsersModule } from './users/users.module';
+import { NowplayingmanModule } from './nowplayingman/nowplayingman.module';
 
 @Module({
   imports: [
@@ -84,6 +85,7 @@ import { UsersModule } from './users/users.module';
     ManufacturersModule,
     ThrottlerModule.forRoot([{ ttl: 60000, limit: 10 }]),
     ConfigProviderModule,
+    NowplayingmanModule,
   ],
   controllers: [AppController],
   providers: [{ provide: 'APP_GUARD', useClass: ThrottlerGuard }],
