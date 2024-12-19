@@ -52,7 +52,11 @@ export class NowplayingmanService {
 
     const shortData = await getShortResponse.json();
 
+    console.log({ shortData });
+
     const shortAccessToken = shortData.access_token;
+
+    console.log({ shortAccessToken });
 
     const getLongUrl = 'https://graph.threads.net/access_token';
 
@@ -62,7 +66,7 @@ export class NowplayingmanService {
       access_token: shortAccessToken,
     });
 
-    console.log({ longPayloadForm });
+    console.log('Sending payload:', longPayloadForm.toString());
 
     const getLongResponse = await fetch(getLongUrl, {
       method: 'POST',
@@ -82,7 +86,11 @@ export class NowplayingmanService {
 
     const longData = await getLongResponse.json();
 
+    console.log({ longData });
+
     const longAccessToken = longData.access_token;
+
+    console.log({ longAccessToken });
 
     return longAccessToken;
   }
