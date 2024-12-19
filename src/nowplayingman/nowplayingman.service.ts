@@ -25,7 +25,7 @@ export class NowplayingmanService {
     const getShortUrl = 'https://graph.threads.net/oauth/access_token';
 
     const shorPayloadForm = new URLSearchParams({
-      client_id: String(this.threadsAppId),
+      client_id: this.threadsAppId,
       client_secret: this.threadsAppSecret,
       grant_type: 'authorization_code',
       redirect_uri: this.threadsRedirectUri,
