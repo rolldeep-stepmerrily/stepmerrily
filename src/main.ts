@@ -8,7 +8,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import * as express from 'express';
-import expressBasicAuth from 'express-basic-auth';
+// import expressBasicAuth from 'express-basic-auth';
 import helmet from 'helmet';
 
 import { AppModule } from './app.module';
@@ -53,10 +53,10 @@ async function bootstrap() {
     );
   }
 
-  const guestName = configService.getOrThrow<string>('GUEST_NAME');
-  const guestPassword = configService.getOrThrow<string>('GUEST_PASSWORD');
+  // const guestName = configService.getOrThrow<string>('GUEST_NAME');
+  // const guestPassword = configService.getOrThrow<string>('GUEST_PASSWORD');
 
-  app.use(['/', '/-json'], expressBasicAuth({ challenge: true, users: { [guestName]: guestPassword } }));
+  // app.use(['/', '/-json'], expressBasicAuth({ challenge: true, users: { [guestName]: guestPassword } }));
 
   app.use(express.static(join(__dirname, '..', 'swagger')));
   app.useStaticAssets(join(__dirname, '..', 'swagger'), {
