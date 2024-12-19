@@ -31,6 +31,7 @@ export class NowplayingmanService {
       redirect_uri: this.threadsRedirectUri,
       code,
     };
+
     console.log({ shortPayload });
 
     const getShortResponse = await fetch(getShortUrl, {
@@ -38,7 +39,14 @@ export class NowplayingmanService {
       body: JSON.stringify(shortPayload),
     });
 
-    console.log(getShortResponse);
+    if (!getShortResponse.ok) {
+      const errorMessage = await getShortResponse.text();
+
+      console.log(errorMessage);
+
+      throw new Error(errorMessage);
+    }
+
     const shortData = await getShortResponse.json();
 
     const shortAccessToken = shortData.access_token;
@@ -58,7 +66,13 @@ export class NowplayingmanService {
       body: JSON.stringify(longPayload),
     });
 
-    console.dir(getLongResponse, { depth: null });
+    if (!getLongResponse.ok) {
+      const errorMessage = await getLongResponse.text();
+
+      console.log(errorMessage);
+
+      throw new Error(errorMessage);
+    }
 
     const longData = await getLongResponse.json();
 
