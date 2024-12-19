@@ -1,3 +1,5 @@
+import { stringify } from 'querystring';
+
 import { Inject, Injectable } from '@nestjs/common';
 
 import dayjs from 'dayjs';
@@ -36,7 +38,7 @@ export class NowplayingmanService {
 
     const getShortResponse = await fetch(getShortUrl, {
       method: 'POST',
-      body: JSON.stringify(shortPayload),
+      body: stringify(shortPayload),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
@@ -66,7 +68,7 @@ export class NowplayingmanService {
 
     const getLongResponse = await fetch(getLongUrl, {
       method: 'POST',
-      body: JSON.stringify(longPayload),
+      body: stringify(longPayload),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
