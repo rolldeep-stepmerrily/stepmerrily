@@ -51,7 +51,7 @@ import { UsersModule } from './users/users.module';
         LAST_FM_API_KEY: Joi.string().required(),
         LAST_FM_API_SECRET: Joi.string().required(),
         LAST_FM_API_URL: Joi.string().required(),
-        THREADS_APP_ID: Joi.string().required(),
+        THREADS_APP_ID: Joi.number().required(),
         THREADS_REDIRECT_URI: Joi.string().required(),
         THREADS_SCOPE: Joi.string().required(),
         THREADS_APP_SECRET: Joi.string().required(),
