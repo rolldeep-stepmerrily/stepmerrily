@@ -21,5 +21,9 @@ declare namespace NodeJS {
     LAST_FM_API_KEY: string;
     LAST_FM_API_SECRET: string;
     LAST_FM_API_URL: string;
+    THREADS_APP_ID: string;
+    THREADS_REDIRECT_URI: string;
+    THREADS_SCOPE: string;
+    THREADS_APP_SECRET: string;
   }
 }

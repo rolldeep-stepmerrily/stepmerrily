@@ -8,7 +8,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import * as express from 'express';
-// import expressBasicAuth from 'express-basic-auth';
+import { engine } from 'express-handlebars';
 import helmet from 'helmet';
 
 import { AppModule } from './app.module';
@@ -36,6 +36,20 @@ async function bootstrap() {
   );
 
   app.useGlobalFilters(new HttpExceptionFilter());
+
+  app.useStaticAssets(join(__dirname, '..', 'public'));
+  app.setBaseViewsDir(join(__dirname, '..', 'views'));
+
+  app.engine(
+    'hbs',
+    engine({
+      extname: 'hbs',
+      defaultLayout: 'main',
+      layoutsDir: join(__dirname, '..', 'views/layouts'),
+      partialsDir: join(__dirname, '..', 'views/partials'),
+    }),
+  );
+  app.setViewEngine('hbs');
 
   if (isProduction) {
     const awsCloudfrontDomain = configService.getOrThrow<string>('AWS_CLOUDFRONT_DOMAIN');

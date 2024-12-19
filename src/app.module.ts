@@ -18,11 +18,11 @@ import { HttpLoggerMiddleware } from './common/middlewares';
 import { InstrumentsModule } from './instruments/instruments.module';
 import { ManufacturersModule } from './manufacturers/manufacturers.module';
 import { MusicsModule } from './musics/musics.module';
+import { NowplayingmanModule } from './nowplayingman/nowplayingman.module';
 import { PlaylistsModule } from './playlists/playlists.module';
 import { PostsModule } from './posts/posts.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { UsersModule } from './users/users.module';
-import { NowplayingmanModule } from './nowplayingman/nowplayingman.module';
 
 @Module({
   imports: [
@@ -51,6 +51,10 @@ import { NowplayingmanModule } from './nowplayingman/nowplayingman.module';
         LAST_FM_API_KEY: Joi.string().required(),
         LAST_FM_API_SECRET: Joi.string().required(),
         LAST_FM_API_URL: Joi.string().required(),
+        THREADS_APP_ID: Joi.string().required(),
+        THREADS_REDIRECT_URI: Joi.string().required(),
+        THREADS_SCOPE: Joi.string().required(),
+        THREADS_APP_SECRET: Joi.string().required(),
       }),
       isGlobal: true,
       validationOptions: {
