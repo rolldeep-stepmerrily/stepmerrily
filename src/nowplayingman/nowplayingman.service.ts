@@ -24,7 +24,7 @@ export class NowplayingmanService {
   async getToken(code: string) {
     const getShortUrl = 'https://graph.threads.net/oauth/access_token';
 
-    const shorPayloadForm = new URLSearchParams({
+    const shortPayloadForm = new URLSearchParams({
       client_id: this.threadsAppId,
       client_secret: this.threadsAppSecret,
       grant_type: 'authorization_code',
@@ -32,11 +32,11 @@ export class NowplayingmanService {
       code,
     });
 
-    console.log({ shorPayloadForm });
+    console.log('Sending payload:', shortPayloadForm.toString());
 
     const getShortResponse = await fetch(getShortUrl, {
       method: 'POST',
-      body: shorPayloadForm.toString(),
+      body: shortPayloadForm.toString(),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
