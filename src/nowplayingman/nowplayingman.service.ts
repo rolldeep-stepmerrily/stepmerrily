@@ -89,10 +89,18 @@ export class NowplayingmanService {
 
     await this.awsService.uploadImages([{ ...file, buffer }], path);
 
-    const url = `https://graph.threads.net/v1.0/${this.threadsUserId}/threads?media_type=IMAGE&image_url=${this.awsCloudfrontDomain}/${path}/${now}_0&text=#지듣노.&access_token=${this.threadsAccessToken}`;
+    const url = `https://graph.threads.net/v1.0/${this.threadsUserId}/threads`;
+
+    const body = {
+      media_type: 'IMAGE',
+      image_url: `${this.awsCloudfrontDomain}/${path}/${now}_0`,
+      text: '#지듣노',
+      access_token: this.threadsAccessToken,
+    };
 
     const response = await fetch(url, {
       method: 'POST',
+      body: JSON.stringify(body),
     });
 
     if (!response.ok) {
