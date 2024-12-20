@@ -101,7 +101,7 @@ export class NowplayingmanService {
 
     await new Promise((resolve) => setTimeout(resolve, 30000));
 
-    const publishUrl = `https://graph.threads.net/v1.0/${this.threadsUserId}/threads_publish?creation_id=${id}&access_token=${token}`;
+    const publishUrl = `https://graph.threads.net/v1.0/${this.threadsUserId}/threads_publish?creation_id=${id}&access_token=${this.threadsAccessToken}`;
 
     const publishResponse = await fetch(publishUrl, {
       method: 'POST',
