@@ -98,6 +98,7 @@ export class NowplayingmanService {
     if (!response.ok) {
       const errorMessage = await response.text();
 
+      console.log(url);
       console.error(errorMessage);
 
       throw new Error(errorMessage);
