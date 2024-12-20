@@ -34,4 +34,5 @@ export const THREADS_APP_ID = createConfigProvider<number>('THREADS_APP_ID', 'nu
 export const THREADS_REDIRECT_URI = createConfigProvider<string>('THREADS_REDIRECT_URI');
 export const THREADS_SCOPE = createConfigProvider<string>('THREADS_SCOPE');
 export const THREADS_APP_SECRET = createConfigProvider<string>('THREADS_APP_SECRET');
-export const THREADS_USER_ID = createConfigProvider<string>('THREADS_USER_ID');
+export const THREADS_USER_ID = createConfigProvider<number>('THREADS_USER_ID', 'number');
+export const THREADS_ACCESS_TOKEN = createConfigProvider<string>('THREADS_ACCESS_TOKEN');

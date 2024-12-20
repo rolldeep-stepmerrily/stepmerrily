@@ -12,7 +12,8 @@ export class NowplayingmanService {
     @Inject('THREADS_REDIRECT_URI') private readonly threadsRedirectUri: string,
     @Inject('THREADS_SCOPE') private readonly threadsScope: string,
     @Inject('THREADS_APP_SECRET') private readonly threadsAppSecret: string,
-    @Inject('THREADS_USER_ID') private readonly threadsUserId: string,
+    @Inject('THREADS_USER_ID') private readonly threadsUserId: number,
+    @Inject('THREADS_ACCESS_TOKEN') private readonly threadsAccessToken: string,
     @Inject('AWS_CLOUDFRONT_DOMAIN') private readonly awsCloudfrontDomain: string,
     private readonly awsService: AwsService,
   ) {}
@@ -45,18 +46,14 @@ export class NowplayingmanService {
     if (!getShortResponse.ok) {
       const errorMessage = await getShortResponse.text();
 
-      console.log(errorMessage);
+      console.error(errorMessage);
 
       throw new Error(errorMessage);
     }
 
     const shortData = await getShortResponse.json();
 
-    console.log({ shortData });
-
     const shortAccessToken = shortData.access_token;
-
-    console.log({ shortAccessToken });
 
     const getLongUrl = 'https://graph.threads.net/access_token';
 
@@ -67,23 +64,19 @@ export class NowplayingmanService {
     if (!getLongResponse.ok) {
       const errorMessage = await getLongResponse.text();
 
-      console.log(errorMessage);
+      console.error(errorMessage);
 
       throw new Error(errorMessage);
     }
 
     const longData = await getLongResponse.json();
 
-    console.log({ longData });
-
     const longAccessToken = longData.access_token;
-
-    console.log({ longAccessToken });
 
     return longAccessToken;
   }
 
-  async processImage(file: Express.Multer.File, token: string) {
+  async processImage(file: Express.Multer.File) {
     const metadata = await sharp(file.buffer).metadata();
 
     const width = metadata.width ?? 0;
@@ -96,7 +89,7 @@ export class NowplayingmanService {
 
     await this.awsService.uploadImages([{ ...file, buffer }], path);
 
-    const url = `https://graph.threads.net/v1.0/${this.threadsUserId}/threads?media_type=IMAGE&image_url=${this.awsCloudfrontDomain}/${path}/${now}_0&text=#지듣노&access_token=${token}`;
+    const url = `https://graph.threads.net/v1.0/${this.threadsUserId}/threads?media_type=IMAGE&image_url=${this.awsCloudfrontDomain}/${path}/${now}_0&text=#지듣노&access_token=${this.threadsAccessToken}`;
 
     const response = await fetch(url, {
       method: 'POST',

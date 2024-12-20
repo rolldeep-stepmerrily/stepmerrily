@@ -35,13 +35,13 @@ export class NowplayingmanController {
 
   @Get('view')
   @Render('view')
-  async view(@Query() query: any) {
-    return { token: query.token };
+  async view() {
+    return {};
   }
 
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
-  async upload(@UploadedFile() file: Express.Multer.File, @Body() body: any) {
-    await this.nowplayingmanService.processImage(file, body.token);
+  async upload(@UploadedFile() file: Express.Multer.File) {
+    await this.nowplayingmanService.processImage(file);
   }
 }
