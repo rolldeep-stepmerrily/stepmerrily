@@ -8,6 +8,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import * as express from 'express';
+import expressBasicAuth from 'express-basic-auth';
 import { engine } from 'express-handlebars';
 import helmet from 'helmet';
 
@@ -50,6 +51,13 @@ async function bootstrap() {
     }),
   );
   app.setViewEngine('hbs');
+
+  const guestName = configService.getOrThrow<string>('GUEST_NAME');
+  const guestPassword = configService.getOrThrow<string>('GUEST_PASSWORD');
+  app.use(
+    ['/', '/-json', '/nowplayingman'],
+    expressBasicAuth({ challenge: true, users: { [guestName]: guestPassword } }),
+  );
 
   if (isProduction) {
     const awsCloudfrontDomain = configService.getOrThrow<string>('AWS_CLOUDFRONT_DOMAIN');
