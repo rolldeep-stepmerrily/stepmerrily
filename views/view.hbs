@@ -17,13 +17,13 @@
   try { 
     const response = await fetch('/nowplayingman/upload', { method: 'POST', body: formData, });
     if (response.ok) {
-      console.log('파일 업로드 성공');
+      console.log('upload success');
     } else {
       const errorMessage = await response.text();
-      console.error('파일 업로드 실패:', errorMessage);
+      console.error('upload failed:', errorMessage);
     }
   } catch (error) {
-      console.error('네트워크 오류:', error);
+      console.error('network error:', error);
     }
   });
 </script>

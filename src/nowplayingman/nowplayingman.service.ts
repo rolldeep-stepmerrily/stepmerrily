@@ -91,16 +91,19 @@ export class NowplayingmanService {
 
     const url = `https://graph.threads.net/v1.0/${this.threadsUserId}/threads`;
 
-    const body = {
+    const payload = new URLSearchParams({
       media_type: 'IMAGE',
       image_url: `${this.awsCloudfrontDomain}/${path}/${now}_0`,
       text: '#지듣노',
       access_token: this.threadsAccessToken,
-    };
+    });
 
     const response = await fetch(url, {
       method: 'POST',
-      body: JSON.stringify(body),
+      body: payload.toString(),
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
     });
 
     if (!response.ok) {
@@ -122,12 +125,8 @@ export class NowplayingmanService {
 
     const publishUrl = `https://graph.threads.net/v1.0/${this.threadsUserId}/threads_publish?creation_id=${id}&access_token=${this.threadsAccessToken}`;
 
-    const publishResponse = await fetch(publishUrl, {
-      method: 'POST',
-    });
+    await fetch(publishUrl, { method: 'POST' });
 
-    const publishData = await publishResponse.json();
-
-    console.log(publishData);
+    return true;
   }
 }

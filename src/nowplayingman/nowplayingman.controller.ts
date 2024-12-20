@@ -42,6 +42,6 @@ export class NowplayingmanController {
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   async upload(@UploadedFile() file: Express.Multer.File) {
-    await this.nowplayingmanService.processImage(file);
+    return await this.nowplayingmanService.processImage(file);
   }
 }
