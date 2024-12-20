@@ -95,6 +95,14 @@ export class NowplayingmanService {
       method: 'POST',
     });
 
+    if (!response.ok) {
+      const errorMessage = await response.text();
+
+      console.error(errorMessage);
+
+      throw new Error(errorMessage);
+    }
+
     const data = await response.json();
 
     const id = data.id;
